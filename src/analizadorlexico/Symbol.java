@@ -37,6 +37,18 @@ public class Symbol {
     public static final int LITERAL_BOOLEAN = 17;
     public static final int IF = 18;
     public static final int CONDITION=19;
+    public static final int FOR=20;
+    public static final int IN=21;
+    public static final int INREVERSE=22;
+    public static final int LOOP=23;
+    public static final int ENDLOOP=24;
+    public static final int WHILE=25;
+    public static final int CONDITIONELEMENT=26;
+    public static final int BEGINIF=27;
+    public static final int THEN=28;
+    public static final int ELSE=29;
+    public static final int ELSEIF=30;
+    public static final int ENDIF=31;
     
     public static String getTypeName(int type){
         switch (type){
@@ -78,6 +90,30 @@ public class Symbol {
                 return "IF";
             case CONDITION:
                 return "CONDITION";
+            case FOR:
+                return "FOR";
+            case IN:
+                return "IN";
+            case INREVERSE:
+                return "INREVERSE";
+            case LOOP:
+                return "LOOP";
+            case ENDLOOP:
+                return "ENDLOOP";
+            case WHILE:
+                return "WHILE";
+            case CONDITIONELEMENT:
+                return "CONDITIONELEMENT";
+            case BEGINIF:
+                return "BEGINIF";
+            case THEN:
+                return "THEN";
+            case ELSE:
+                return "ELSE";
+            case ELSEIF:
+                return "ELSEIF";
+            case ENDIF:
+                return "ENDIF";
                             
         }
         return "NOT KNOWN";

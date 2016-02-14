@@ -50,6 +50,14 @@ else        = "else"
 elseif      = "elseif"
 if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}{ignoreChar}*|({elseif}{ignoreChar}*{then}{ignoreChar}*)*){ignoreChar}*{endif}
 
+for         = "for"
+in          = "in"
+inreverse   = "in reverse"
+loop        = "loop"
+endloop     = "end loop"
+
+while       = "while"
+
 
 
 
@@ -75,9 +83,19 @@ if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}{ignoreChar}*
   {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
+  {beginif}     {return symbol(Symbol.BEGINIF);}
+  {else}        {return symbol(Symbol.ELSE);}
+  {elseif}      {return symbol(Symbol.ELSEIF);}
+  {endif}       {return symbol(Symbol.ENDIF);}
+  {then}        {return symbol(Symbol.THEN);}
+  {for}         {return symbol(Symbol.FOR);}
+  {in}          {return symbol(Symbol.IN);}
+  {inreverse}   {return symbol(Symbol.INREVERSE);}
+  {loop}        {return symbol(Symbol.LOOP);}
+  {endloop}     {return symbol(Symbol.ENDLOOP);}
+  {while}       {return symbol(Symbol.WHILE);}  
   {id}          {return symbol(Symbol.ID,yytext());}
-  {if}          {return symbol(Symbol.IF);}
-  {condition}   {return symbol(Symbol.CONDITION);}
+  {conditionelement}    {return symbol(Symbol.CONDITIONELEMENT);}
   {ignoreChar} {/* ignore */}
   . {return symbol(-1,yytext());}
 }

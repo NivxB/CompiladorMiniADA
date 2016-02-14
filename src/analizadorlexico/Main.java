@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  *
  * @author Carlos
@@ -40,5 +41,7 @@ public class Main {
         for (Symbol sim : symbolList){
             //System.out.println(sim.toString());
         }
+                
+        
     }
 }

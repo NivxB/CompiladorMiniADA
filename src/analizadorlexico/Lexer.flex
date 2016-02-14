@@ -26,7 +26,7 @@ newLine     = "New_Line"
 type        = "INTEGER" | "FLOAT" | "BOOLEAN"
 sumOperator = "+" | "-"
 multOperator = "*" | "/"
-relationOperator = ">" | "<" | ">=" | "<=" | "="
+relationOperator = ">" | "<" | ">=" | "<=" | "=" | "/="
 asig        = ":="
 declaration = ":"
 beginComment = "--"
@@ -38,6 +38,20 @@ literalInteger     = {number}+
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
+conditionelement = "and"|"or"
+
+
+condition   = {id}|{id}{ignoreChar}*{relationOperator}{ignoreChar}*{id}{ignoreChar}*({conditionelement}{ignoreChar}*{id}{ignoreChar}*{relationOperator}{ignoreChar}*{id})*
+
+beginif     = "if"
+endif       = "end if"
+then        = "then"
+else        = "else"
+elseif      = "elseif"
+if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}{ignoreChar}*|({elseif}{ignoreChar}*{then}{ignoreChar}*)*){ignoreChar}*{endif}
+
+
+
 
 %state STRING
 %state COMMENT
@@ -62,6 +76,8 @@ ignoreChar = [ \t\r\n\f]
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
   {id}          {return symbol(Symbol.ID,yytext());}
+  {if}          {return symbol(Symbol.IF);}
+  {condition}   {return symbol(Symbol.CONDITION);}
   {ignoreChar} {/* ignore */}
   . {return symbol(-1,yytext());}
 }

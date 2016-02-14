@@ -35,6 +35,8 @@ public class Symbol {
     public static final int MULT_OPERATOR = 15;
     public static final int RELATION_OPERATOR = 16;
     public static final int LITERAL_BOOLEAN = 17;
+    public static final int IF = 18;
+    public static final int CONDITION=19;
     
     public static String getTypeName(int type){
         switch (type){
@@ -72,6 +74,10 @@ public class Symbol {
                 return "RELATION OPER";
             case LITERAL_BOOLEAN:
                 return "LITERAL BOOLEAN";
+            case IF:
+                return "IF";
+            case CONDITION:
+                return "CONDITION";
                             
         }
         return "NOT KNOWN";

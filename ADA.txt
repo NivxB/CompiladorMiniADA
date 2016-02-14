@@ -12,7 +12,8 @@ begin
    --Put("The value of Index is");
    --Put(Index, 8);
    New_Line;
-
+   if then elseifthen end if
+   OneInt < OneInt
 end OneInt;
 
 

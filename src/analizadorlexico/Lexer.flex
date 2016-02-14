@@ -24,7 +24,10 @@ end         = "end"
 put         = "Put"
 newLine     = "New_Line"
 type        = "INTEGER" | "FLOAT"
-asig        = "="
+sumOperator = "+" | "-"
+multOperator = "*" | "/"
+relationOperator = ">" | "<" | ">=" | "<="
+asig        = ":="
 declaration = ":"
 beginComment = "--"
 endInstruction  = ";"
@@ -47,14 +50,18 @@ ignoreChar = [ \t\r\n\f]
   {end}         {return symbol(Symbol.END);}
   {put}         {return symbol(Symbol.PUT);}
   {newLine}     {return symbol(Symbol.NEW_LINE);}
-  {asig}        {return symbol(Symbol.ASIGNATION);}
   {declaration} {return symbol(Symbol.DECLARATION);}
+  {asig}        {return symbol(Symbol.ASIGNATION);}
+  {sumOperator} {return symbol(Symbol.SUM_OPERATOR,yytext());}
+  {multOperator} {return symbol(Symbol.MULT_OPERATOR,yytext());}
+  {relationOperator} {return symbol(Symbol.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
   {type}     {return symbol(Symbol.TYPE,yytext());}
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
-  {id}          {return symbol(Symbol.ID);}
+  {id}          {return symbol(Symbol.ID,yytext());}
   {ignoreChar} {/* ignore */}
+  . {return symbol(-1,yytext());}
 }
 
 <COMMENT> {

@@ -31,6 +31,9 @@ public class Symbol {
     public static final int DECLARATION = 11;
     public static final int TYPE = 12;
     public static final int LITERAL_INT = 13;
+    public static final int SUM_OPERATOR = 14;
+    public static final int MULT_OPERATOR = 15;
+    public static final int RELATION_OPERATOR = 16;
     
     public static String getTypeName(int type){
         switch (type){
@@ -60,6 +63,13 @@ public class Symbol {
                 return "TYPE";
             case LITERAL_INT:
                 return "LITERAL INTEGER";
+            case SUM_OPERATOR:
+                return "SUM OPERATOR";
+            case MULT_OPERATOR:
+                return "MULT OPERATOR";
+            case RELATION_OPERATOR:
+                return "RELATION OPER";
+                            
         }
         return "NOT KNOWN";
     }
@@ -81,7 +91,9 @@ public class Symbol {
         return type == Symbol.EOF;
     }
     
-    
+    public boolean isUnknown(){
+        return type == -1;
+    }
     
     @Override
     public String toString() {

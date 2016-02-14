@@ -27,6 +27,10 @@ public class Main {
         while(true){
             Symbol token = lexer.yylex();
             System.out.println(token);
+            if (token.isUnknown()){
+                System.out.println("Sintax error");
+                break;
+            }
             if(token.isEOF()){
                 break;
             }

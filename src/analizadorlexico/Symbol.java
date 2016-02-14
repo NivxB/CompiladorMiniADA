@@ -34,6 +34,7 @@ public class Symbol {
     public static final int SUM_OPERATOR = 14;
     public static final int MULT_OPERATOR = 15;
     public static final int RELATION_OPERATOR = 16;
+    public static final int LITERAL_BOOLEAN = 17;
     
     public static String getTypeName(int type){
         switch (type){
@@ -69,6 +70,8 @@ public class Symbol {
                 return "MULT OPERATOR";
             case RELATION_OPERATOR:
                 return "RELATION OPER";
+            case LITERAL_BOOLEAN:
+                return "LITERAL BOOLEAN";
                             
         }
         return "NOT KNOWN";
@@ -97,7 +100,10 @@ public class Symbol {
     
     @Override
     public String toString() {
-        return "Type=" + getTypeName(type) + ", line=" + line + ", column=" + column + ", value=" + value;
+        if (value == null){
+            return "Type: " + getTypeName(type) + ", Line=" + line + ", Column=" + column +"\n";
+        }
+        return "Type: " + getTypeName(type) + ", Line=" + line + ", Column=" + column + ", Value=" + value+"\n";
     }
     
     

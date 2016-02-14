@@ -23,16 +23,17 @@ begin       = "begin"
 end         = "end"
 put         = "Put"
 newLine     = "New_Line"
-type        = "INTEGER" | "FLOAT"
+type        = "INTEGER" | "FLOAT" | "BOOLEAN"
 sumOperator = "+" | "-"
 multOperator = "*" | "/"
-relationOperator = ">" | "<" | ">=" | "<="
+relationOperator = ">" | "<" | ">=" | "<=" | "="
 asig        = ":="
 declaration = ":"
 beginComment = "--"
 endInstruction  = ";"
 id          ={letter}({letter}*{number}*{especialChar}*)*
 letter      = [a-zA-Z]
+literalBoolean = "true" | "false"
 literalInteger     = {number}+
 number      = [0-9]
 especialChar = [_-]
@@ -57,6 +58,7 @@ ignoreChar = [ \t\r\n\f]
   {relationOperator} {return symbol(Symbol.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
   {type}     {return symbol(Symbol.TYPE,yytext());}
+  {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
   {id}          {return symbol(Symbol.ID,yytext());}

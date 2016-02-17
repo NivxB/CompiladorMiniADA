@@ -38,28 +38,15 @@ literalInteger     = {number}+
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
-conditionelement = "and"|"or"
-
-
-condition   = {id}|{id}{ignoreChar}*{relationOperator}{ignoreChar}*{id}{ignoreChar}*({conditionelement}{ignoreChar}*{id}{ignoreChar}*{relationOperator}{ignoreChar}*{id})*
-
-beginif     = "if"
-endif       = "end if"
+conditionelement = "and"|"or";
+if     = "if"
 then        = "then"
 else        = "else"
 elseif      = "elseif"
-if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}{ignoreChar}*|({elseif}{ignoreChar}*{then}{ignoreChar}*)*){ignoreChar}*{endif}
-
 for         = "for"
 in          = "in"
-inreverse   = "in reverse"
 loop        = "loop"
-endloop     = "end loop"
-
 while       = "while"
-
-
-
 
 %state STRING
 %state COMMENT
@@ -83,27 +70,33 @@ while       = "while"
   {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
-  {beginif}     {return symbol(Symbol.BEGINIF);}
+  {if}     {return symbol(Symbol.IF);}
   {else}        {return symbol(Symbol.ELSE);}
   {elseif}      {return symbol(Symbol.ELSEIF);}
-  {endif}       {return symbol(Symbol.ENDIF);}
   {then}        {return symbol(Symbol.THEN);}
   {for}         {return symbol(Symbol.FOR);}
   {in}          {return symbol(Symbol.IN);}
-  {inreverse}   {return symbol(Symbol.INREVERSE);}
   {loop}        {return symbol(Symbol.LOOP);}
-  {endloop}     {return symbol(Symbol.ENDLOOP);}
-  {while}       {return symbol(Symbol.WHILE);}  
+  {while}       {return symbol(Symbol.WHILE);}
   {id}          {return symbol(Symbol.ID,yytext());}
-  {conditionelement}    {return symbol(Symbol.CONDITIONELEMENT);}
   {ignoreChar} {/* ignore */}
+  \"        {string.setLength(0); yybegin(STRING);}
   . {return symbol(-1,yytext());}
+
 }
 
 <COMMENT> {
     \n { yybegin(YYINITIAL); }
     {ignoreChar} {/* ignore */}
     . {/* Ignore */}
+}
+
+<STRING>{
+  \"  {yybegin(YYINITIAL); return symbol(Symbol.LITERAL_STRING,string.toString()); }
+  \\\" {string.append('\"');}
+  \\  {string.append('\\');}
+  {ignoreChar} {string.append(yytext());}
+  . {string.append(yytext());}
 }
 
  <<EOF>>  { return symbol(Symbol.EOF); }

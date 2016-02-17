@@ -5,6 +5,10 @@ procedure OneInt is
 begin
 
    Index := 23;
+   if Index then
+      Index:= 4;
+  end if
+  TestString = "Hola Como te va";
    --Put("The value of Index is");
    --Put(Index);                -- The default field width is 11 columns
    New_Line;
@@ -12,8 +16,6 @@ begin
    --Put("The value of Index is");
    --Put(Index, 8);
    New_Line;
-   if then else if then end if
-   OneInt < OneInt
 end OneInt;
 
 

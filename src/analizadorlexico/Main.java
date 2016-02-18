@@ -27,20 +27,21 @@ public class Main {
         List<Symbol> symbolList = new ArrayList<Symbol>();
         while(true){
             Symbol token = lexer.yylex();
-            System.out.println(token);
             if (token.isUnknown()){
-                System.out.println("Sintax error");
-                break;
+                System.err.print(token);
+                //break;
+            }else{
+                symbolList.add(token);
             }
             if(token.isEOF()){
                 break;
             }
-            symbolList.add(token);
+            System.out.print(token);
         }
         
-        for (Symbol sim : symbolList){
+        //for (Symbol sim : symbolList){
             //System.out.println(sim.toString());
-        }
+        //}
                 
         
     }

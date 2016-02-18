@@ -4,6 +4,8 @@ package analizadorlexico;
 %unicode
 %line
 %column
+%caseless
+%ignorecase
 %type Symbol
 
 %{
@@ -23,6 +25,10 @@ begin       = "begin"
 end         = "end"
 put         = "Put"
 newLine     = "New_Line"
+with        = "With"
+openParenthesis = "("
+closeParenthesis = ")"
+comma       = ","
 type        = "INTEGER" | "FLOAT" | "BOOLEAN"
 sumOperator = "+" | "-"
 multOperator = "*" | "/"
@@ -39,6 +45,7 @@ number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
 conditionelement = "and"|"or";
+literalChar = \'.\'
 if     = "if"
 then        = "then"
 else        = "else"
@@ -47,6 +54,8 @@ for         = "for"
 in          = "in"
 loop        = "loop"
 while       = "while"
+exit        = "exit"
+when        = "when"
 
 %state STRING
 %state COMMENT
@@ -55,6 +64,7 @@ while       = "while"
 
 <YYINITIAL>{
   {procedure}   {return symbol(Symbol.PROCEDURE);}
+  {with}        {return symbol(Symbol.WITH);}
   {is}          {return symbol(Symbol.IS);}
   {begin}       {return symbol(Symbol.BEGIN);}
   {end}         {return symbol(Symbol.END);}
@@ -62,6 +72,11 @@ while       = "while"
   {newLine}     {return symbol(Symbol.NEW_LINE);}
   {declaration} {return symbol(Symbol.DECLARATION);}
   {asig}        {return symbol(Symbol.ASIGNATION);}
+  {exit}        {return symbol(Symbol.EXIT);}
+  {when}        {return symbol(Symbol.WHEN);}
+  {comma}       {return symbol(Symbol.COMMA);}
+  {openParenthesis} {return symbol(Symbol.OPEN_PARENTHESIS);}
+  {closeParenthesis} {return symbol(Symbol.CLOSE_PARENTHESIS);}
   {sumOperator} {return symbol(Symbol.SUM_OPERATOR,yytext());}
   {multOperator} {return symbol(Symbol.MULT_OPERATOR,yytext());}
   {relationOperator} {return symbol(Symbol.RELATION_OPERATOR,yytext());}
@@ -70,6 +85,7 @@ while       = "while"
   {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
   {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
   {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
+  {literalChar} {return symbol(Symbol.LITERAL_CHAR,yytext());}
   {if}     {return symbol(Symbol.IF);}
   {else}        {return symbol(Symbol.ELSE);}
   {elseif}      {return symbol(Symbol.ELSEIF);}
@@ -79,6 +95,7 @@ while       = "while"
   {loop}        {return symbol(Symbol.LOOP);}
   {while}       {return symbol(Symbol.WHILE);}
   {id}          {return symbol(Symbol.ID,yytext());}
+
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
   . {return symbol(-1,yytext());}

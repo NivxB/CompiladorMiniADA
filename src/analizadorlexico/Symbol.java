@@ -36,15 +36,21 @@ public class Symbol {
     public static final int RELATION_OPERATOR = 16;
     public static final int LITERAL_BOOLEAN = 17;
     public static final int IF = 18;
-    public static final int CONDITION=19;
+    public static final int COMMA=19;
     public static final int FOR=20;
     public static final int IN=21;
+    public static final int WITH = 22;
     public static final int LOOP=23;
     public static final int WHILE=25;
+    public static final int EXIT=26;
+    public static final int WHEN=27;
     public static final int THEN=28;
     public static final int ELSE=29;
     public static final int ELSEIF=30;
     public static final int LITERAL_STRING=32;
+    public static final int OPEN_PARENTHESIS = 33;
+    public static final int CLOSE_PARENTHESIS = 34;
+    public static final int LITERAL_CHAR = 35;
     
     public static String getTypeName(int type){
         switch (type){
@@ -84,8 +90,8 @@ public class Symbol {
                 return "LITERAL BOOLEAN";
             case IF:
                 return "IF";
-            case CONDITION:
-                return "CONDITION";
+            case COMMA:
+                return "COMMA";
             case FOR:
                 return "FOR";
             case IN:
@@ -104,6 +110,16 @@ public class Symbol {
            
             case LITERAL_STRING:
                 return "LITERAL_STRING";
+            case OPEN_PARENTHESIS:
+                return "OPEN PARENTHESIS";
+            case CLOSE_PARENTHESIS:
+                return "CLOSE PARENTHESIS";
+            case LITERAL_CHAR:
+                return "LITERAL CHAR";
+            case WHEN:
+                return "WHEN";
+            case EXIT:
+                return "EXIT";
                             
         }
         return "NOT KNOWN";

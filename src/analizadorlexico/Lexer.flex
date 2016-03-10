@@ -1,4 +1,5 @@
 package analizadorlexico;
+import java_cup.runtime.Symbol;
 %%
 %class Lexer
 %unicode
@@ -7,7 +8,8 @@ package analizadorlexico;
 %caseless
 %ignorecase
 %type Symbol
-
+%cupsym sym
+%cup
 %{
      StringBuffer string = new StringBuffer();
 
@@ -63,38 +65,38 @@ when        = "when"
 %%
 
 <YYINITIAL>{
-  {procedure}   {return symbol(Symbol.PROCEDURE);}
-  {with}        {return symbol(Symbol.WITH);}
-  {is}          {return symbol(Symbol.IS);}
-  {begin}       {return symbol(Symbol.BEGIN);}
-  {end}         {return symbol(Symbol.END);}
-  {put}         {return symbol(Symbol.PUT);}
-  {newLine}     {return symbol(Symbol.NEW_LINE);}
-  {declaration} {return symbol(Symbol.DECLARATION);}
-  {asig}        {return symbol(Symbol.ASIGNATION);}
-  {exit}        {return symbol(Symbol.EXIT);}
-  {when}        {return symbol(Symbol.WHEN);}
-  {comma}       {return symbol(Symbol.COMMA);}
-  {openParenthesis} {return symbol(Symbol.OPEN_PARENTHESIS);}
-  {closeParenthesis} {return symbol(Symbol.CLOSE_PARENTHESIS);}
-  {sumOperator} {return symbol(Symbol.SUM_OPERATOR,yytext());}
-  {multOperator} {return symbol(Symbol.MULT_OPERATOR,yytext());}
-  {relationOperator} {return symbol(Symbol.RELATION_OPERATOR,yytext());}
+  {procedure}           {return Symbol(sym.PROCEDURE);}
+  {with}                {return Symbol(sym.WITH);}
+  {is}                  {return Symbol(sym.IS);}
+  {begin}               {return Symbol(sym.BEGIN);}
+  {end}                 {return Symbol(sym.END);}
+  {put}                 {return Symbol(sym.PUT);}
+  {newLine}             {return Symbol(sym.NEW_LINE);}
+  {declaration}         {return Symbol(sym.DECLARATION);}
+  {asig}                {return Symbol(sym.ASIGNATION);}
+  {exit}                {return Symbol(sym.EXIT);}
+  {when}                {return Symbol(sym.WHEN);}
+  {comma}               {return Symbol(sym.COMMA);}
+  {openParenthesis}     {return Symbol(sym.OPEN_PARENTHESIS);}
+  {closeParenthesis}    {return Symbol(sym.CLOSE_PARENTHESIS);}
+  {sumOperator}         {return Symbol(sym.SUM_OPERATOR,yytext());}
+  {multOperator}        {return Symbol(sym.MULT_OPERATOR,yytext());}
+  {relationOperator}    {return Symbol(sym.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
-  {type}     {return symbol(Symbol.TYPE,yytext());}
-  {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
-  {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
-  {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
-  {literalChar} {return symbol(Symbol.LITERAL_CHAR,yytext());}
-  {if}     {return symbol(Symbol.IF);}
-  {else}        {return symbol(Symbol.ELSE);}
-  {elseif}      {return symbol(Symbol.ELSEIF);}
-  {then}        {return symbol(Symbol.THEN);}
-  {for}         {return symbol(Symbol.FOR);}
-  {in}          {return symbol(Symbol.IN);}
-  {loop}        {return symbol(Symbol.LOOP);}
-  {while}       {return symbol(Symbol.WHILE);}
-  {id}          {return symbol(Symbol.ID,yytext());}
+  {type}                {return Symbol(sym.TYPE,yytext());}
+  {literalBoolean}      {return Symbol(sym.LITERAL_BOOLEAN,yytext());}
+  {literalInteger}      {return Symbol(sym.LITERAL_INT,yytext());}
+  {endInstruction}      {return Symbol(sym.END_INSTRUCTION);}
+  {literalChar}         {return Symbol(sym.LITERAL_CHAR,yytext());}
+  {if}                  {return Symbol(sym.IF);}
+  {else}                {return Symbol(sym.ELSE);}
+  {elseif}              {return Symbol(sym.ELSEIF);}
+  {then}                {return Symbol(sym.THEN);}
+  {for}                 {return Symbol(sym.FOR);}
+  {in}                  {return Symbol(sym.IN);}
+  {loop}                {return Symbol(sym.LOOP);}
+  {while}               {return Symbol(sym.WHILE);}
+  {id}                  {return Symbol(sym.ID,yytext());}
 
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
@@ -109,11 +111,11 @@ when        = "when"
 }
 
 <STRING>{
-  \"  {yybegin(YYINITIAL); return symbol(Symbol.LITERAL_STRING,string.toString()); }
+  \"  {yybegin(YYINITIAL); return Symbol(sym.LITERAL_STRING,string.toString()); }
   \\\" {string.append('\"');}
   \\  {string.append('\\');}
   {ignoreChar} {string.append(yytext());}
   . {string.append(yytext());}
 }
 
- <<EOF>>  { return symbol(Symbol.EOF); }
+ <<EOF>>  { return Symbol(sym.EOF); }

@@ -1,0 +1,12 @@
+import java_cup.runtime.*;
+parse code {:
+    public void syntax_error(Symbol s){
+        report_error("Error de Sintaxis", null);
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        report_fatal_error{"No pude reparar", null};
+    }
+
+:};
+
+terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE

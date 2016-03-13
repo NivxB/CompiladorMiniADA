@@ -24,20 +24,7 @@ public class Main {
         // TODO code application logic here
         Reader read = new BufferedReader(new FileReader("./ADA.txt"));
         Lexer lexer = new Lexer(read);
-        List<Symbol> symbolList = new ArrayList<Symbol>();
-        while(true){
-            Symbol token = lexer.yylex();
-            if (token.isUnknown()){
-                System.err.print(token);
-                //break;
-            }else{
-                symbolList.add(token);
-            }
-            if(token.isEOF()){
-                break;
-            }
-            System.out.print(token);
-        }
+       
         
         //for (Symbol sim : symbolList){
             //System.out.println(sim.toString());

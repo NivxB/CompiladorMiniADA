@@ -20,6 +20,18 @@ public class GeneradorLexer {
         // TODO code application logic here
         File hola = new File("./src/analizadorlexico/Lexer.flex");
         jflex.Main.generate(hola);
+        String params[] = new String[5];
+        params[0] = "-destdir";
+        params[1] = "src/analizadorlexico/";
+        params[2] = "-parser";
+        params[3] = "parser";
+        params[4] = "src/analizadorlexico/Gramar.cup";
+        try {
+            java_cup.Main.main(params);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
-    
+
 }

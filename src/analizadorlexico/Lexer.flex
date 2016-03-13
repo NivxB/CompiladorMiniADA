@@ -7,7 +7,6 @@ import java_cup.runtime.Symbol;
 %column
 %caseless
 %ignorecase
-%type Symbol
 %cupsym sym
 %cup
 %{
@@ -65,38 +64,38 @@ when        = "when"
 %%
 
 <YYINITIAL>{
-  {procedure}           {return Symbol(sym.PROCEDURE);}
-  {with}                {return Symbol(sym.WITH);}
-  {is}                  {return Symbol(sym.IS);}
-  {begin}               {return Symbol(sym.BEGIN);}
-  {end}                 {return Symbol(sym.END);}
-  {put}                 {return Symbol(sym.PUT);}
-  {newLine}             {return Symbol(sym.NEW_LINE);}
-  {declaration}         {return Symbol(sym.DECLARATION);}
-  {asig}                {return Symbol(sym.ASIGNATION);}
-  {exit}                {return Symbol(sym.EXIT);}
-  {when}                {return Symbol(sym.WHEN);}
-  {comma}               {return Symbol(sym.COMMA);}
-  {openParenthesis}     {return Symbol(sym.OPEN_PARENTHESIS);}
-  {closeParenthesis}    {return Symbol(sym.CLOSE_PARENTHESIS);}
-  {sumOperator}         {return Symbol(sym.SUM_OPERATOR,yytext());}
-  {multOperator}        {return Symbol(sym.MULT_OPERATOR,yytext());}
-  {relationOperator}    {return Symbol(sym.RELATION_OPERATOR,yytext());}
+  {procedure}           {return symbol(sym.PROCEDURE);}
+  {with}                {return symbol(sym.WITH);}
+  {is}                  {return symbol(sym.IS);}
+  {begin}               {return symbol(sym.BEGIN);}
+  {end}                 {return symbol(sym.END);}
+  {put}                 {return symbol(sym.PUT);}
+  {newLine}             {return symbol(sym.NEW_LINE);}
+  {declaration}         {return symbol(sym.DECLARATION);}
+  {asig}                {return symbol(sym.ASIGNATION);}
+  {exit}                {return symbol(sym.EXIT);}
+  {when}                {return symbol(sym.WHEN);}
+  {comma}               {return symbol(sym.COMMA);}
+  {openParenthesis}     {return symbol(sym.OPEN_PARENTHESIS);}
+  {closeParenthesis}    {return symbol(sym.CLOSE_PARENTHESIS);}
+  {sumOperator}         {return symbol(sym.SUM_OPERATOR,yytext());}
+  {multOperator}        {return symbol(sym.MULT_OPERATOR,yytext());}
+  {relationOperator}    {return symbol(sym.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
-  {type}                {return Symbol(sym.TYPE,yytext());}
-  {literalBoolean}      {return Symbol(sym.LITERAL_BOOLEAN,yytext());}
-  {literalInteger}      {return Symbol(sym.LITERAL_INT,yytext());}
-  {endInstruction}      {return Symbol(sym.END_INSTRUCTION);}
-  {literalChar}         {return Symbol(sym.LITERAL_CHAR,yytext());}
-  {if}                  {return Symbol(sym.IF);}
-  {else}                {return Symbol(sym.ELSE);}
-  {elseif}              {return Symbol(sym.ELSEIF);}
-  {then}                {return Symbol(sym.THEN);}
-  {for}                 {return Symbol(sym.FOR);}
-  {in}                  {return Symbol(sym.IN);}
-  {loop}                {return Symbol(sym.LOOP);}
-  {while}               {return Symbol(sym.WHILE);}
-  {id}                  {return Symbol(sym.ID,yytext());}
+  {type}                {return symbol(sym.TYPE,yytext());}
+  {literalBoolean}      {return symbol(sym.LITERAL_BOOLEAN,yytext());}
+  {literalInteger}      {return symbol(sym.LITERAL_INT,yytext());}
+  {endInstruction}      {return symbol(sym.END_INSTRUCTION);}
+  {literalChar}         {return symbol(sym.LITERAL_CHAR,yytext());}
+  {if}                  {return symbol(sym.IF);}
+  {else}                {return symbol(sym.ELSE);}
+  {elseif}              {return symbol(sym.ELSEIF);}
+  {then}                {return symbol(sym.THEN);}
+  {for}                 {return symbol(sym.FOR);}
+  {in}                  {return symbol(sym.IN);}
+  {loop}                {return symbol(sym.LOOP);}
+  {while}               {return symbol(sym.WHILE);}
+  {id}                  {return symbol(sym.ID,yytext());}
 
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
@@ -111,11 +110,11 @@ when        = "when"
 }
 
 <STRING>{
-  \"  {yybegin(YYINITIAL); return Symbol(sym.LITERAL_STRING,string.toString()); }
+  \"  {yybegin(YYINITIAL); return symbol(sym.LITERAL_STRING,string.toString()); }
   \\\" {string.append('\"');}
   \\  {string.append('\\');}
   {ignoreChar} {string.append(yytext());}
   . {string.append(yytext());}
 }
 
- <<EOF>>  { return Symbol(sym.EOF); }
+ <<EOF>>  { return symbol(sym.EOF); }

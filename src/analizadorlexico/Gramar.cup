@@ -4,8 +4,21 @@ import java_cup.runtime.*;
 terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE, WITH, OPEN_PARENTHESIS;
 terminal CLOSE_PARENTHESIS, SUM_OPERATOR, MULT_OPERATOR, RELATION_OPERATOR;
 terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
-terminal IF,ELSE,ELSEIF,THEN,FOR,IN,LOOP,WHILE,ID;
+terminal IF,ELSE,ELSEIF,THEN,FOR,IN,LOOP,WHILE,ID,ASIGNATION;
+terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING;
 
-non terminal procedure;
+non terminal procedure,asignation,statement,function;
+non terminal listVariable,variable;
 
-procedure ::= PROCEDURE ID IS BEGIN procedure END ID;
+procedure ::= PROCEDURE ID IS BEGIN statement END ID END_INSTRUCTION;
+statement ::= asignation
+          |   procedure
+          |   NEW_LINE END_INSTRUCTION;
+variable  ::= LITERAL_BOOLEAN
+          |   LITERAL_INT
+          |   LITERAL_STRING
+          |   ID;
+asignation   ::= ID ASIGNATION variable END_INSTRUCTION;
+listVariable ::= variable COMMA listVariable
+            | variable;
+function ::= ID OPEN_PARENTHESIS listVariable CLOSE_PARENTHESIS END_INSTRUCTION;

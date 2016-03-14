@@ -41,7 +41,7 @@ endInstruction  = ";"
 id          ={letter}({letter}*{number}*{especialChar}*)*
 letter      = [a-zA-Z]
 literalBoolean = "true" | "false"
-literalInteger     = {number}+
+literalInteger     = {number}+ | {number}+"#"({number}| [A-F])+"#"
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
@@ -57,6 +57,7 @@ loop        = "loop"
 while       = "while"
 exit        = "exit"
 when        = "when"
+constant    = "constant"
 
 %state STRING
 %state COMMENT
@@ -65,6 +66,8 @@ when        = "when"
 
 <YYINITIAL>{
   {procedure}           {return symbol(sym.PROCEDURE);}
+  {constant}            {return symbol(sym.CONSTANT);}
+  {conditionelement}    {return symbol(sym.CONDITION_ELEMENT,yytext());}
   {with}                {return symbol(sym.WITH);}
   {is}                  {return symbol(sym.IS);}
   {begin}               {return symbol(sym.BEGIN);}

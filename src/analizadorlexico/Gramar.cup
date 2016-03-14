@@ -1,24 +1,48 @@
 import java_cup.runtime.*;
 
-
+/*TERMINAL (FLEX)*/
 terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE, WITH, OPEN_PARENTHESIS;
 terminal CLOSE_PARENTHESIS, SUM_OPERATOR, MULT_OPERATOR, RELATION_OPERATOR;
 terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
 terminal IF,ELSE,ELSEIF,THEN,FOR,IN,LOOP,WHILE,ID,ASIGNATION;
-terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING;
+terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING,CONDITION_ELEMENT;
+terminal CONSTANT;
 
+/*NON TERMINAL*/
 non terminal procedure,asignation,statement,function;
-non terminal listVariable,variable;
+non terminal listVariable,variable,declaration,expression;
+non terminal constant,parameters;
 
-procedure ::= PROCEDURE ID IS BEGIN statement END ID END_INSTRUCTION;
-statement ::= asignation
-          |   procedure
-          |   NEW_LINE END_INSTRUCTION;
+/*PRECEDENCE*/
+precedence left CONDITION_ELEMENT;
+precedence left RELATION_OPERATOR;
+
+/* GRAMMARS */
+//FALTA EXPRESION MATEMATICA
+procedure ::= PROCEDURE ID IS declaration BEGIN statement END ID END_INSTRUCTION;
+declaration ::= ID DECLARATION constant TYPE END_INSTRUCTION
+          | ID COMMA declaration
+          | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION
+          |;
+constant ::= CONSTANT
+          |;
+statement ::= asignation END_INSTRUCTION statement
+          |   procedure statement
+          |   function END_INSTRUCTION statement
+          |   NEW_LINE END_INSTRUCTION statement
+          |;
+expression ::=  variable
+          | function
+          | condition;
+condition ::= expression CONDITION_ELEMENT expression
+          | expression RELATION_OPERATOR expression;
 variable  ::= LITERAL_BOOLEAN
           |   LITERAL_INT
           |   LITERAL_STRING
           |   ID;
-asignation   ::= ID ASIGNATION variable END_INSTRUCTION;
+asignation   ::= ID ASIGNATION expression;
 listVariable ::= variable COMMA listVariable
             | variable;
-function ::= ID OPEN_PARENTHESIS listVariable CLOSE_PARENTHESIS END_INSTRUCTION;
+parameters ::= listVariable
+          |;
+function ::= ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS;

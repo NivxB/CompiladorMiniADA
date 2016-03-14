@@ -12,8 +12,13 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/Gramar.cup</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/Lexer.flex</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/GeneradorLexer.java</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/Lexer.flex</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/Main.java</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/Gramar.cup</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/sym.java</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/Lexer.java</file>
+            <file>file:/D:/Datos/UNITEC/AnalizadorLexico/src/analizadorlexico/parser.java</file>
         </group>
     </open-files>
 </project-private>

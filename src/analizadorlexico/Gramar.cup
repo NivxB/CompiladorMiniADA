@@ -11,14 +11,16 @@ terminal CONSTANT;
 /*NON TERMINAL*/
 non terminal procedure,asignation,statement,function;
 non terminal listVariable,variable,declaration,expression;
-non terminal constant,parameters;
+non terminal constant,parameters,mathematical_expression,mult_operation, parenthesis_operation;
 
 /*PRECEDENCE*/
 precedence left CONDITION_ELEMENT;
 precedence left RELATION_OPERATOR;
+precedence left SUM_OPERATOR;
+precedence left MULT_OPERATOR;
+
 
 /* GRAMMARS */
-//FALTA EXPRESION MATEMATICA
 procedure ::= PROCEDURE ID IS declaration BEGIN statement END ID END_INSTRUCTION;
 declaration ::= ID DECLARATION constant TYPE END_INSTRUCTION
           | ID COMMA declaration
@@ -33,7 +35,14 @@ statement ::= asignation END_INSTRUCTION statement
           |;
 expression ::=  variable
           | function
-          | condition;
+          | condition
+          | mathematical_expression;
+mathematical_expression ::= mathematical_expression SUM_OPERATOR mult_operation
+          | mult_operation;
+mult_operation ::= mult_operation MULT_OPERATOR parenthesis_operation
+          | parenthesis_operation;
+parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression CLOSE_PARENTHESIS
+          | variable;
 condition ::= expression CONDITION_ELEMENT expression
           | expression RELATION_OPERATOR expression;
 variable  ::= LITERAL_BOOLEAN

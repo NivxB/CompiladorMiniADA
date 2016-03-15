@@ -37,6 +37,7 @@ sumOperator = "+" | "-"
 multOperator = "*" | "/"
 relationOperator = ">" | "<" | ">=" | "<=" | "=" | "/="
 asig        = ":="
+caseasig    = "=>"
 declaration = ":"
 beginComment = "--"
 endInstruction  = ";"
@@ -64,6 +65,12 @@ constant    = "constant",
 package     = "package",
 body        = "body",
 return      = "return"
+case        = "case"
+is          = "is"
+when        = "when"
+whenothers  = "when others"
+endcase     = "end case"
+reverse     = "reverse"
 
 %state STRING
 %state COMMENT
@@ -111,7 +118,11 @@ return      = "return"
   {loop}                {return symbol(sym.LOOP);}
   {while}               {return symbol(sym.WHILE);}
   {id}                  {return symbol(sym.ID,yytext());}
-
+  {case}                {return symbol(sym.CASE);}
+  {whenothers}          {return symbol(sym.WHENOTHERS);}
+  {endcase}             {return symbol(sym.ENDCASE);}
+  {caseasig}            {return symbol(sym.CASEASIG);}
+  {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
   . {return symbol(-1,yytext());}

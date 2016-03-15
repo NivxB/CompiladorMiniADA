@@ -4,14 +4,16 @@ import java_cup.runtime.*;
 terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE, WITH, OPEN_PARENTHESIS;
 terminal CLOSE_PARENTHESIS, SUM_OPERATOR, MULT_OPERATOR, RELATION_OPERATOR;
 terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
-terminal IF,ELSE,ELSEIF,THEN,FOR,IN,LOOP,WHILE,ID,ASIGNATION;
+terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ID,ASIGNATION;
 terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING,CONDITION_ELEMENT;
-terminal CONSTANT;
+terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL;
 
 /*NON TERMINAL*/
 non terminal procedure,asignation,statement,function;
 non terminal listVariable,variable,declaration,expression;
 non terminal constant,parameters,mathematical_expression,mult_operation, parenthesis_operation;
+non terminal package,package_body,parameters_declaration,simple_declaration,body_declaration;
+non terminal list_declaration_parameters,in_out_declaration;
 
 /*PRECEDENCE*/
 precedence left CONDITION_ELEMENT;
@@ -21,15 +23,29 @@ precedence left MULT_OPERATOR;
 
 
 /* GRAMMARS */
-procedure ::= PROCEDURE ID IS declaration BEGIN statement END ID END_INSTRUCTION;
-declaration ::= ID DECLARATION constant TYPE END_INSTRUCTION
-          | ID COMMA declaration
-          | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION
+procedure ::= PROCEDURE ID IS declaration BEGIN statement END ID END_INSTRUCTION procedure
           |;
+declaration ::= simple_declaration
+          | PROCEDURE ID parameters_declaration body_declaration END_INSTRUCTION
+          | FUNCTION ID parameters_declaration RETURN TYPE body_declaration END_INSTRUCTION;
+parameters_declaration ::= OPEN_PARENTHESIS list_declaration_parameters CLOSE_PARENTHESIS
+                      |;
+list_declaration_parameters ::= simple_declaration list_declaration_parameters
+                      | in_out_declaration list_declaration_parameters
+                      | simple_declaration
+                      | in_out_declaration;
+in_out_declaration ::= ID DECLARATION IN TYPE END_INSTRUCTION
+                  | ID DECLARATION OUT TYPE END_INSTRUCTION
+                  | ID DECLARATION IN OUT TYPE END_INSTRUCTION;
+simple_declaration ::= ID DECLARATION constant TYPE END_INSTRUCTION
+                    | ID COMMA declaration
+                    | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION;
+body_declaration ::= IS declaration BEGIN statement END ID
+            |;
 constant ::= CONSTANT
           |;
 statement ::= asignation END_INSTRUCTION statement
-          |   procedure statement
+          |   NULL END_INSTRUCTION statement
           |   function END_INSTRUCTION statement
           |   NEW_LINE END_INSTRUCTION statement
           |;

@@ -21,6 +21,8 @@ import java_cup.runtime.Symbol;
 %}
 
 procedure   = "procedure"
+null        = "null"
+function    = "function"
 is          = "is"
 begin       = "begin"
 end         = "end"
@@ -53,11 +55,15 @@ else        = "else"
 elseif      = "elseif"
 for         = "for"
 in          = "in"
+out         = "out"
 loop        = "loop"
 while       = "while"
 exit        = "exit"
 when        = "when"
-constant    = "constant"
+constant    = "constant",
+package     = "package",
+body        = "body",
+return      = "return"
 
 %state STRING
 %state COMMENT
@@ -65,7 +71,12 @@ constant    = "constant"
 %%
 
 <YYINITIAL>{
+  {package}             {return symbol(sym.PACKAGE);}
+  {return}              {return symbol(sym.RETURN);}
+  {null}                {return symbol(sym.NULL);}
+  {body}                {return symbol(sym.BODY);}
   {procedure}           {return symbol(sym.PROCEDURE);}
+  {function}            {return symbol(sym.FUNCTION);}
   {constant}            {return symbol(sym.CONSTANT);}
   {conditionelement}    {return symbol(sym.CONDITION_ELEMENT,yytext());}
   {with}                {return symbol(sym.WITH);}
@@ -96,6 +107,7 @@ constant    = "constant"
   {then}                {return symbol(sym.THEN);}
   {for}                 {return symbol(sym.FOR);}
   {in}                  {return symbol(sym.IN);}
+  {out}                 {return symbol(sym.OUT);}
   {loop}                {return symbol(sym.LOOP);}
   {while}               {return symbol(sym.WHILE);}
   {id}                  {return symbol(sym.ID,yytext());}

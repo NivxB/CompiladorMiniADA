@@ -67,9 +67,7 @@ body        = "body",
 return      = "return"
 case        = "case"
 is          = "is"
-when        = "when"
-whenothers  = "when others"
-endcase     = "end case"
+others  = "others"
 reverse     = "reverse"
 
 %state STRING
@@ -79,6 +77,7 @@ reverse     = "reverse"
 
 <YYINITIAL>{
   {package}             {return symbol(sym.PACKAGE);}
+  {others}              {return symbol(sym.OTHERS);}
   {return}              {return symbol(sym.RETURN);}
   {null}                {return symbol(sym.NULL);}
   {body}                {return symbol(sym.BODY);}
@@ -119,8 +118,6 @@ reverse     = "reverse"
   {while}               {return symbol(sym.WHILE);}
   {id}                  {return symbol(sym.ID,yytext());}
   {case}                {return symbol(sym.CASE);}
-  {whenothers}          {return symbol(sym.WHENOTHERS);}
-  {endcase}             {return symbol(sym.ENDCASE);}
   {caseasig}            {return symbol(sym.CASEASIG);}
   {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}

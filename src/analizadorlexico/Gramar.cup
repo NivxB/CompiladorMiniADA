@@ -10,6 +10,7 @@ parser code {:
         System.out.println("Token Value " + cur_token.value);
         System.out.println("Sym" + cur_token.sym);
         System.out.println("Parse State " + cur_token.parse_state);
+        System.out.println("Left " + cur_token.left);
 
 
         report_error("Syntax error", null);
@@ -22,8 +23,8 @@ terminal CLOSE_PARENTHESIS, SUM_OPERATOR, MULT_OPERATOR, RELATION_OPERATOR;
 terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
 terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ID,ASIGNATION;
 terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING,CONDITION_ELEMENT;
-terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,WHENOTHERS,ENDCASE,CASEASIG;
-terminal ENDIF,REVERSE;
+terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,CASEASIG;
+terminal REVERSE,OTHERS;
 
 /*NON TERMINAL*/
 non terminal procedure,asignation,statement,function_call;
@@ -72,42 +73,44 @@ statement ::= asignation END_INSTRUCTION statement
           |   while END_INSTRUCTION statement
           |   for END_INSTRUCTION statement
           |   RETURN expression END_INSTRUCTION statement
+          |   function_call END_INSTRUCTION statement
           |;
 condition ::= expression;
-simple_expression ::= function_call
-          | mathematical_expression;
+simple_expression ::= ;
 mathematical_expression ::= mathematical_expression SUM_OPERATOR mult_operation
           | mult_operation;
 mult_operation ::= mult_operation MULT_OPERATOR parenthesis_operation
           | parenthesis_operation;
 parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression CLOSE_PARENTHESIS
           | variable;
-expression ::= simple_expression CONDITION_ELEMENT expression
-          | simple_expression RELATION_OPERATOR expression
-          | simple_expression;
+expression ::= expression CONDITION_ELEMENT expression
+          | expression RELATION_OPERATOR expression
+          | mathematical_expression;
 variable  ::= LITERAL_BOOLEAN
           |   LITERAL_INT
           |   LITERAL_STRING
-          |   ID;
+          |   ID
+          |   function_call;
 asignation   ::= ID ASIGNATION expression;
 list_variable ::= variable COMMA list_variable
             | variable;
 parameters ::= list_variable
           |;
 
-if  ::= IF condition THEN statement if_a ENDIF;
+if  ::= IF condition THEN statement if_a END IF;
 if_a ::= ELSEIF condition THEN statement if_a
         | ELSE statement
         |;
 
 case  ::= CASE condition IS case_a;
 case_a ::= WHEN variable CASEASIG statement case_a
-          | WHENOTHERS CASEASIG statement ENDCASE
-          | ENDCASE;
+          | WHEN OTHERS CASEASIG statement END CASE
+          | END CASE;
 
 while ::= WHILE condition LOOP statement END LOOP;
 
 for   ::= FOR variable in LITERAL_INT LOOP statement END LOOP;
 in    ::= IN | IN REVERSE;
 
-function_call ::= ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS;
+function_call ::= ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS
+              |   PUT OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS;

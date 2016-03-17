@@ -9,8 +9,8 @@ begin
    Index := SUM_NUM(2);
    if Index then
       Index:= SUM_NUM(3) * 24;
-  end if
-  TestString = "Hola Como te va";
+  end if;
+  TestString := "Hola Como te va";
   Put("The value of Index is");
    --Put(Index);              -- The default field width is 11 columns
    New_Line;

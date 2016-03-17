@@ -21,6 +21,7 @@ import java_cup.runtime.Symbol;
 %}
 
 procedure   = "procedure"
+to          = "to"
 null        = "null"
 function    = "function"
 is          = "is"
@@ -55,7 +56,6 @@ then        = "then"
 else        = "else"
 elseif      = "elseif"
 for         = "for"
-in          = "in"
 out         = "out"
 loop        = "loop"
 while       = "while"
@@ -76,6 +76,7 @@ reverse     = "reverse"
 %%
 
 <YYINITIAL>{
+  {to}                  {return symbol(sym.TO);}
   {package}             {return symbol(sym.PACKAGE);}
   {others}              {return symbol(sym.OTHERS);}
   {return}              {return symbol(sym.RETURN);}
@@ -112,7 +113,6 @@ reverse     = "reverse"
   {elseif}              {return symbol(sym.ELSEIF);}
   {then}                {return symbol(sym.THEN);}
   {for}                 {return symbol(sym.FOR);}
-  {in}                  {return symbol(sym.IN);}
   {out}                 {return symbol(sym.OUT);}
   {loop}                {return symbol(sym.LOOP);}
   {while}               {return symbol(sym.WHILE);}

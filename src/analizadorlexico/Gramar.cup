@@ -2,17 +2,18 @@ package analizadorlexico;
 import java_cup.runtime.*;
 
 parser code {:
+  public void report_error(String message,Object info){
+        System.out.println(message);
+        System.out.println(info);
+  }
     protected int error_sync_size () {
       System.out.println(":error_sync_size was called.");
       return 1;
     }
     public void syntax_error(Symbol cur_token){
         System.out.println("Token Value " + cur_token.value);
-        System.out.println("Sym" + cur_token.sym);
-        System.out.println("Parse State " + cur_token.parse_state);
-        System.out.println("Left " + cur_token.left);
-
-
+        System.out.println("Sym " + cur_token.sym);
+        System.out.println("Line " + cur_token.left);
         report_error("Syntax error", null);
     }
 :}
@@ -24,14 +25,14 @@ terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
 terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ID,ASIGNATION;
 terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING,CONDITION_ELEMENT;
 terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,CASEASIG;
-terminal REVERSE,OTHERS;
+terminal REVERSE,OTHERS,TO;
 
 /*NON TERMINAL*/
 non terminal procedure,asignation,statement,function_call;
-non terminal list_variable,variable,declaration,simple_expression;
+non terminal list_variable,primary,declaration,simple_expression;
 non terminal constant,parameters,mathematical_expression,mult_operation, parenthesis_operation;
 
-non terminal list_declaration_parameters,in_out_declaration,if,if_a,case,case_a,while,for,in;
+non terminal list_declaration_parameters,in_out_declaration,if,if_a,case,case_a,while,for;
 non terminal parameters_declaration,simple_declaration,body_declaration;
 non terminal condition,expression;
 
@@ -82,18 +83,19 @@ mathematical_expression ::= mathematical_expression SUM_OPERATOR mult_operation
 mult_operation ::= mult_operation MULT_OPERATOR parenthesis_operation
           | parenthesis_operation;
 parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression CLOSE_PARENTHESIS
-          | variable;
+          | primary;
 expression ::= expression CONDITION_ELEMENT expression
           | expression RELATION_OPERATOR expression
           | mathematical_expression;
-variable  ::= LITERAL_BOOLEAN
+
+primary  ::= LITERAL_BOOLEAN
           |   LITERAL_INT
           |   LITERAL_STRING
           |   ID
           |   function_call;
 asignation   ::= ID ASIGNATION expression;
-list_variable ::= variable COMMA list_variable
-            | variable;
+list_variable ::= primary COMMA list_variable
+            | primary;
 parameters ::= list_variable
           |;
 
@@ -103,14 +105,13 @@ if_a ::= ELSEIF condition THEN statement if_a
         |;
 
 case  ::= CASE condition IS case_a;
-case_a ::= WHEN variable CASEASIG statement case_a
+case_a ::= WHEN primary CASEASIG statement case_a
           | WHEN OTHERS CASEASIG statement END CASE
           | END CASE;
 
 while ::= WHILE condition LOOP statement END LOOP;
 
-for   ::= FOR variable in LITERAL_INT LOOP statement END LOOP;
-in    ::= IN | IN REVERSE;
+for   ::= FOR asignation TO expression statement END FOR;
 
 function_call ::= ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS
               |   PUT OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS;

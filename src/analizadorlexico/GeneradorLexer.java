@@ -6,6 +6,10 @@
 package analizadorlexico;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,6 +32,7 @@ public class GeneradorLexer {
         params[4] = "src/analizadorlexico/Gramar.cup";
         try {
             java_cup.Main.main(params);
+            
         } catch (Exception e) {
             System.out.println(e);
         }

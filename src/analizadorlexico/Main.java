@@ -22,15 +22,16 @@ import java.util.logging.Logger;
  * @author Carlos
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // TODO code application logic here
-        Lexer lexer = null;
-        try {
-            lexer = new Lexer(new FileReader("./ADA.txt"));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        parser p = new parser(lexer);
+       Lexer lexer = null;
+            try {
+                lexer = new Lexer(new FileReader("./ADA.txt"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            parser p = new parser(lexer);
+            p.parse();
        
         
         //for (Symbol sim : symbolList){

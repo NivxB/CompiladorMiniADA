@@ -7,8 +7,11 @@ parser code {:
       return 1;
     }
     public void syntax_error(Symbol cur_token){
-        System.out.println("I’msorry, but I have to ");
-        System.out.println("report asyntax error.");
+        System.out.println("Token Value " + cur_token.value);
+        System.out.println("Sym" + cur_token.sym);
+        System.out.println("Parse State " + cur_token.parse_state);
+
+
         report_error("Syntax error", null);
     }
 :}
@@ -42,20 +45,21 @@ precedence left MULT_OPERATOR;
 /* GRAMMARS */
 procedure ::= PROCEDURE ID IS declaration BEGIN statement END ID END_INSTRUCTION procedure
           |;
-declaration ::= simple_declaration
-          | PROCEDURE ID parameters_declaration body_declaration END_INSTRUCTION
-          | FUNCTION ID parameters_declaration RETURN TYPE body_declaration END_INSTRUCTION;
+declaration ::= simple_declaration END_INSTRUCTION declaration
+          | PROCEDURE ID parameters_declaration body_declaration END_INSTRUCTION declaration
+          | FUNCTION ID parameters_declaration RETURN TYPE body_declaration END_INSTRUCTION declaration
+          | ;
 parameters_declaration ::= OPEN_PARENTHESIS list_declaration_parameters CLOSE_PARENTHESIS
                       |;
 list_declaration_parameters ::= simple_declaration list_declaration_parameters
                       | in_out_declaration list_declaration_parameters
                       | simple_declaration
                       | in_out_declaration;
-in_out_declaration ::= ID DECLARATION IN TYPE END_INSTRUCTION
-                  | ID DECLARATION OUT TYPE END_INSTRUCTION
-                  | ID DECLARATION IN OUT TYPE END_INSTRUCTION;
-simple_declaration ::= ID DECLARATION constant TYPE END_INSTRUCTION
-                    | ID COMMA declaration
+in_out_declaration ::= ID DECLARATION IN TYPE
+                  | ID DECLARATION OUT TYPE
+                  | ID DECLARATION IN OUT TYPE;
+simple_declaration ::= ID DECLARATION constant TYPE
+                    | ID COMMA simple_declaration
                     | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION;
 body_declaration ::= IS declaration BEGIN statement END ID
             |;
@@ -67,7 +71,7 @@ statement ::= asignation END_INSTRUCTION statement
           |   case END_INSTRUCTION statement
           |   while END_INSTRUCTION statement
           |   for END_INSTRUCTION statement
-          |   RETURN expression
+          |   RETURN expression END_INSTRUCTION statement
           |;
 condition ::= expression;
 simple_expression ::= function_call

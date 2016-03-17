@@ -142,5 +142,3 @@ reverse     = "reverse"
   {ignoreChar} {string.append(yytext());}
   . {string.append(yytext());}
 }
-
- <<EOF>>  { return symbol(sym.EOF); }

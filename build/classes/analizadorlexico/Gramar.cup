@@ -1,17 +1,4 @@
-package analizadorlexico;
 import java_cup.runtime.*;
-
-parser code {:
-    protected int error_sync_size () {
-      System.out.println(":error_sync_size was called.");
-      return 1;
-    }
-    public void syntax_error(Symbol cur_token){
-        System.out.println("I’msorry, but I have to ");
-        System.out.println("report asyntax error.");
-        report_error("Syntax error", null);
-    }
-:}
 
 /*TERMINAL (FLEX)*/
 terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE, WITH, OPEN_PARENTHESIS;

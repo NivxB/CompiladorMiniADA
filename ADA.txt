@@ -1,13 +1,17 @@
+
 procedure OneInt is
 
    Index : INTEGER;           -- A simple Integer type
    TestBool: Boolean;
-
+   function SUM_NUM(retVal : in out Integer) return Integer is
+   begin
+        return retVal + 25;
+   end SUM_NUM;
 begin
 
-   Index := 23;
+   Index := SUM_NUM(2);
    if Index then
-      Index:= 4;
+      Index:= SUM_NUM(3) * 24;
   end if
   TestString = "Hola Como te va";
   Put("The value of Index is");

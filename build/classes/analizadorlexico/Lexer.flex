@@ -1,11 +1,14 @@
 package analizadorlexico;
+import java_cup.runtime.Symbol;
 %%
 %class Lexer
 %unicode
 %line
 %column
-%type Symbol
-
+%caseless
+%ignorecase
+%cupsym sym
+%cup
 %{
      StringBuffer string = new StringBuffer();
 
@@ -18,35 +21,56 @@ package analizadorlexico;
 %}
 
 procedure   = "procedure"
+null        = "null"
+function    = "function"
 is          = "is"
 begin       = "begin"
 end         = "end"
 put         = "Put"
 newLine     = "New_Line"
+with        = "With"
+openParenthesis = "("
+closeParenthesis = ")"
+comma       = ","
 type        = "INTEGER" | "FLOAT" | "BOOLEAN"
 sumOperator = "+" | "-"
 multOperator = "*" | "/"
 relationOperator = ">" | "<" | ">=" | "<=" | "=" | "/="
 asig        = ":="
+caseasig    = "=>"
 declaration = ":"
 beginComment = "--"
 endInstruction  = ";"
 id          ={letter}({letter}*{number}*{especialChar}*)*
 letter      = [a-zA-Z]
 literalBoolean = "true" | "false"
-literalInteger     = {number}+
+literalInteger     = {number}+ | {number}+"#"({number}| [A-F])+"#"
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
-
-
-beginif     = "if"
-endif       = "end if"
+conditionelement = "and"|"or";
+literalChar = \'.\'
+if     = "if"
 then        = "then"
 else        = "else"
 elseif      = "elseif"
-if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}|({elseif}{then})*){ignoreChar}*{endif}
-
+for         = "for"
+in          = "in"
+out         = "out"
+loop        = "loop"
+while       = "while"
+exit        = "exit"
+when        = "when"
+constant    = "constant",
+package     = "package",
+body        = "body",
+return      = "return"
+case        = "case"
+is          = "is"
+when        = "when"
+whenothers  = "when others"
+endcase     = "end case"
+reverse     = "reverse"
 
 %state STRING
 %state COMMENT
@@ -54,26 +78,55 @@ if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}|({elseif}{th
 %%
 
 <YYINITIAL>{
-  {procedure}   {return symbol(Symbol.PROCEDURE);}
-  {is}          {return symbol(Symbol.IS);}
-  {begin}       {return symbol(Symbol.BEGIN);}
-  {end}         {return symbol(Symbol.END);}
-  {put}         {return symbol(Symbol.PUT);}
-  {newLine}     {return symbol(Symbol.NEW_LINE);}
-  {declaration} {return symbol(Symbol.DECLARATION);}
-  {asig}        {return symbol(Symbol.ASIGNATION);}
-  {sumOperator} {return symbol(Symbol.SUM_OPERATOR,yytext());}
-  {multOperator} {return symbol(Symbol.MULT_OPERATOR,yytext());}
-  {relationOperator} {return symbol(Symbol.RELATION_OPERATOR,yytext());}
+  {package}             {return symbol(sym.PACKAGE);}
+  {return}              {return symbol(sym.RETURN);}
+  {null}                {return symbol(sym.NULL);}
+  {body}                {return symbol(sym.BODY);}
+  {procedure}           {return symbol(sym.PROCEDURE);}
+  {function}            {return symbol(sym.FUNCTION);}
+  {constant}            {return symbol(sym.CONSTANT);}
+  {conditionelement}    {return symbol(sym.CONDITION_ELEMENT,yytext());}
+  {with}                {return symbol(sym.WITH);}
+  {is}                  {return symbol(sym.IS);}
+  {begin}               {return symbol(sym.BEGIN);}
+  {end}                 {return symbol(sym.END);}
+  {put}                 {return symbol(sym.PUT);}
+  {newLine}             {return symbol(sym.NEW_LINE);}
+  {declaration}         {return symbol(sym.DECLARATION);}
+  {asig}                {return symbol(sym.ASIGNATION);}
+  {exit}                {return symbol(sym.EXIT);}
+  {when}                {return symbol(sym.WHEN);}
+  {comma}               {return symbol(sym.COMMA);}
+  {openParenthesis}     {return symbol(sym.OPEN_PARENTHESIS);}
+  {closeParenthesis}    {return symbol(sym.CLOSE_PARENTHESIS);}
+  {sumOperator}         {return symbol(sym.SUM_OPERATOR,yytext());}
+  {multOperator}        {return symbol(sym.MULT_OPERATOR,yytext());}
+  {relationOperator}    {return symbol(sym.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
-  {type}     {return symbol(Symbol.TYPE,yytext());}
-  {literalBoolean}  {return symbol(Symbol.LITERAL_BOOLEAN,yytext());}
-  {literalInteger} {return symbol(Symbol.LITERAL_INT,yytext());}
-  {endInstruction}  {return symbol(Symbol.END_INSTRUCTION);}
-  {id}          {return symbol(Symbol.ID,yytext());}
-  {if}          {return symbol(Symbol.IF);}
+  {type}                {return symbol(sym.TYPE,yytext());}
+  {literalBoolean}      {return symbol(sym.LITERAL_BOOLEAN,yytext());}
+  {literalInteger}      {return symbol(sym.LITERAL_INT,yytext());}
+  {endInstruction}      {return symbol(sym.END_INSTRUCTION);}
+  {literalChar}         {return symbol(sym.LITERAL_CHAR,yytext());}
+  {if}                  {return symbol(sym.IF);}
+  {else}                {return symbol(sym.ELSE);}
+  {elseif}              {return symbol(sym.ELSEIF);}
+  {then}                {return symbol(sym.THEN);}
+  {for}                 {return symbol(sym.FOR);}
+  {in}                  {return symbol(sym.IN);}
+  {out}                 {return symbol(sym.OUT);}
+  {loop}                {return symbol(sym.LOOP);}
+  {while}               {return symbol(sym.WHILE);}
+  {id}                  {return symbol(sym.ID,yytext());}
+  {case}                {return symbol(sym.CASE);}
+  {whenothers}          {return symbol(sym.WHENOTHERS);}
+  {endcase}             {return symbol(sym.ENDCASE);}
+  {caseasig}            {return symbol(sym.CASEASIG);}
+  {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
+  \"        {string.setLength(0); yybegin(STRING);}
   . {return symbol(-1,yytext());}
+
 }
 
 <COMMENT> {
@@ -82,4 +135,10 @@ if          = {beginif}{ignoreChar}*{then}{ignoreChar}*({else}{0,1}|({elseif}{th
     . {/* Ignore */}
 }
 
- <<EOF>>  { return symbol(Symbol.EOF); }
+<STRING>{
+  \"  {yybegin(YYINITIAL); return symbol(sym.LITERAL_STRING,string.toString()); }
+  \\\" {string.append('\"');}
+  \\  {string.append('\\');}
+  {ignoreChar} {string.append(yytext());}
+  . {string.append(yytext());}
+}

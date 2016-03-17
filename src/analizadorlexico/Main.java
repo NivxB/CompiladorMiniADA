@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -20,10 +22,15 @@ import java.util.List;
  * @author Carlos
  */
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public static void main(String[] args) {
         // TODO code application logic here
-        Reader read = new BufferedReader(new FileReader("./ADA.txt"));
-        Lexer lexer = new Lexer(read);
+        Lexer lexer = null;
+        try {
+            lexer = new Lexer(new FileReader("./ADA.txt"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        parser p = new parser(lexer);
        
         
         //for (Symbol sim : symbolList){

@@ -11,10 +11,10 @@ parser code {:
       return 1;
     }
     public void syntax_error(Symbol cur_token){
+        report_error("Syntax error", null);
         System.out.println("Token Value " + cur_token.value);
         System.out.println("Sym " + cur_token.sym);
         System.out.println("Line " + cur_token.left);
-        report_error("Syntax error", null);
     }
 :}
 
@@ -93,7 +93,8 @@ primary  ::= LITERAL_BOOLEAN
           |   LITERAL_STRING
           |   ID
           |   function_call;
-asignation   ::= ID ASIGNATION expression;
+asignation   ::= ID ASIGNATION expression
+                |error:e {::};
 list_variable ::= primary COMMA list_variable
             | primary;
 parameters ::= list_variable

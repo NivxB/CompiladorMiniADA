@@ -1,1 +1,6 @@
 /dist/
+/src/analizadorlexico/Lexer.java
+/src/analizadorlexico/parser.java
+/src/analizadorlexico/Lexer.java~
+/src/analizadorlexico/parser.java
+/src/analizadorlexico/sym.java

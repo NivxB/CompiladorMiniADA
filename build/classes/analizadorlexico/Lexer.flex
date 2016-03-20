@@ -21,6 +21,7 @@ import java_cup.runtime.Symbol;
 %}
 
 procedure   = "procedure"
+to          = "to"
 null        = "null"
 function    = "function"
 is          = "is"
@@ -55,7 +56,6 @@ then        = "then"
 else        = "else"
 elseif      = "elseif"
 for         = "for"
-in          = "in"
 out         = "out"
 loop        = "loop"
 while       = "while"
@@ -67,9 +67,7 @@ body        = "body",
 return      = "return"
 case        = "case"
 is          = "is"
-when        = "when"
-whenothers  = "when others"
-endcase     = "end case"
+others  = "others"
 reverse     = "reverse"
 
 %state STRING
@@ -78,7 +76,9 @@ reverse     = "reverse"
 %%
 
 <YYINITIAL>{
+  {to}                  {return symbol(sym.TO);}
   {package}             {return symbol(sym.PACKAGE);}
+  {others}              {return symbol(sym.OTHERS);}
   {return}              {return symbol(sym.RETURN);}
   {null}                {return symbol(sym.NULL);}
   {body}                {return symbol(sym.BODY);}
@@ -113,14 +113,11 @@ reverse     = "reverse"
   {elseif}              {return symbol(sym.ELSEIF);}
   {then}                {return symbol(sym.THEN);}
   {for}                 {return symbol(sym.FOR);}
-  {in}                  {return symbol(sym.IN);}
   {out}                 {return symbol(sym.OUT);}
   {loop}                {return symbol(sym.LOOP);}
   {while}               {return symbol(sym.WHILE);}
   {id}                  {return symbol(sym.ID,yytext());}
   {case}                {return symbol(sym.CASE);}
-  {whenothers}          {return symbol(sym.WHENOTHERS);}
-  {endcase}             {return symbol(sym.ENDCASE);}
   {caseasig}            {return symbol(sym.CASEASIG);}
   {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
@@ -142,3 +139,5 @@ reverse     = "reverse"
   {ignoreChar} {string.append(yytext());}
   . {string.append(yytext());}
 }
+
+ <<EOF>>  { return symbol(sym.EOF); }

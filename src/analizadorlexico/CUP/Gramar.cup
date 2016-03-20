@@ -102,7 +102,10 @@ primary  ::= LITERAL_BOOLEAN
 asignation   ::= ID ASIGNATION expression
             | ID ASIGNATION LITERAL_BOOLEAN
             | ID ASIGNATION LITERAL_STRING
-            | error:e {::};
+            | error expression{:System.out.println("Se Esperaba un := luego una Expresion");:}
+            | error LITERAL_BOOLEAN{:System.out.println("Se Esperaba un := luego un bool");:} 
+            | error LITERAL_STRING{:System.out.println("Se Esperaba un := Luego un String");:} 
+            | error {:System.out.println("Se Esperaba una Expresion");:};
 list_primary ::= primary COMMA list_primary
             | primary;
 parameters ::= list_primary

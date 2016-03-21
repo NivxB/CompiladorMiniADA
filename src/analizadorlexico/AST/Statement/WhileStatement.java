@@ -20,6 +20,12 @@ public class WhileStatement extends Statement{
         this.Con = Con;
         this.Stat = Stat;
     }
+    
+    public WhileStatement(Condition Con, Statement Stat) {
+        super(null);
+        this.Con = Con;
+        this.Stat = Stat;
+    }
 
     public Condition getCon() {
         return Con;

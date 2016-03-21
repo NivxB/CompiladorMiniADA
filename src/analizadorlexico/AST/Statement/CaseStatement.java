@@ -36,4 +36,10 @@ public class CaseStatement extends Statement{
         this.Val = Val;
         this.Body = Body;
     }
+    
+    public CaseStatement(Primary Val, CaseBody Body) {
+        super(null);
+        this.Val = Val;
+        this.Body = Body;
+    }
 }

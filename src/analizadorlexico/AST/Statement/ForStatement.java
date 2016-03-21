@@ -16,9 +16,16 @@ public class ForStatement extends Statement{
    Statement Stat;
    Expression Exp;
 
-    public ForStatement(AsignationStatement Asig, Statement Stat, Expression Exp,Statement Next) {
+    public ForStatement(Statement Asig, Statement Stat, Expression Exp,Statement Next) {
         super(Next);
-        this.Asig = Asig;
+        this.Asig = (AsignationStatement) Asig;
+        this.Stat = Stat;
+        this.Exp = Exp;
+    }
+    
+     public ForStatement(Statement Asig, Statement Stat, Expression Exp) {
+        super(null);
+        this.Asig = (AsignationStatement) Asig;
         this.Stat = Stat;
         this.Exp = Exp;
     }

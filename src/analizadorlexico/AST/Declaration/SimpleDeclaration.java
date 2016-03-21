@@ -5,6 +5,7 @@
  */
 package analizadorlexico.AST.Declaration;
 
+import analizadorlexico.AST.Statement.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,8 @@ public class SimpleDeclaration extends Declaration {
     private String Type;
     private Boolean isConstant;
 
-    public SimpleDeclaration(String Id, String Type, Boolean isConstant) {
+    public SimpleDeclaration(String Id, String Type, Boolean isConstant, Declaration Next) {
+        super(Next);
         this.IDs = new ArrayList<>();
         IDs.add(Id);
         this.Type = Type;
@@ -25,6 +27,7 @@ public class SimpleDeclaration extends Declaration {
     }
 
     public SimpleDeclaration(String ID, SimpleDeclaration Previous) {
+        super(Previous.NextDeclaration);
         this.IDs = Previous.IDs;
         IDs.add(ID);
         this.Type = Previous.Type;

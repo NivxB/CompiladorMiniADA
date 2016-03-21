@@ -11,11 +11,12 @@ import analizadorlexico.AST.Expression.Condition;
  *
  * @author kbarahona
  */
-public class WhileStatement {
+public class WhileStatement extends Statement{
     Condition Con;
     Statement Stat;
 
-    public WhileStatement(Condition Con, Statement Stat) {
+    public WhileStatement(Condition Con, Statement Stat,Statement Next) {
+        super(Next);
         this.Con = Con;
         this.Stat = Stat;
     }

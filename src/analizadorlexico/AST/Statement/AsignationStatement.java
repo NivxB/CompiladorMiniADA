@@ -15,7 +15,8 @@ public class AsignationStatement extends Statement{
     private String ID;
     private Expression Exp;
 
-    public AsignationStatement(String ID, Expression Exp) {
+    public AsignationStatement(String ID, Expression Exp,Statement Previous) {
+        super(Previous);
         this.ID = ID;
         this.Exp = Exp;
     }

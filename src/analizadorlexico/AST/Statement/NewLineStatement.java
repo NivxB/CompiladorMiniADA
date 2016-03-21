@@ -10,8 +10,9 @@ package analizadorlexico.AST.Statement;
  * @author kbarahona
  */
 public class NewLineStatement extends Statement{
-
-    public NewLineStatement() {
+    
+    public NewLineStatement(Statement Next) {
+        super(Next);
     }
     
 }

@@ -122,7 +122,7 @@ reverse     = "reverse"
   {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
-  . {return symbol(-1,yytext());}
+
 
 }
 

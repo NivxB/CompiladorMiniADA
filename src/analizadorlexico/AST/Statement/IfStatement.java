@@ -16,17 +16,20 @@ public class IfStatement extends Statement{
     Statement Stat;
     IfStatement ElsIf;
 
-    public IfStatement(Condition Con, Statement Stat, IfStatement ElsIf) {
+    public IfStatement(Condition Con, Statement Stat, IfStatement ElsIf,Statement Next) {
+        super(Next);
         this.Con = Con;
         this.Stat = Stat;
         this.ElsIf = ElsIf;
     }
 
     public IfStatement(Statement Stat) {
+        super(null);
         this.Stat = Stat;
     }
 
     public IfStatement() {
+        super(null);
     }
     
     

@@ -21,4 +21,15 @@ public class InOutDeclaration extends Declaration {
         this.InOutType = InOutType;
     }
     
+    public InOutDeclaration(String Id, String Type, String InOutType) {
+        super(null);
+        this.Id = Id;
+        this.Type = Type;
+        this.InOutType = InOutType;
+    }
+    
+    public InOutDeclaration(Declaration D,Declaration Next){
+        this(((InOutDeclaration)D).Id,((InOutDeclaration)D).Type,((InOutDeclaration)D).InOutType,Next);
+    }
+    
 }

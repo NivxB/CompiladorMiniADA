@@ -15,9 +15,15 @@ import java.util.List;
 public class ListPrimary {
     private List<Primary> values;
 
-    public ListPrimary(List<Primary> values) {
-        this.values = values;
+    public ListPrimary(Primary Val) {
+        this.values = new ArrayList<>();
+        this.values.add(Val);
     }
+    
+    public ListPrimary(Primary Val, ListPrimary Previous){
+        this.values = Previous.values;
+        this.values.add(Val);
+    };
 
     public ListPrimary() {
         values = new ArrayList<>();

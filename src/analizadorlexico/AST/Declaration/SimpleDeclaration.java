@@ -18,20 +18,30 @@ public class SimpleDeclaration extends Declaration {
     private String Type;
     private Boolean isConstant;
 
-    public SimpleDeclaration(String Id, String Type, Boolean isConstant, Declaration Next) {
-        super(Next);
+    public SimpleDeclaration(List<String> IDs, String Type, Boolean isConstant, Declaration NextDeclaration) {
+        super(NextDeclaration);
+        this.IDs = IDs;
+        this.Type = Type;
+        this.isConstant = isConstant;
+    }
+
+    public SimpleDeclaration(Declaration D,Declaration Next){
+        this(((SimpleDeclaration)D).IDs,((SimpleDeclaration)D).Type,((SimpleDeclaration)D).isConstant,Next);
+    }
+    public SimpleDeclaration(String Id, String Type, Boolean isConstant) {
+        super(null);
         this.IDs = new ArrayList<>();
         IDs.add(Id);
         this.Type = Type;
         this.isConstant = isConstant;
     }
 
-    public SimpleDeclaration(String ID, SimpleDeclaration Previous) {
+    public SimpleDeclaration(String ID, Declaration Previous) {
         super(Previous.NextDeclaration);
-        this.IDs = Previous.IDs;
+        this.IDs = ((SimpleDeclaration)Previous).IDs;
         IDs.add(ID);
-        this.Type = Previous.Type;
-        this.isConstant = Previous.isConstant;
+        this.Type = ((SimpleDeclaration)Previous).Type;
+        this.isConstant = ((SimpleDeclaration)Previous).isConstant;
     }
     
     

@@ -23,6 +23,10 @@ public class ForStatement extends Statement{
         this.Exp = Exp;
     }
     
+    public ForStatement(Statement Actual, Statement Next){
+        this(((ForStatement)Actual).Asig,((ForStatement)Actual).Stat,((ForStatement)Actual).Exp,Next);        
+    };
+    
      public ForStatement(Statement Asig, Statement Stat, Expression Exp) {
         super(null);
         this.Asig = (AsignationStatement) Asig;

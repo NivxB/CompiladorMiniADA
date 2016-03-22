@@ -9,7 +9,7 @@ package analizadorlexico.AST.Expression;
  *
  * @author kbarahona
  */
-public class ConditionExpression {
+public class ConditionExpression extends Expression{
 
     Expression Exp1;
     Expression Exp2;

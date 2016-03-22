@@ -23,6 +23,10 @@ public class IfStatement extends Statement{
         this.ElsIf = (IfStatement) ElsIf;
     }
     
+    public IfStatement(Statement Actual, Statement Next){
+        this(((IfStatement)Actual).Con,((IfStatement)Actual).Stat,((IfStatement)Actual).ElsIf,Next);        
+    };
+    
      public IfStatement(Condition Con, Statement Stat, Statement ElsIf) {
         super(null);
         this.Con = Con;

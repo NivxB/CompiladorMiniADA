@@ -7,6 +7,8 @@ import analizadorlexico.AST.Primary.*;
 import analizadorlexico.AST.Expression.*;
 
 parser code {:
+    public InitProcedure FINALOBJECT;
+
     public void syntax_error(Symbol cur_token){
         System.out.print("Syntax Error:");
         System.out.print(" line:" + cur_token.left);
@@ -22,30 +24,32 @@ parser code {:
 :}
 
 /*TERMINAL (FLEX)*/
-terminal PROCEDURE, IS, BEGIN, END, PUT, NEW_LINE, WITH, OPEN_PARENTHESIS;
-terminal CLOSE_PARENTHESIS, SUM_OPERATOR, MULT_OPERATOR, RELATION_OPERATOR;
-terminal TYPE, LITERAL_BOOLEAN, LITERAL_INT, END_INSTRUCTION, LITERAL_CHAR;
-terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ID,ASIGNATION;
-terminal DECLARATION, EXIT, WHEN, COMMA, LITERAL_STRING,CONDITION_ELEMENT;
+terminal PROCEDURE, IS, BEGIN, END, NEW_LINE, WITH, OPEN_PARENTHESIS;
+terminal CLOSE_PARENTHESIS;
+terminal END_INSTRUCTION, LITERAL_CHAR;
+terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ASIGNATION;
+terminal DECLARATION, EXIT, WHEN, COMMA;
 terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,CASEASIG;
 terminal REVERSE,OTHERS,TO;
+
+terminal String ID,PUT,LITERAL_STRING,SUM_OPERATOR, MULT_OPERATOR,RELATION_OPERATOR,CONDITION_ELEMENT;
+terminal String TYPE;
+terminal String LITERAL_BOOLEAN;
+terminal String LITERAL_INT;
 
 /*NON TERMINAL*/
 non terminal InitProcedure procedure;
 non terminal Statement asignation,statement,if,if_a,case,while,for;
 non terminal CaseBody case_a;
-non terminal Statement function_call_statement;
-non terminal Primary function_call,primary;
+non terminal Primary function_call,primary,function_call_statement;
 non terminal ListPrimary list_primary, parameters;
 non terminal Declaration declaration,in_out_declaration,simple_declaration;
 non terminal Expression expression,simple_expression,mathematical_expression,mult_operation,parenthesis_operation;
 non terminal Expression condition_expression,relation_expression;
 non terminal Condition condition;
-
-
-non terminal constant;
-non terminal list_declaration_parameters;
-non terminal input_parameters;
+non terminal Boolean constant;
+non terminal ListDeclarationParameter list_declaration_parameters;
+non terminal ListDeclarationParameter input_parameters;
 
 
 /*PRECEDENCE*/
@@ -57,69 +61,130 @@ precedence left MULT_OPERATOR;
 
 /* GRAMMARS */
 procedure ::= PROCEDURE ID IS declaration:d BEGIN statement:s END ID END_INSTRUCTION
-              {: RESULT = new InitProcedure(d,s); :};
-declaration ::= simple_declaration END_INSTRUCTION declaration
-          | PROCEDURE ID input_parameters IS declaration BEGIN statement END ID END_INSTRUCTION declaration
-          | FUNCTION ID input_parameters RETURN TYPE IS declaration BEGIN statement END ID END_INSTRUCTION declaration
+              {: RESULT = new InitProcedure(d,s);
+                  parser.FINALOBJECT = RESULT;
+              :};
+declaration ::= simple_declaration:s END_INSTRUCTION declaration:d
+          {: RESULT = new SimpleDeclaration(s,d); :}
+          | PROCEDURE ID:i input_parameters:ip IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION declaration:d2
+          {: RESULT = new ProcedureDeclaration(i,ip,d,s,d2); :}
+          | FUNCTION ID:i input_parameters:ip RETURN TYPE:t IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION declaration:d2
+          {: RESULT = new FunctionDeclaration(i,ip,d,s,t,d2); :}
           | ;
-input_parameters ::= OPEN_PARENTHESIS list_declaration_parameters CLOSE_PARENTHESIS
-                      |;
-list_declaration_parameters ::= simple_declaration END_INSTRUCTION list_declaration_parameters
-                      | in_out_declaration END_INSTRUCTION list_declaration_parameters
-                      | simple_declaration
-                      | in_out_declaration;
-in_out_declaration ::= ID DECLARATION IN TYPE
-                  | ID DECLARATION OUT TYPE
-                  | ID DECLARATION IN OUT TYPE;
-simple_declaration ::= ID DECLARATION constant TYPE
-                    | ID COMMA simple_declaration
-                    | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION;
+input_parameters ::= OPEN_PARENTHESIS list_declaration_parameters:lp CLOSE_PARENTHESIS
+                  {: RESULT = lp; :}
+                  |
+                  {: RESULT = null; :};
+
+list_declaration_parameters ::= simple_declaration:d END_INSTRUCTION list_declaration_parameters:lp
+                      {:RESULT = new ListDeclarationParameter(d,lp); :}
+                      | in_out_declaration:d END_INSTRUCTION list_declaration_parameters:lp
+                      {:RESULT = new ListDeclarationParameter(d,lp); :}
+                      | simple_declaration:d
+                      {:RESULT = new ListDeclarationParameter(d,null); :}
+                      | in_out_declaration:d
+                      {:RESULT = new ListDeclarationParameter(d,null); :};
+
+in_out_declaration ::= ID:i DECLARATION IN TYPE:t
+                  {: RESULT = new InOutDeclaration(i,t,"IN"); :}
+                  | ID:i DECLARATION OUT TYPE:t
+                  {: RESULT = new InOutDeclaration(i,t,"OUT"); :}
+                  | ID:i DECLARATION IN OUT TYPE:t
+                  {: RESULT = new InOutDeclaration(i,t,"IN OUT"); :};
+simple_declaration ::= ID:id DECLARATION constant:c TYPE:t
+                    {: RESULT = new SimpleDeclaration(id,t,c); :}
+                    | ID:i COMMA simple_declaration:sd
+                    {: RESULT = new SimpleDeclaration(i,sd); :}
+                    | ID DECLARATION constant TYPE ASIGNATION expression END_INSTRUCTION
+                    {: /* LATER */ :};
 constant ::= CONSTANT
+          {: RESULT = true; :}
+          |
+          {:RESULT = false; :};
+statement ::= asignation:a END_INSTRUCTION statement:s
+          {:RESULT = new AsignationStatement(a,s); :}
+          |   NEW_LINE END_INSTRUCTION statement:s
+          {: RESULT = new NewLineStatement(s); :}
+          |   if:i END_INSTRUCTION statement:s
+          {: RESULT = new IfStatement(i,s); :}
+          |   case:c END_INSTRUCTION statement:s
+          {: RESULT = new CaseStatement(c,s); :}
+          |   while:w END_INSTRUCTION statement:s
+          {: RESULT = new WhileStatement(w,s); :}
+          |   for:f END_INSTRUCTION statement:s
+          {: RESULT = new ForStatement(f,s); :}
+          |   RETURN expression:e END_INSTRUCTION statement:s
+          {: RESULT = new ReturnStatement(e,s); :}
+          |   function_call_statement:fs statement:s
+          {: RESULT = new FunctionCallStatement(fs,s); :}
           |;
-statement ::= asignation END_INSTRUCTION statement
-          |   NEW_LINE END_INSTRUCTION statement
-          |   if END_INSTRUCTION statement
-          |   case END_INSTRUCTION statement
-          |   while END_INSTRUCTION statement
-          |   for END_INSTRUCTION statement
-          |   RETURN expression END_INSTRUCTION statement
-          |   function_call_statement statement
-          |;
-function_call_statement ::= function_call END_INSTRUCTION;
-condition ::= expression;
+function_call_statement ::= function_call:fc END_INSTRUCTION
+          {: RESULT = fc; :};
+condition ::= expression:e
+          {: RESULT = new Condition(e); :};
 simple_expression ::= ;
-mathematical_expression ::= mathematical_expression SUM_OPERATOR mult_operation
-          | mult_operation;
-mult_operation ::= mult_operation MULT_OPERATOR parenthesis_operation
-          | parenthesis_operation;
-parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression CLOSE_PARENTHESIS
-          | LITERAL_INT
-          | ID
-          | function_call;
-expression ::= relation_expression
-          | condition_expression
-          | mathematical_expression;
 
-relation_expression ::= expression RELATION_OPERATOR expression;
-condition_expression ::= expression CONDITION_ELEMENT expression
-                    |   OPEN_PARENTHESIS condition_expression CLOSE_PARENTHESIS;
+mathematical_expression ::= mathematical_expression:me SUM_OPERATOR:so mult_operation:me2
+          {: RESULT = new AddExpression(me,me2,so); :}
+          | mult_operation:mo
+          {: RESULT = mo; :};
+mult_operation ::= mult_operation:mo MULT_OPERATOR:mult parenthesis_operation:po
+          {: RESULT = new MultExpression(mo,po,mult); :}
+          | parenthesis_operation:po
+          {: RESULT = po; :}
+          ;
+parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression:me CLOSE_PARENTHESIS
+          {: RESULT = me; :}
+          | LITERAL_INT:i
+          {: RESULT = new PrimaryExpression(new LiteralInt(Integer.parseInt(i))); :}
+          | ID:i
+          {: RESULT = new PrimaryExpression(new ID(i)); :}
+          | function_call:fc
+          {:RESULT = new PrimaryExpression(fc); :};
 
-primary  ::= LITERAL_BOOLEAN
-          |   LITERAL_INT
-          |   LITERAL_STRING
-          |   ID
-          |   function_call;
-asignation   ::= ID ASIGNATION expression
-            | ID ASIGNATION LITERAL_BOOLEAN
-            | ID ASIGNATION LITERAL_STRING
-            | error expression {: parser.expected_token(":="); :}
-            | error LITERAL_BOOLEAN {: parser.expected_token(":="); :}
-            | error LITERAL_STRING {: parser.expected_token(":="); :}
-            | error {: parser.expected_token(":="); :};
-list_primary ::= primary COMMA list_primary
-            | primary;
-parameters ::= list_primary
-          |;
+expression ::= relation_expression:e
+          {: RESULT = e; :}
+          | condition_expression:e
+          {: RESULT = e; :}
+          | mathematical_expression:e
+          {: RESULT = e; :}
+          | LITERAL_BOOLEAN:e
+          {: RESULT = new PrimaryExpression(new LiteralBoolean(Boolean.parseBoolean(e))); :}
+          | LITERAL_STRING:e
+          {: RESULT = new PrimaryExpression(new LiteralString(e)); :};
+
+
+relation_expression ::= expression:e RELATION_OPERATOR:r expression:e1
+                        {: RESULT = new RelationExpression(e,e1,r); :};
+condition_expression ::= expression:e CONDITION_ELEMENT:c expression:e1
+                    {: RESULT = new ConditionExpression(e,e1,c); :}
+                    |   OPEN_PARENTHESIS condition_expression:c CLOSE_PARENTHESIS
+                    {:RESULT = c;:};
+
+primary  ::= LITERAL_BOOLEAN:e
+          {:RESULT = new LiteralBoolean(Boolean.parseBoolean(e)); :}
+          |   LITERAL_INT:i
+          {:RESULT = new LiteralInt(Integer.parseInt(i)); :}
+          |   LITERAL_STRING:S
+          {:RESULT = new LiteralString(S);:}
+          |   ID:i
+          {: RESULT = new ID(i); :}
+          |   function_call:fc
+          {: RESULT = fc; :};
+asignation   ::= ID:id ASIGNATION expression:e
+            {: RESULT = new AsignationStatement(id,e); :}
+            | error expression
+            {: parser.expected_token(":="); :}
+            | error
+            {: parser.expected_token(":="); :};
+list_primary ::= primary:p COMMA list_primary:lp
+            {: RESULT = new ListPrimary(p,lp); :}
+            | primary:p
+            {: RESULT = new ListPrimary(p); :};
+parameters ::= list_primary:lp
+          {: RESULT = lp; :}
+          |
+          {:RESULT = null; :};
 
 if  ::= IF condition:c THEN statement:s if_a:ef END IF
         {: RESULT = new IfStatement(c,s,ef); :};
@@ -143,5 +208,7 @@ while ::= WHILE condition:c LOOP statement:s END LOOP
 for   ::= FOR asignation:a TO expression:e statement:s END FOR
         {: RESULT = new ForStatement(a,s,e); :};
 
-function_call ::= ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS
-              |   PUT OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS;
+function_call ::= ID:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
+            {: RESULT = new FunctionCall(id,p); :}
+              |   PUT:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
+              {: RESULT = new FunctionCall(id,p); :} ;

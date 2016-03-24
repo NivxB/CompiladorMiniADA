@@ -1,10 +1,10 @@
 procedure OneInt is
    Index : Integer ;
-begin
+BEGIN
    if Index then
-      Index := SUM_NUM(3) * 24;
+      Index : SUM_NUM(3) * 24;
   end if;
-  TestString := true;
+  TestString : true;
   Put("The value of Index is");
    --Put(Index);              -- The default field width is 11 columns
    New_Line;
@@ -15,7 +15,7 @@ begin
    for cu := SUM_NUM(3) to 25
         Put("HOLA");
    end for;
-end OneInt;
+end OneInt
 
 
 

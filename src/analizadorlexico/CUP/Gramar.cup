@@ -8,13 +8,13 @@ import analizadorlexico.AST.Expression.*;
 
 parser code {:
     public InitProcedure FINALOBJECT;
-
-    public void syntax_error(Symbol cur_token){
+    public void syntax_error(Symbol cur_token) {
         System.out.print("Syntax Error:");
         System.out.print(" line:" + cur_token.left);
         System.out.print(" column:" + cur_token.right);
         System.out.println();
     }
+    
 
     public void expected_token(String token){
       System.out.print("Expected Token " + token);
@@ -50,6 +50,7 @@ non terminal Condition condition;
 non terminal Boolean constant;
 non terminal ListDeclarationParameter list_declaration_parameters;
 non terminal ListDeclarationParameter input_parameters;
+non terminal finalprocedure;
 
 
 /*PRECEDENCE*/
@@ -57,13 +58,32 @@ precedence left CONDITION_ELEMENT;
 precedence left RELATION_OPERATOR;
 precedence left SUM_OPERATOR;
 precedence left MULT_OPERATOR;
-
+precedence left procedure;
+precedence left finalprocedure;
 
 /* GRAMMARS */
-procedure ::= PROCEDURE ID IS declaration:d BEGIN statement:s END ID END_INSTRUCTION
+procedure ::= PROCEDURE ID IS declaration:d BEGIN statement:s finalprocedure
               {: RESULT = new InitProcedure(d,s);
                   parser.FINALOBJECT = RESULT;
+              :}
+              |error ID IS declaration:d BEGIN statement:s finalprocedure
+               {: RESULT = new InitProcedure(d,s);
+                  parser.FINALOBJECT = RESULT;
+                  parser.expected_token("PROCEDURE");
+              :}
+               |PROCEDURE error IS declaration:d BEGIN statement:s finalprocedure
+               {: RESULT = new InitProcedure(d,s);
+                  parser.FINALOBJECT = RESULT;
+                  parser.expected_token("ID");
+              :}
+                |PROCEDURE ID error declaration:d BEGIN statement:s finalprocedure
+               {: RESULT = new InitProcedure(d,s);
+                  parser.FINALOBJECT = RESULT;
+                  parser.expected_token("IS");
               :};
+finalprocedure ::= END ID END_INSTRUCTION
+                   |END error END_INSTRUCTION{:parser.expected_token("id");:}
+                   |END ID error{:parser.expected_token(";");:};
 declaration ::= simple_declaration:s END_INSTRUCTION declaration:d
           {: RESULT = new SimpleDeclaration(s,d); :}
           | PROCEDURE ID:i input_parameters:ip IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION declaration:d2
@@ -173,10 +193,11 @@ primary  ::= LITERAL_BOOLEAN:e
           {: RESULT = fc; :};
 asignation   ::= ID:id ASIGNATION expression:e
             {: RESULT = new AsignationStatement(id,e); :}
-            | error expression
-            {: parser.expected_token(":="); :}
+            | ID:id error expression:e
+            {: RESULT =  new AsignationStatement(id,e); ; 
+                parser.expected_token(":=");:}
             | error
-            {: parser.expected_token(":="); :};
+            {:  parser.expected_token(":="); :};
 list_primary ::= primary:p COMMA list_primary:lp
             {: RESULT = new ListPrimary(p,lp); :}
             | primary:p

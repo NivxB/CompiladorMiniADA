@@ -41,7 +41,7 @@ public class GeneradorLexer {
         params[4] = "src/analizadorlexico/CUP/Gramar.cup";
         try {
             java_cup.Main.main(params);
-
+            
         } catch (Exception e) {
             System.out.println(e);
         }

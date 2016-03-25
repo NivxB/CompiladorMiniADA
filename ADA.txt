@@ -1,9 +1,9 @@
 procedure OneInt is
    Index : Integer ;
 BEGIN
-   if Index then
-   
-	end if;
+  if Index then
+      New_Line;
+	end if
   TestString := true;
   Put("The value of Index is");
    --Put(Index);              -- The default field width is 11 columns
@@ -13,6 +13,7 @@ BEGIN
    Put(Index, 8)
    New_Line;
    for cu := SUM_NUM(3) to 25
+      New_Line;
    end for
 end OneInt;
 

@@ -134,19 +134,19 @@ statement_call ::= asignation:a END_INSTRUCTION
           {:RESULT = a; :}
           |   NEW_LINE END_INSTRUCTION
           {: RESULT = new NewLineStatement(); :}
-          |   if:i END_INSTRUCTION
+          |   if:i
           {: RESULT = i; :}
-          |   case:c END_INSTRUCTION
+          |   case:c
           {: RESULT = c; :}
-          |   while:w END_INSTRUCTION
+          |   while:w
           {: RESULT = w; :}
-          |   for:f END_INSTRUCTION
+          |   for:f
           {: RESULT = f; :}
           |   RETURN expression:e END_INSTRUCTION
           {: RESULT = new ReturnStatement(e); :}
           |   function_call_statement:fs
           {: RESULT = new FunctionCallStatement(fs); :}
-          | error{:parser.expected_token(";");:}
+          | error {:parser.expected_token(";");:}
           ;
 function_call_statement ::= function_call:fc END_INSTRUCTION
           {: RESULT = fc; :};
@@ -215,8 +215,10 @@ parameters ::= list_primary:lp
           |
           {:RESULT = null; :};
 
-if  ::= IF condition:c THEN statement:s if_a:ef END IF
-        {: RESULT = new IfStatement(c,s,ef); :};
+if  ::= IF condition:c THEN statement:s if_a:ef END IF END_INSTRUCTION
+        {: RESULT = new IfStatement(c,s,ef); :}
+        | IF condition:c THEN statement:s if_a:ef END IF error:e
+        {:parser.expected_token("; IF");:};
 if_a ::= ELSEIF condition:c THEN statement:s if_a:ef
         {: RESULT = new IfStatement(c,s,ef); :}
         | ELSE statement:s
@@ -224,18 +226,25 @@ if_a ::= ELSEIF condition:c THEN statement:s if_a:ef
         |
         {: RESULT = new IfStatement(); :} ;
 
-case  ::= CASE primary:p IS case_a:cb END CASE
-          {: RESULT = new CaseStatement(p,cb); :};
+case  ::= CASE primary:p IS case_a:cb END CASE END_INSTRUCTION
+          {: RESULT = new CaseStatement(p,cb); :}
+          | CASE primary:p IS case_a:cb END CASE error
+          {:parser.expected_token("; CASE");:};
 case_a ::= WHEN primary:p CASEASIG statement:s case_a:cb
           {: RESULT = new CaseBody(p,s,cb); :}
           |
           {:RESULT = new CaseBody(); :} ;
 
-while ::= WHILE condition:c LOOP statement:s END LOOP
-        {: RESULT = new WhileStatement(c,s); :};
+while ::= WHILE condition:c LOOP statement:s END LOOP END_INSTRUCTION
+        {: RESULT = new WhileStatement(c,s); :}
+        | WHILE condition:c LOOP statement:s END LOOP error
+        {:parser.expected_token("; WHILE");:};
 
-for   ::= FOR asignation:a TO expression:e END FOR
-        {: RESULT = new ForStatement(a,null,e); :};
+for   ::= FOR asignation:a TO expression:e statement:s END FOR END_INSTRUCTION
+        {: RESULT = new ForStatement(a,s,e); :}
+        | FOR asignation:a TO expression:e statement:s END FOR error
+        {:parser.expected_token("; FOR");:};
+
 
 function_call ::= ID:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
             {: RESULT = new FunctionCall(id,p); :}

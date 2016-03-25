@@ -145,7 +145,9 @@ statement_call ::= asignation:a END_INSTRUCTION
           |   RETURN expression:e END_INSTRUCTION
           {: RESULT = new ReturnStatement(e); :}
           |   function_call_statement:fs
-          {: RESULT = new FunctionCallStatement(fs); :};
+          {: RESULT = new FunctionCallStatement(fs); :}
+          | error{:parser.expected_token(";");:}
+          ;
 function_call_statement ::= function_call:fc END_INSTRUCTION
           {: RESULT = fc; :};
 condition ::= expression:e
@@ -203,9 +205,7 @@ asignation   ::= ID:id ASIGNATION expression:e
             {: RESULT = new AsignationStatement(id,e); :}
             | ID:id error expression:e
             {: RESULT =  new AsignationStatement(id,e); ;
-                parser.expected_token(":=");:}
-            | error
-            {:  parser.expected_token(":="); :};
+                parser.expected_token(":=");:};
 list_primary ::= primary:p COMMA list_primary:lp
             {: RESULT = new ListPrimary(p,lp); :}
             | primary:p
@@ -234,8 +234,8 @@ case_a ::= WHEN primary:p CASEASIG statement:s case_a:cb
 while ::= WHILE condition:c LOOP statement:s END LOOP
         {: RESULT = new WhileStatement(c,s); :};
 
-for   ::= FOR asignation:a TO expression:e statement:s END FOR
-        {: RESULT = new ForStatement(a,s,e); :};
+for   ::= FOR asignation:a TO expression:e END FOR
+        {: RESULT = new ForStatement(a,null,e); :};
 
 function_call ::= ID:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
             {: RESULT = new FunctionCall(id,p); :}

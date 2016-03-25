@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class ListPrimary {
     private List<Primary> values;
+    
 
     public ListPrimary(Primary Val) {
         this.values = new ArrayList<>();

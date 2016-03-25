@@ -13,6 +13,10 @@ public class ListDeclarationParameter{
     private Declaration Dec;
     private ListDeclarationParameter LDP;
 
+    public ListDeclarationParameter() {
+    }
+
+    
     public ListDeclarationParameter(Declaration Dec, ListDeclarationParameter LDP) {
         this.Dec = Dec;
         this.LDP = LDP;

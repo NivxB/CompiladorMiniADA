@@ -5,6 +5,7 @@ import analizadorlexico.AST.Declaration.*;
 import analizadorlexico.AST.Statement.*;
 import analizadorlexico.AST.Primary.*;
 import analizadorlexico.AST.Expression.*;
+import java.util.List;
 
 parser code {:
     public InitProcedure FINALOBJECT;
@@ -13,12 +14,50 @@ parser code {:
         System.out.print(" line:" + cur_token.left);
         System.out.print(" column:" + cur_token.right);
         System.out.println();
+        expected_token();
+        System.out.println(this.expected_token_ids());
     }
 
 
     public void expected_token(String token){
       System.out.print("Expected Token " + token);
       System.out.println();
+    };
+
+    public void expected_token(){
+      List<Integer> expected = expected_token_ids();
+      String expectedVals = "";
+      for (int i = 0 ; i < expected.size(); i++){
+        int id = expected.get(i);
+        String value = sym.terminalNames[id];
+        if (id == sym.RELATION_OPERATOR){
+          value ="<,>,>=,<=";
+        }else if (id == sym.END_INSTRUCTION){
+          value = ";";
+        }else if (id == sym.CONDITION_ELEMENT){
+          value = "(and, or)";
+        }else if (id == sym.COMMA){
+          value = ",";
+        }else if (id == sym.LITERAL_BOOLEAN){
+          value = "(true, false)";
+        }else if (id == sym.LITERAL_INT){
+          value = "integer";
+        }else if (id == sym.LITERAL_STRING){
+          value = "String";
+        }else if (id == sym.OPEN_PARENTHESIS){
+          value = "(";
+        }else if (id == sym.CLOSE_PARENTHESIS){
+          value = ")";
+        }
+        value = "\""+value+"\"";
+        if (i == expected.size() - 1){
+          expectedVals += value;
+        }else{
+          expectedVals += value + " or ";
+        }
+
+      }
+      expected_token(expectedVals);
     };
 
 :}
@@ -87,7 +126,7 @@ finalprocedure ::= END ID END_INSTRUCTION
 declaration ::= declaration_call:d declaration:sd
             {: RESULT = new SequenceDeclaration(d,sd); :}
             |
-            {: RESULT = null; :};
+            {: RESULT = new EmptyDeclaration(); :};
 
 declaration_call ::= simple_declaration:s END_INSTRUCTION
           {: RESULT = s; :}
@@ -98,7 +137,7 @@ declaration_call ::= simple_declaration:s END_INSTRUCTION
 input_parameters ::= OPEN_PARENTHESIS list_declaration_parameters:lp CLOSE_PARENTHESIS
                   {: RESULT = lp; :}
                   |
-                  {: RESULT = null; :};
+                  {: RESULT = new ListDeclarationParameter(); :};
 
 list_declaration_parameters ::= simple_declaration:d END_INSTRUCTION list_declaration_parameters:lp
                       {:RESULT = new ListDeclarationParameter(d,lp); :}
@@ -128,7 +167,7 @@ constant ::= CONSTANT
 statement ::= statement_call:s statement:sq
           {: RESULT = new SequenceStatement(s,sq); :}
           |
-          {: RESULT = null; :};
+          {: RESULT = new EmptyStatement(); :};
 
 statement_call ::= asignation:a END_INSTRUCTION
           {:RESULT = a; :}
@@ -213,7 +252,7 @@ list_primary ::= primary:p COMMA list_primary:lp
 parameters ::= list_primary:lp
           {: RESULT = lp; :}
           |
-          {:RESULT = null; :};
+          {:RESULT = new ListPrimary(); :};
 
 if  ::= IF condition:c THEN statement:s if_a:ef END IF END_INSTRUCTION
         {: RESULT = new IfStatement(c,s,ef); :}
@@ -224,7 +263,7 @@ if_a ::= ELSEIF condition:c THEN statement:s if_a:ef
         | ELSE statement:s
         {: RESULT = new IfStatement(s); :}
         |
-        {: RESULT = new IfStatement(); :} ;
+        {: RESULT = new EmptyStatement(); :} ;
 
 case  ::= CASE primary:p IS case_a:cb END CASE END_INSTRUCTION
           {: RESULT = new CaseStatement(p,cb); :}

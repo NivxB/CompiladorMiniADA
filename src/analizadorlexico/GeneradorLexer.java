@@ -31,7 +31,6 @@ public class GeneradorLexer {
         try {
             jflex.Main.generate(paramsLexer);
         } catch (Exception e) {
-            e.printStackTrace();
         }
         String params[] = new String[5];
         params[0] = "-destdir";

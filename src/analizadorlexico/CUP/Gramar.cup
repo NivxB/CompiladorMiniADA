@@ -14,7 +14,7 @@ parser code {:
         System.out.print(" column:" + cur_token.right);
         System.out.println();
     }
-    
+
 
     public void expected_token(String token){
       System.out.print("Expected Token " + token);
@@ -39,11 +39,11 @@ terminal String LITERAL_INT;
 
 /*NON TERMINAL*/
 non terminal InitProcedure procedure;
-non terminal Statement asignation,statement,if,if_a,case,while,for;
+non terminal Statement asignation,statement,if,if_a,case,while,for,statement_call;
 non terminal CaseBody case_a;
 non terminal Primary function_call,primary,function_call_statement;
 non terminal ListPrimary list_primary, parameters;
-non terminal Declaration declaration,in_out_declaration,simple_declaration;
+non terminal Declaration declaration,in_out_declaration,simple_declaration,declaration_call;
 non terminal Expression expression,simple_expression,mathematical_expression,mult_operation,parenthesis_operation;
 non terminal Expression condition_expression,relation_expression;
 non terminal Condition condition;
@@ -84,13 +84,17 @@ procedure ::= PROCEDURE ID IS declaration:d BEGIN statement:s finalprocedure
 finalprocedure ::= END ID END_INSTRUCTION
                    |END error END_INSTRUCTION{:parser.expected_token("id");:}
                    |END ID error{:parser.expected_token(";");:};
-declaration ::= simple_declaration:s END_INSTRUCTION declaration:d
-          {: RESULT = new SimpleDeclaration(s,d); :}
-          | PROCEDURE ID:i input_parameters:ip IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION declaration:d2
-          {: RESULT = new ProcedureDeclaration(i,ip,d,s,d2); :}
-          | FUNCTION ID:i input_parameters:ip RETURN TYPE:t IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION declaration:d2
-          {: RESULT = new FunctionDeclaration(i,ip,d,s,t,d2); :}
-          | ;
+declaration ::= declaration_call:d declaration:sd
+            {: RESULT = new SequenceDeclaration(d,sd); :}
+            |
+            {: RESULT = null; :};
+
+declaration_call ::= simple_declaration:s END_INSTRUCTION
+          {: RESULT = s; :}
+          | PROCEDURE ID:i input_parameters:ip IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION
+          {: RESULT = new ProcedureDeclaration(i,ip,d,s); :}
+          | FUNCTION ID:i input_parameters:ip RETURN TYPE:t IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION
+          {: RESULT = new FunctionDeclaration(i,ip,d,s,t); :};
 input_parameters ::= OPEN_PARENTHESIS list_declaration_parameters:lp CLOSE_PARENTHESIS
                   {: RESULT = lp; :}
                   |
@@ -121,23 +125,27 @@ constant ::= CONSTANT
           {: RESULT = true; :}
           |
           {:RESULT = false; :};
-statement ::= asignation:a END_INSTRUCTION statement:s
-          {:RESULT = new AsignationStatement(a,s); :}
-          |   NEW_LINE END_INSTRUCTION statement:s
-          {: RESULT = new NewLineStatement(s); :}
-          |   if:i END_INSTRUCTION statement:s
-          {: RESULT = new IfStatement(i,s); :}
-          |   case:c END_INSTRUCTION statement:s
-          {: RESULT = new CaseStatement(c,s); :}
-          |   while:w END_INSTRUCTION statement:s
-          {: RESULT = new WhileStatement(w,s); :}
-          |   for:f END_INSTRUCTION statement:s
-          {: RESULT = new ForStatement(f,s); :}
-          |   RETURN expression:e END_INSTRUCTION statement:s
-          {: RESULT = new ReturnStatement(e,s); :}
-          |   function_call_statement:fs statement:s
-          {: RESULT = new FunctionCallStatement(fs,s); :}
-          |;
+statement ::= statement_call:s statement:sq
+          {: RESULT = new SequenceStatement(s,sq); :}
+          |
+          {: RESULT = null; :};
+
+statement_call ::= asignation:a END_INSTRUCTION
+          {:RESULT = a; :}
+          |   NEW_LINE END_INSTRUCTION
+          {: RESULT = new NewLineStatement(); :}
+          |   if:i END_INSTRUCTION
+          {: RESULT = i; :}
+          |   case:c END_INSTRUCTION
+          {: RESULT = c; :}
+          |   while:w END_INSTRUCTION
+          {: RESULT = w; :}
+          |   for:f END_INSTRUCTION
+          {: RESULT = f; :}
+          |   RETURN expression:e END_INSTRUCTION
+          {: RESULT = new ReturnStatement(e); :}
+          |   function_call_statement:fs
+          {: RESULT = new FunctionCallStatement(fs); :};
 function_call_statement ::= function_call:fc END_INSTRUCTION
           {: RESULT = fc; :};
 condition ::= expression:e
@@ -194,7 +202,7 @@ primary  ::= LITERAL_BOOLEAN:e
 asignation   ::= ID:id ASIGNATION expression:e
             {: RESULT = new AsignationStatement(id,e); :}
             | ID:id error expression:e
-            {: RESULT =  new AsignationStatement(id,e); ; 
+            {: RESULT =  new AsignationStatement(id,e); ;
                 parser.expected_token(":=");:}
             | error
             {:  parser.expected_token(":="); :};

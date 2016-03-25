@@ -18,18 +18,8 @@ public class SimpleDeclaration extends Declaration {
     private String Type;
     private Boolean isConstant;
 
-    public SimpleDeclaration(List<String> IDs, String Type, Boolean isConstant, Declaration NextDeclaration) {
-        super(NextDeclaration);
-        this.IDs = IDs;
-        this.Type = Type;
-        this.isConstant = isConstant;
-    }
 
-    public SimpleDeclaration(Declaration D,Declaration Next){
-        this(((SimpleDeclaration)D).IDs,((SimpleDeclaration)D).Type,((SimpleDeclaration)D).isConstant,Next);
-    }
     public SimpleDeclaration(String Id, String Type, Boolean isConstant) {
-        super(null);
         this.IDs = new ArrayList<>();
         IDs.add(Id);
         this.Type = Type;
@@ -37,7 +27,6 @@ public class SimpleDeclaration extends Declaration {
     }
 
     public SimpleDeclaration(String ID, Declaration Previous) {
-        super(Previous.NextDeclaration);
         this.IDs = ((SimpleDeclaration)Previous).IDs;
         IDs.add(ID);
         this.Type = ((SimpleDeclaration)Previous).Type;

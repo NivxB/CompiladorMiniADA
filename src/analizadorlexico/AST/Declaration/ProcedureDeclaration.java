@@ -18,23 +18,12 @@ public class ProcedureDeclaration extends Declaration {
     private Declaration Dec;
     private Statement Stat;
 
-    public ProcedureDeclaration(String Id,ListDeclarationParameter LDP, Declaration Dec, Statement Stat, Declaration NextDeclaration) {
-        super(NextDeclaration);
-        this.Id = Id;
-        this.LDP = LDP;
-        this.Dec = Dec;
-        this.Stat = Stat;
-    }
-
+ 
     public ProcedureDeclaration(String Id,ListDeclarationParameter LDP, Declaration Dec, Statement Stat) {
-        super(null);
+
         this.Id = Id;
         this.LDP = LDP;
         this.Dec = Dec;
         this.Stat = Stat;
-    }
-
-    public ProcedureDeclaration(Declaration D, Declaration Next) {
-        this(((ProcedureDeclaration) D).Id,((ProcedureDeclaration) D).LDP, ((ProcedureDeclaration) D).Dec, ((ProcedureDeclaration) D).Stat, Next);
     }
 }

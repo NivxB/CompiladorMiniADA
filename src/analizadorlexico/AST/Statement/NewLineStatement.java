@@ -11,8 +11,7 @@ package analizadorlexico.AST.Statement;
  */
 public class NewLineStatement extends Statement{
     
-    public NewLineStatement(Statement Next) {
-        super(Next);
+    public NewLineStatement() {
     }
     
 }

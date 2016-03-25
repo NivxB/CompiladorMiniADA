@@ -10,12 +10,5 @@ package analizadorlexico.AST.Statement;
  * @author kbarahona
  */
 public abstract class Statement {
-    
-    protected Statement NextStatement;
-
-    public Statement(Statement NextStatement) {
-        this.NextStatement = NextStatement;
-    }
-
-    
+      
 }

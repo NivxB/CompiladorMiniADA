@@ -14,23 +14,13 @@ import analizadorlexico.AST.Expression.Expression;
 public class AsignationStatement extends Statement{
     private String ID;
     private Expression Exp;
-
-    public AsignationStatement(String ID, Expression Exp,Statement Next) {
-        super(Next);
-        this.ID = ID;
-        this.Exp = Exp;
-    }
     
     public AsignationStatement(String ID, Expression Exp) {
-        super(null);
         this.ID = ID;
         this.Exp = Exp;
     }
     
-    public AsignationStatement(Statement Actual, Statement Next){
-        this(((AsignationStatement)Actual).ID,((AsignationStatement)Actual).Exp,Next);        
-    };
-    
+
     public String getID() {
         return ID;
     }

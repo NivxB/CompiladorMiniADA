@@ -13,12 +13,9 @@ import analizadorlexico.AST.Expression.Expression;
  */
 public class ReturnStatement extends Statement {
     private Expression retVal;
-    public ReturnStatement(Statement NextStatement) {
-        super(NextStatement);
-    }
+  
 
-    public ReturnStatement(Expression retVal, Statement NextStatement) {
-        super(NextStatement);
+    public ReturnStatement(Expression retVal) {
         this.retVal = retVal;
     }
     

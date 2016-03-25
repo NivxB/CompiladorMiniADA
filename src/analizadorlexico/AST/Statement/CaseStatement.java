@@ -31,18 +31,10 @@ public class CaseStatement extends Statement{
         this.Body = Body;
     }
 
-    public CaseStatement(Primary Val, CaseBody Body,Statement Next) {
-        super(Next);
-        this.Val = Val;
-        this.Body = Body;
-    }
+
     
-    public CaseStatement(Statement Actual, Statement Next){
-        this(((CaseStatement)Actual).Val,((CaseStatement)Actual).Body,Next);        
-    }
-    
+
     public CaseStatement(Primary Val, CaseBody Body) {
-        super(null);
         this.Val = Val;
         this.Body = Body;
     }

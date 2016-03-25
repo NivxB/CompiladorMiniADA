@@ -5,6 +5,7 @@
  */
 package analizadorlexico;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonEncoding;
@@ -43,7 +44,11 @@ public class Main {
             }
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            mapper.setVisibility(PropertyAccessor.ALL, Visibility.ANY);
+            mapper.setVisibilityChecker(mapper.getSerializationConfig().getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
+                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
 //mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
             parser p = new parser(lexer);
             p.parse();

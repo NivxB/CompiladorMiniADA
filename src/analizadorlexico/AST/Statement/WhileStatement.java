@@ -15,17 +15,10 @@ public class WhileStatement extends Statement{
     Condition Con;
     Statement Stat;
 
-    public WhileStatement(Condition Con, Statement Stat,Statement Next) {
-        super(Next);
-        this.Con = Con;
-        this.Stat = Stat;
-    }
-    public WhileStatement(Statement Actual, Statement Next){
-        this(((WhileStatement)Actual).Con,((WhileStatement)Actual).Stat,Next);        
-    };
+  
+ 
     
     public WhileStatement(Condition Con, Statement Stat) {
-        super(null);
         this.Con = Con;
         this.Stat = Stat;
     }

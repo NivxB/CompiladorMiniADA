@@ -15,8 +15,7 @@ import analizadorlexico.AST.Primary.Primary;
 public class FunctionCallStatement extends Statement{
     private FunctionCall call;
 
-    public FunctionCallStatement(Primary call, Statement NextStatement) {
-        super(NextStatement);
+    public FunctionCallStatement(Primary call) {
         this.call = (FunctionCall) call;
     }
    

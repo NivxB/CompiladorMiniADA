@@ -10,11 +10,5 @@ package analizadorlexico.AST.Declaration;
  * @author kbarahona
  */
 public abstract class Declaration {
-    Declaration NextDeclaration;
-
-    public Declaration(Declaration NextDeclaration) {
-        this.NextDeclaration = NextDeclaration;
-    }
-    
     
 }

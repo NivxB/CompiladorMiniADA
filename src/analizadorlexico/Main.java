@@ -52,7 +52,7 @@ public class Main {
 //mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
             parser p = new parser(lexer);
             p.parse();
-            mapper.writeValue(new File("./test.json"), p.FINALOBJECT);
+            mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
        
         
         //for (Symbol sim : symbolList){

@@ -18,6 +18,15 @@ import java_cup.runtime.Symbol;
       private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
       }
+      private void lexic_error(){
+        System.err.print("Lexic Error:");
+        System.err.print(" line:" + yyline);
+        System.err.print(" column:" + yycolumn);
+        System.err.println();
+        System.err.print("Unknown Symbol: " + yytext());
+        System.err.println();
+        System.err.println();
+      }
 %}
 
 procedure   = "procedure"
@@ -120,6 +129,7 @@ reverse     = "reverse"
   {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
+    .   { lexic_error(); }
 
 
 }

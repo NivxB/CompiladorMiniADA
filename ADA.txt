@@ -1,5 +1,5 @@
-procedure OneInt is
-   Index : Integer ;
+procedur#e OneInt is
+   Index : Integer := 1 + SUM("Multiplica * 2");
 BEGIN
   if Index then
       New_Line;
@@ -14,7 +14,7 @@ BEGIN
    New_Line;
    for cu := SUM_NUM(3) to 25
       New_Line;
-   end for
+   end for;
 end OneInt;
 
 

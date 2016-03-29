@@ -14,16 +14,18 @@ import analizadorlexico.AST.Statement.Statement;
 public class ProcedureDeclaration extends Declaration {
 
     private String Id;
+    private String EndId;
     private ListDeclarationParameter LDP;
     private Declaration Dec;
     private Statement Stat;
 
- 
-    public ProcedureDeclaration(String Id,ListDeclarationParameter LDP, Declaration Dec, Statement Stat) {
-
+    public ProcedureDeclaration(String Id, String EndId, ListDeclarationParameter LDP, Declaration Dec, Statement Stat) {
         this.Id = Id;
+        this.EndId = EndId;
         this.LDP = LDP;
         this.Dec = Dec;
         this.Stat = Stat;
     }
+
+ 
 }

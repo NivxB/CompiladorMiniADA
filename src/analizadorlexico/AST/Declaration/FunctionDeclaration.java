@@ -13,17 +13,21 @@ import analizadorlexico.AST.Statement.Statement;
  */
 public class FunctionDeclaration extends Declaration{
     private String Id;
+    private String EndId;
     private ListDeclarationParameter LDP;
     private Declaration Dec;
     private Statement Stat;
     private String RetType;
 
-    public FunctionDeclaration(String Id,ListDeclarationParameter LDP, Declaration Dec, Statement Stat,String RetType) {
+    public FunctionDeclaration(String Id, String EndId, ListDeclarationParameter LDP, Declaration Dec, Statement Stat, String RetType) {
         this.Id = Id;
+        this.EndId = EndId;
         this.LDP = LDP;
         this.Dec = Dec;
         this.Stat = Stat;
         this.RetType = RetType;
     }
+
+    
 
 }

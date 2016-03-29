@@ -27,7 +27,6 @@ function    = "function"
 is          = "is"
 begin       = "begin"
 end         = "end"
-put         = "Put"
 newLine     = "New_Line"
 with        = "With"
 openParenthesis = "("
@@ -90,7 +89,6 @@ reverse     = "reverse"
   {is}                  {return symbol(sym.IS);}
   {begin}               {return symbol(sym.BEGIN);}
   {end}                 {return symbol(sym.END);}
-  {put}                 {return symbol(sym.PUT);}
   {newLine}             {return symbol(sym.NEW_LINE);}
   {declaration}         {return symbol(sym.DECLARATION);}
   {asig}                {return symbol(sym.ASIGNATION);}

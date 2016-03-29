@@ -14,17 +14,14 @@ import analizadorlexico.AST.Expression.Condition;
 public class IfStatement extends Statement{
     Condition Con;
     Statement Stat;
-    IfStatement ElsIf;
+    Statement ElsIf;
 
-
-    
-
-    
-     public IfStatement(Condition Con, Statement Stat, Statement ElsIf) {
+    public IfStatement(Condition Con, Statement Stat, Statement ElsIf) {
         this.Con = Con;
         this.Stat = Stat;
-        this.ElsIf = (IfStatement) ElsIf;
+        this.ElsIf = ElsIf;
     }
+
 
     public IfStatement(Statement Stat) {
         this.Stat = Stat;

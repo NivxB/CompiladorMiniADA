@@ -9,6 +9,7 @@ import java.util.List;
 
 parser code {:
     public InitProcedure FINALOBJECT;
+
     public void syntax_error(Symbol cur_token) {
         String Found = getTokenName(cur_token.sym);
         if (cur_token.value != null){
@@ -123,21 +124,23 @@ procedure ::= PROCEDURE ID:id IS declaration:d BEGIN statement:s finalprocedure:
               {: RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
               :}
-              |error ID:id IS declaration:d BEGIN statement:s finalprocedure:eid
+              | error ID:id IS declaration:d BEGIN statement:s finalprocedure:eid
                {: RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
                   //parser.expected_token("PROCEDURE");
               :}
-               |PROCEDURE error IS declaration:d BEGIN statement:s finalprocedure:eid
+               | PROCEDURE error IS declaration:d BEGIN statement:s finalprocedure:eid
                {: RESULT = new InitProcedure(null,eid,d,s);
                   parser.FINALOBJECT = RESULT;
                   //parser.expected_token("ID");
               :}
-                |PROCEDURE ID:id error declaration:d BEGIN statement:s finalprocedure:eid
+                | PROCEDURE ID:id error declaration:d BEGIN statement:s finalprocedure:eid
                {: RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
                   //parser.expected_token("IS");
-              :};
+              :}
+              | PROCEDURE ID:id IS error BEGIN statement:s finalprocedure:eid
+              {: RESULT = new InitProcedure(id,eid,null,s); :};
 finalprocedure ::= END ID:id END_INSTRUCTION
                     {: RESULT = id; :}
                    | END error END_INSTRUCTION
@@ -147,6 +150,8 @@ finalprocedure ::= END ID:id END_INSTRUCTION
 declaration ::= declaration_call:d declaration:sd
             {: RESULT = new SequenceDeclaration(d,sd); :}
             |
+            {: RESULT = new EmptyDeclaration(); :}
+            | error END_INSTRUCTION
             {: RESULT = new EmptyDeclaration(); :};
 
 declaration_call ::= simple_declaration:s END_INSTRUCTION

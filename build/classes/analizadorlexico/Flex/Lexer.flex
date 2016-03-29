@@ -18,6 +18,15 @@ import java_cup.runtime.Symbol;
       private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
       }
+      private void lexic_error(){
+        System.err.print("Lexic Error:");
+        System.err.print(" line:" + yyline);
+        System.err.print(" column:" + yycolumn);
+        System.err.println();
+        System.err.print("Unknown Symbol: " + yytext());
+        System.err.println();
+        System.err.println();
+      }
 %}
 
 procedure   = "procedure"
@@ -27,7 +36,6 @@ function    = "function"
 is          = "is"
 begin       = "begin"
 end         = "end"
-put         = "Put"
 newLine     = "New_Line"
 with        = "With"
 openParenthesis = "("
@@ -90,7 +98,6 @@ reverse     = "reverse"
   {is}                  {return symbol(sym.IS);}
   {begin}               {return symbol(sym.BEGIN);}
   {end}                 {return symbol(sym.END);}
-  {put}                 {return symbol(sym.PUT);}
   {newLine}             {return symbol(sym.NEW_LINE);}
   {declaration}         {return symbol(sym.DECLARATION);}
   {asig}                {return symbol(sym.ASIGNATION);}
@@ -122,6 +129,7 @@ reverse     = "reverse"
   {reverse}             {return symbol(sym.REVERSE);}
   {ignoreChar} {/* ignore */}
   \"        {string.setLength(0); yybegin(STRING);}
+    .   { lexic_error(); }
 
 
 }

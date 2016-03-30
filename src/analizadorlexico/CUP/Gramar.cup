@@ -140,12 +140,13 @@ procedure ::= PROCEDURE ID:id IS declaration:d BEGIN statement:s finalprocedure:
                   //parser.expected_token("IS");
               :}
               | PROCEDURE ID:id IS error BEGIN statement:s finalprocedure:eid
-              {: RESULT = new InitProcedure(id,eid,null,s); :};
+              {: RESULT = new InitProcedure(id,eid,null,s); :}
+              | PROCEDURE error;
 finalprocedure ::= END ID:id END_INSTRUCTION
                     {: RESULT = id; :}
                    | END error END_INSTRUCTION
                    {: //parser.expected_token("id"); :}
-                   | END ID error
+                   | END error
                    {: //parser.expected_token(";"); :};
 declaration ::= declaration_call:d declaration:sd
             {: RESULT = new SequenceDeclaration(d,sd); :}
@@ -197,7 +198,8 @@ constant ::= CONSTANT
 statement ::= statement_call:s statement:sq
           {: RESULT = new SequenceStatement(s,sq); :}
           |
-          {: RESULT = new EmptyStatement(); :};
+          {: RESULT = new EmptyStatement(); :}
+          | error statement;
 
 statement_call ::= asignation:a END_INSTRUCTION
           {:RESULT = a; :}
@@ -216,6 +218,7 @@ statement_call ::= asignation:a END_INSTRUCTION
           |   function_call_statement:fs
           {: RESULT = new FunctionCallStatement(fs); :}
           | error END_INSTRUCTION
+          | ID error END_INSTRUCTION
           {:  :}
           ;
 function_call_statement ::= function_call:fc END_INSTRUCTION
@@ -272,11 +275,11 @@ primary  ::= LITERAL_BOOLEAN:e
           |   function_call:fc
           {: RESULT = fc; :};
 asignation   ::= ID:id ASIGNATION expression:e
-            {: RESULT = new AsignationStatement(id,e); :}
-            | ID:id error expression:e
-            {: RESULT =  new AsignationStatement(id,e); ;
+            {: RESULT = new AsignationStatement(id,e); :};
                 //parser.expected_token(":=");:};
 list_primary ::= primary:p COMMA list_primary:lp
+            {: RESULT = new ListPrimary(p,lp); :}
+            |primary:p error list_primary:lp
             {: RESULT = new ListPrimary(p,lp); :}
             | primary:p
             {: RESULT = new ListPrimary(p); :};
@@ -288,6 +291,7 @@ parameters ::= list_primary:lp
 if  ::= IF condition:c THEN statement:s if_a:ef END IF END_INSTRUCTION
         {: RESULT = new IfStatement(c,s,ef); :}
         | IF condition:c THEN statement:s if_a:ef END IF error:e
+        | IF error END IF END_INSTRUCTION
         {://parser.expected_token("; IF");:};
 if_a ::= ELSEIF condition:c THEN statement:s if_a:ef
         {: RESULT = new IfStatement(c,s,ef); :}
@@ -299,6 +303,7 @@ if_a ::= ELSEIF condition:c THEN statement:s if_a:ef
 case  ::= CASE primary:p IS case_a:cb END CASE END_INSTRUCTION
           {: RESULT = new CaseStatement(p,cb); :}
           | CASE primary:p IS case_a:cb END CASE error
+          | CASE error CASE END_INSTRUCTION
           {://parser.expected_token("; CASE");:};
 case_a ::= WHEN primary:p CASEASIG statement:s case_a:cb
           {: RESULT = new CaseBody(p,s,cb); :}
@@ -308,15 +313,18 @@ case_a ::= WHEN primary:p CASEASIG statement:s case_a:cb
 while ::= WHILE condition:c LOOP statement:s END LOOP END_INSTRUCTION
         {: RESULT = new WhileStatement(c,s); :}
         | WHILE condition:c LOOP statement:s END LOOP error
+        | WHILE error LOOP END_INSTRUCTION
         {://parser.expected_token("; WHILE");:};
 
 for   ::= FOR asignation:a TO expression:e statement:s END FOR END_INSTRUCTION
         {: RESULT = new ForStatement(a,s,e); :}
         | FOR asignation:a TO expression:e statement:s END FOR error
+        | FOR error FOR END_INSTRUCTION
         {://parser.expected_token("; FOR");:};
 
 
 function_call ::= ID:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
             {: RESULT = new FunctionCall(id,p); :}
               |   PUT:id OPEN_PARENTHESIS parameters:p CLOSE_PARENTHESIS
-              {: RESULT = new FunctionCall(id,p); :} ;
+              {: RESULT = new FunctionCall(id,p); :} 
+              | PUT error;

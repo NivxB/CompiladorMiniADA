@@ -182,9 +182,15 @@ in_out_declaration ::= ID:i DECLARATION IN TYPE:t
                   | ID:i DECLARATION OUT TYPE:t
                   {: RESULT = new InOutDeclaration(i,t,"OUT"); :}
                   | ID:i DECLARATION IN OUT TYPE:t
-                  {: RESULT = new InOutDeclaration(i,t,"IN OUT"); :};
+                  {: 
+                    System.out.println(t);
+                    RESULT = new InOutDeclaration(i,t,"IN OUT"); 
+                  :};
 simple_declaration ::= ID:id DECLARATION constant:c TYPE:t
-                    {: RESULT = new SimpleDeclaration(id,t,c); :}
+                    {: 
+                      System.out.println(t);
+                      RESULT = new SimpleDeclaration(id,t,c); 
+                    :}
                     | ID:i COMMA simple_declaration:sd
                     {: RESULT = new SimpleDeclaration(i,sd); :};
 asignation_declaration ::= ID:id DECLARATION constant:c TYPE:t ASIGNATION expression:e

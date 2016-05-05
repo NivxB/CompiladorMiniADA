@@ -6,6 +6,7 @@
 package analizadorlexico.AST.Declaration;
 
 import analizadorlexico.AST.Statement.Statement;
+import analizadorlexico.TypeCheck.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,11 @@ import java.util.List;
  */
 public class SimpleDeclaration extends Declaration {
     private List<String> IDs;
-    private String Type;
+    private Type Type;
     private Boolean isConstant;
 
 
-    public SimpleDeclaration(String Id, String Type, Boolean isConstant) {
+    public SimpleDeclaration(String Id, Type Type, Boolean isConstant) {
         this.IDs = new ArrayList<>();
         IDs.add(Id);
         this.Type = Type;
@@ -32,6 +33,32 @@ public class SimpleDeclaration extends Declaration {
         this.Type = ((SimpleDeclaration)Previous).Type;
         this.isConstant = ((SimpleDeclaration)Previous).isConstant;
     }
+
+    public List<String> getIDs() {
+        return IDs;
+    }
+
+    public void setIDs(List<String> IDs) {
+        this.IDs = IDs;
+    }
+
+    public Type getType() {
+        return Type;
+    }
+
+    public void setType(Type Type) {
+        this.Type = Type;
+    }
+
+    public Boolean getIsConstant() {
+        return isConstant;
+    }
+
+    public void setIsConstant(Boolean isConstant) {
+        this.isConstant = isConstant;
+    }
+    
+    
     
     
 }

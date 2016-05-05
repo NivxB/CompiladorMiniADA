@@ -5,11 +5,12 @@ import analizadorlexico.AST.Declaration.*;
 import analizadorlexico.AST.Statement.*;
 import analizadorlexico.AST.Primary.*;
 import analizadorlexico.AST.Expression.*;
+import analizadorlexico.TypeCheck.*;
 import java.util.List;
 
 parser code {:
     public InitProcedure FINALOBJECT;
-
+    public String TEST = "";
     public void syntax_error(Symbol cur_token) {
         String Found = getTokenName(cur_token.sym);
         if (cur_token.value != null){
@@ -90,7 +91,7 @@ terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,CASEASIG;
 terminal REVERSE,OTHERS,TO;
 
 terminal String ID,PUT,LITERAL_STRING,SUM_OPERATOR, MULT_OPERATOR,RELATION_OPERATOR,CONDITION_ELEMENT;
-terminal String TYPE;
+terminal Type TYPE;
 terminal String LITERAL_BOOLEAN;
 terminal String LITERAL_INT;
 
@@ -121,46 +122,54 @@ precedence left finalprocedure;
 
 /* GRAMMARS */
 procedure ::= PROCEDURE ID:id IS declaration:d BEGIN statement:s finalprocedure:eid
-              {: RESULT = new InitProcedure(id,eid,d,s);
+              {: 
+                  RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
               :}
               | error ID:id IS declaration:d BEGIN statement:s finalprocedure:eid
-               {: RESULT = new InitProcedure(id,eid,d,s);
+              {: 
+                  RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
-                  //parser.expected_token("PROCEDURE");
               :}
                | PROCEDURE error IS declaration:d BEGIN statement:s finalprocedure:eid
-               {: RESULT = new InitProcedure(null,eid,d,s);
+              {: 
+                  RESULT = new InitProcedure(null,eid,d,s);
                   parser.FINALOBJECT = RESULT;
-                  //parser.expected_token("ID");
               :}
                 | PROCEDURE ID:id error declaration:d BEGIN statement:s finalprocedure:eid
-               {: RESULT = new InitProcedure(id,eid,d,s);
+              {: 
+                  RESULT = new InitProcedure(id,eid,d,s);
                   parser.FINALOBJECT = RESULT;
-                  //parser.expected_token("IS");
               :}
               | PROCEDURE ID:id IS error BEGIN statement:s finalprocedure:eid
-              {: RESULT = new InitProcedure(id,eid,null,s); :}
+              {: 
+                  RESULT = new InitProcedure(id,eid,null,s); 
+              :}
               | PROCEDURE error;
 finalprocedure ::= END ID:id END_INSTRUCTION
                     {: RESULT = id; :}
                    | END error END_INSTRUCTION
-                   {: //parser.expected_token("id"); :}
+                   {:  :}
                    | END error
-                   {: //parser.expected_token(";"); :};
-declaration ::= declaration_call:d declaration:sd
+                   {:  :};
+declaration ::=   declaration_call:d declaration:sd
             {: RESULT = new SequenceDeclaration(d,sd); :}
             |
-            {: RESULT = new EmptyDeclaration(); :}
+            {: 
+            RESULT = new EmptyDeclaration(); :}
             | error END_INSTRUCTION
             {: RESULT = new EmptyDeclaration(); :};
 
 declaration_call ::= simple_declaration:s END_INSTRUCTION
           {: RESULT = s; :}
           | PROCEDURE ID:i input_parameters:ip IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION
-          {: RESULT = new ProcedureDeclaration(i,i2,ip,d,s); :}
+          {: 
+            RESULT = new ProcedureDeclaration(i,i2,ip,d,s); 
+          :}
           | FUNCTION ID:i input_parameters:ip RETURN TYPE:t IS declaration:d BEGIN statement:s END ID:i2 END_INSTRUCTION
-          {: RESULT = new FunctionDeclaration(i,i2,ip,d,s,t); :}
+          {: 
+            RESULT = new FunctionDeclaration(i,i2,ip,d,s,t); 
+          :}
           | asignation_declaration:ad END_INSTRUCTION
           {: RESULT = ad; :};
 input_parameters ::= OPEN_PARENTHESIS list_declaration_parameters:lp CLOSE_PARENTHESIS
@@ -183,16 +192,16 @@ in_out_declaration ::= ID:i DECLARATION IN TYPE:t
                   {: RESULT = new InOutDeclaration(i,t,"OUT"); :}
                   | ID:i DECLARATION IN OUT TYPE:t
                   {: 
-                    System.out.println(t);
                     RESULT = new InOutDeclaration(i,t,"IN OUT"); 
                   :};
 simple_declaration ::= ID:id DECLARATION constant:c TYPE:t
                     {: 
-                      System.out.println(t);
                       RESULT = new SimpleDeclaration(id,t,c); 
                     :}
                     | ID:i COMMA simple_declaration:sd
-                    {: RESULT = new SimpleDeclaration(i,sd); :};
+                    {: 
+                      RESULT = new SimpleDeclaration(i,sd); 
+                    :};
 asignation_declaration ::= ID:id DECLARATION constant:c TYPE:t ASIGNATION expression:e
                           {: Declaration tmp = new SimpleDeclaration(id,t,c);
                              RESULT = new AsignationDeclaration(tmp,e);
@@ -201,14 +210,14 @@ constant ::= CONSTANT
           {: RESULT = true; :}
           |
           {:RESULT = false; :};
-statement ::= statement_call:s statement:sq
+statement ::= statement_call:s statement:sq 
           {: RESULT = new SequenceStatement(s,sq); :}
           |
           {: RESULT = new EmptyStatement(); :}
           | error statement;
 
 statement_call ::= asignation:a END_INSTRUCTION
-          {:RESULT = a; :}
+          {: RESULT = a; :}
           |   NEW_LINE END_INSTRUCTION
           {: RESULT = new NewLineStatement(); :}
           |   if:i

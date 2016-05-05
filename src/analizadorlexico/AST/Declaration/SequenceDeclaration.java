@@ -26,8 +26,8 @@ public class SequenceDeclaration extends Declaration{
         this.ThisDeclaration = ThisDeclaration;
     }
 
-    public SequenceDeclaration getNextDeclarations() {
-        return (SequenceDeclaration) NextDeclarations;
+    public Declaration getNextDeclarations() {
+        return NextDeclarations;
     }
 
     public void setNextDeclarations(SequenceDeclaration NextDeclarations) {

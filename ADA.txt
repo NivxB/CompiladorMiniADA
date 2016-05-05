@@ -2,9 +2,21 @@ procedure OneInt is
    Index : Integer := 1 + SUM("Multiplica * 2") * 2 * 3;
    Produ : Integer;
    procedure I is
+      procedure Ip is
+        Pos : Boolean;
+      begin
+      end Ip; 
       Po : Boolean;
+      procedure Io is
+        Pos : Boolean;
+      begin
+      end Io; 
    begin
    end I;
+  procedure Iq is
+     Pk:Integer;
+   begin
+   end Iq;
 BEGIN
   if Index then
       New_Line;

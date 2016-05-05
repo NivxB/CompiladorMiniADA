@@ -5,11 +5,23 @@
  */
 package analizadorlexico.AST.Expression;
 
+import analizadorlexico.TypeCheck.Type;
+
 /**
  *
  * @author kbarahona
  */
 public abstract class Expression {
+    private Type Type;
+
+    public Type getType() {
+        return Type;
+    }
+
+    public void setType(Type Type) {
+        this.Type = Type;
+    }
+    
     public Expression(){
         
     }

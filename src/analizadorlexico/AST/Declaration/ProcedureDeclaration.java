@@ -16,6 +16,38 @@ public class ProcedureDeclaration extends Declaration {
     private String Id;
     private String EndId;
     private ListDeclarationParameter LDP;
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String Id) {
+        this.Id = Id;
+    }
+
+    public String getEndId() {
+        return EndId;
+    }
+
+    public void setEndId(String EndId) {
+        this.EndId = EndId;
+    }
+
+    public Declaration getDec() {
+        return Dec;
+    }
+
+    public void setDec(Declaration Dec) {
+        this.Dec = Dec;
+    }
+
+    public Statement getStat() {
+        return Stat;
+    }
+
+    public void setStat(Statement Stat) {
+        this.Stat = Stat;
+    }
     private Declaration Dec;
     private Statement Stat;
 

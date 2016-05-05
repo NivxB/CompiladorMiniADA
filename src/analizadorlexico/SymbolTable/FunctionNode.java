@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analizadorlexico.SimbolicTable;
+package analizadorlexico.SymbolTable;
 
 import analizadorlexico.TypeCheck.*;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class FunctionNode extends Node{
         return hijos;
     }
 
-    public boolean setHijos(String id, Node nodo) {
+    public boolean addHijo(String id, Node nodo) {
         if(hijos.containsKey(id)){
             return false;
         }else{

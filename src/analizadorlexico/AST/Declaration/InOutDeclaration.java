@@ -5,18 +5,20 @@
  */
 package analizadorlexico.AST.Declaration;
 
+import analizadorlexico.TypeCheck.Type;
+
 /**
  *
  * @author kbarahona
  */
 public class InOutDeclaration extends Declaration {
     String Id;
-    String Type;
+    Type Type;
     String InOutType;
 
   
     
-    public InOutDeclaration(String Id, String Type, String InOutType) {
+    public InOutDeclaration(String Id, Type Type, String InOutType) {
 
         this.Id = Id;
         this.Type = Type;

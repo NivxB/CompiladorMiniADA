@@ -1,5 +1,6 @@
 package analizadorlexico;
 import java_cup.runtime.Symbol;
+import analizadorlexico.TypeCheck.*;
 %%
 %class Lexer
 %unicode
@@ -110,7 +111,18 @@ reverse     = "reverse"
   {multOperator}        {return symbol(sym.MULT_OPERATOR,yytext());}
   {relationOperator}    {return symbol(sym.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
-  {type}                {return symbol(sym.TYPE,yytext());}
+  {type}                { 
+                          String text = yytext().toUpperCase();
+                          Type retType = null;
+                          if (text.equals("INTEGER")){
+                            retType = new IntType();
+                          }else if (text.equals("FLOAT")){
+                            retType = new DoubleType();
+                          }else if (text.equals("BOOLEAN")){
+                            retType = null;
+                          }
+                          return symbol(sym.TYPE,retType); 
+                        }
   {literalBoolean}      {return symbol(sym.LITERAL_BOOLEAN,yytext());}
   {literalInteger}      {return symbol(sym.LITERAL_INT,yytext());}
   {endInstruction}      {return symbol(sym.END_INSTRUCTION);}

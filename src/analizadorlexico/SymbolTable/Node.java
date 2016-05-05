@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package analizadorlexico.AST;
+package analizadorlexico.SymbolTable;
 
 /**
  *
- * @author kbarahona
+ * @author Carlos
  */
 public abstract class Node {
-    public Node(){
-        
-    }
+    
 }

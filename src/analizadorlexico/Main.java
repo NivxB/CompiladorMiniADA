@@ -5,6 +5,8 @@
  */
 package analizadorlexico;
 
+import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
+import analizadorlexico.TypeCheck.VoidType;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -38,7 +40,9 @@ public class Main {
 //mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
             parser p = new parser(lexer);
             p.parse();
+            SemanticAnalysis semantic = new SemanticAnalysis(p.FINALOBJECT);
             mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
+            mapper.writeValue(new File("./TABLE.json"), semantic.getRoot());
        
         
         //for (Symbol sim : symbolList){

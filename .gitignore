@@ -4,3 +4,5 @@
 /src/analizadorlexico/Lexer.java~
 /src/analizadorlexico/parser.java
 /src/analizadorlexico/sym.java
+/nbproject/private/
+/build/

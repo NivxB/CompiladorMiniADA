@@ -14,6 +14,7 @@ import analizadorlexico.TypeCheck.*;
 public class SimpleNode extends Node{
     String id;
     Type tipo;
+    
 
     public SimpleNode(String Nombre, Type tipo) {
         this.id = Nombre;
@@ -34,6 +35,11 @@ public class SimpleNode extends Node{
 
     public void setTipo(Type tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public Type getType() {
+       return tipo;
     }
     
 }

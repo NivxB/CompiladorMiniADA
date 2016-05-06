@@ -11,13 +11,13 @@ package analizadorlexico.TypeCheck;
  */
 public class BooleanType extends Type{
 
-    public BooleanType(String TYPE) {
+    public BooleanType() {
         super("BOOLEAN");
     }
 
     @Override
     public boolean compare(Type value) {
-        return (value instanceof BooleanType && value.TYPE.equals("BOOLEAN"));
+        return (value.TYPE.equals("BOOLEAN"));
     }
     
 }

@@ -17,7 +17,7 @@ public class VoidType extends Type{
 
     @Override
     public boolean compare(Type value) {
-         return (value.TYPE.equals("INTEGER"));
+         return (value.TYPE.equals("VOID"));
     }
     
 }

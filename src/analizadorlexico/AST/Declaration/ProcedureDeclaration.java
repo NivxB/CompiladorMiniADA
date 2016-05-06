@@ -37,6 +37,16 @@ public class ProcedureDeclaration extends Declaration {
         return Dec;
     }
 
+    public ListDeclarationParameter getLDP() {
+        return LDP;
+    }
+
+    public void setLDP(ListDeclarationParameter LDP) {
+        this.LDP = LDP;
+    }
+    
+    
+
     public void setDec(Declaration Dec) {
         this.Dec = Dec;
     }

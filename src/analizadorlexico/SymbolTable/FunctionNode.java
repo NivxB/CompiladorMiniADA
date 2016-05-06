@@ -7,6 +7,7 @@ package analizadorlexico.SymbolTable;
 
 import analizadorlexico.TypeCheck.*;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -16,20 +17,31 @@ public class FunctionNode extends Node{
     String id;
     Type tipo;
     HashMap<String,Node> hijos;
-    Node padre;
+    FunctionNode padre;
+    List<Type> parameterType;
 
-    public FunctionNode(String id, Type tipo) {
+    public FunctionNode(String id, Type tipo , List<Type> pType) {
         this.id = id;
         this.tipo = tipo;
         this.padre = null;
+        this.parameterType = pType;
         hijos=new HashMap();
     }
 
-    public FunctionNode(String id, Type tipo, Node padre) {
+    public List<Type> getParameterType() {
+        return parameterType;
+    }
+
+    public void addParameter(Type type){
+        parameterType.add(type);
+    }
+
+    public FunctionNode(String id, Type tipo, List<Type> pType ,FunctionNode padre) {
         this.id = id;
         this.tipo = tipo;
         this.padre = padre;
         hijos=new HashMap();
+        this.parameterType = pType;
     }
 
     public Type getTipo() {
@@ -52,13 +64,49 @@ public class FunctionNode extends Node{
             return true;
         }
     }
-
+    
+    public Type searchTypeById(String id){
+        Node retVal = searchNodeById(id);
+        if (retVal != null){
+            return retVal.getType();
+        }
+        return null;
+    }
+    
+    public Node searchNodeById(String id){
+        if (hijos.containsKey("id")){
+            return hijos.get(id);
+        }else if (padre != null){
+            Node retVal = padre.searchNodeById(id);
+            if (retVal != null){
+                return retVal;
+            }
+        }
+        return null;
+    }
+    
+    public boolean compareParameters(List<Type> params){
+        boolean retVal = true;
+        if (params.size() != parameterType.size()){
+            retVal = false;
+        }
+        for (int i = 0 ; i < params.size() && retVal ; i++){
+            retVal = parameterType.get(i).compare(params.get(i));
+        }
+        return retVal;
+    }
+    
     public Node getPadre() {
         return padre;
     }
 
-    public void setPadre(Node padre) {
+    public void setPadre(FunctionNode padre) {
         this.padre = padre;
+    }
+
+    @Override
+    public Type getType() {
+        return tipo;
     }
     
 }

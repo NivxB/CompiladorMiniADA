@@ -29,6 +29,16 @@ public class FunctionDeclaration extends Declaration{
         return EndId;
     }
 
+    public ListDeclarationParameter getLDP() {
+        return LDP;
+    }
+
+    public void setLDP(ListDeclarationParameter LDP) {
+        this.LDP = LDP;
+    }
+    
+    
+
     public void setEndId(String EndId) {
         this.EndId = EndId;
     }

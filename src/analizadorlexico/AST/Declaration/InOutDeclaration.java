@@ -16,6 +16,30 @@ public class InOutDeclaration extends Declaration {
     Type Type;
     String InOutType;
 
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String Id) {
+        this.Id = Id;
+    }
+
+    public Type getType() {
+        return Type;
+    }
+
+    public void setType(Type Type) {
+        this.Type = Type;
+    }
+
+    public String getInOutType() {
+        return InOutType;
+    }
+
+    public void setInOutType(String InOutType) {
+        this.InOutType = InOutType;
+    }
+
   
     
     public InOutDeclaration(String Id, Type Type, String InOutType) {

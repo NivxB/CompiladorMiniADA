@@ -9,14 +9,14 @@ package analizadorlexico.TypeCheck;
  *
  * @author Kevin Barahona
  */
-public class DoubleType extends Type{
+public class FloatType extends Type{
 
-    public DoubleType() {
+    public FloatType() {
         super("DOUBLE");
     }
     
     @Override
     public boolean compare(Type value) {
-        return (value instanceof DoubleType && value.TYPE.equals("DOUBLE"));
+        return (value.TYPE.equals("DOUBLE"));
     }
 }

@@ -117,9 +117,9 @@ reverse     = "reverse"
                           if (text.equals("INTEGER")){
                             retType = new IntType();
                           }else if (text.equals("FLOAT")){
-                            retType = new DoubleType();
+                            retType = new FloatType();
                           }else if (text.equals("BOOLEAN")){
-                            retType = null;
+                            retType = new BooleanType();
                           }
                           return symbol(sym.TYPE,retType); 
                         }

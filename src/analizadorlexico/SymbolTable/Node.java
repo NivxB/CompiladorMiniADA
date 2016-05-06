@@ -5,10 +5,13 @@
  */
 package analizadorlexico.SymbolTable;
 
+import analizadorlexico.TypeCheck.Type;
+import java.util.List;
+
 /**
  *
  * @author Carlos
  */
 public abstract class Node {
-    
+    public abstract Type getType();
 }

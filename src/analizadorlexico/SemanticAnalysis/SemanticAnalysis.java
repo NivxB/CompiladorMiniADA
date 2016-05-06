@@ -8,6 +8,8 @@ package analizadorlexico.SemanticAnalysis;
 import analizadorlexico.AST.Declaration.AsignationDeclaration;
 import analizadorlexico.AST.Declaration.Declaration;
 import analizadorlexico.AST.Declaration.FunctionDeclaration;
+import analizadorlexico.AST.Declaration.InOutDeclaration;
+import analizadorlexico.AST.Declaration.ListDeclarationParameter;
 import analizadorlexico.AST.Declaration.ProcedureDeclaration;
 import analizadorlexico.AST.Declaration.SequenceDeclaration;
 import analizadorlexico.AST.Declaration.SimpleDeclaration;
@@ -17,6 +19,8 @@ import analizadorlexico.SymbolTable.Node;
 import analizadorlexico.SymbolTable.SimpleNode;
 import analizadorlexico.TypeCheck.Type;
 import analizadorlexico.TypeCheck.VoidType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -24,13 +28,14 @@ import analizadorlexico.TypeCheck.VoidType;
  */
 public class SemanticAnalysis {
     FunctionNode root;
+    public static boolean hasError = false;
 
     public SemanticAnalysis(String id, Type tipo) {
-        this.root = new FunctionNode(id,tipo);
+        this.root = new FunctionNode(id,tipo, new ArrayList<>());
     }
     
     public SemanticAnalysis(InitProcedure Proc) {
-        this.root = new FunctionNode(Proc.getBeginId(),new VoidType());
+        this.root = new FunctionNode(Proc.getBeginId(),new VoidType(),new ArrayList<>());
         checkDeclaration(Proc.getDec(),root);
     }
    
@@ -61,14 +66,22 @@ public class SemanticAnalysis {
             }
         }else if (declarationCheck instanceof ProcedureDeclaration){
             ProcedureDeclaration tmp = (ProcedureDeclaration)declarationCheck;
-            FunctionNode newScope = new FunctionNode(tmp.getId(),new VoidType(),null);
+            //CHANGE NULL ON FINAL
+            FunctionNode newScope = new FunctionNode(tmp.getId(),new VoidType(),new ArrayList<>(),null);
+            checkParametersFunction(tmp.getLDP(),newScope);
             checkDeclaration(tmp.getDec(),newScope);
-            Parent.addHijo(tmp.getId(), newScope);
+            if (!Parent.addHijo(tmp.getId(), newScope)){
+                hasError = true;
+            } 
         }else if (declarationCheck instanceof FunctionDeclaration){
             FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
-            FunctionNode newScope = new FunctionNode(tmp.getId(),tmp.getRetType(),null);
+            //CHANGE NULL ON FINAL
+            FunctionNode newScope = new FunctionNode(tmp.getId(),tmp.getRetType(),new ArrayList<>(),null);
+            checkParametersFunction(tmp.getLDP(),newScope);
             checkDeclaration(tmp.getDec(),newScope);
-            Parent.addHijo(tmp.getId(), newScope);
+            if (!Parent.addHijo(tmp.getId(), newScope)){
+                hasError = true;
+            }
         }
         
         if (nextCheck != null){
@@ -76,5 +89,23 @@ public class SemanticAnalysis {
         }
         
     }
-;
+    
+    private void checkParametersFunction(ListDeclarationParameter List,FunctionNode function){
+        Declaration declarationCheck = List.getDec();
+        ListDeclarationParameter nextCheck = List.getLDP();
+        if (declarationCheck instanceof AsignationDeclaration) {
+            SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
+            for (int i = 0; i < simple.getIDs().size(); i++) {
+                function.addParameter(simple.getType());
+                function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
+            }
+        }else if (declarationCheck instanceof InOutDeclaration){
+            InOutDeclaration tmp = (InOutDeclaration)declarationCheck;
+            function.addParameter(tmp.getType());
+            function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType()));
+        }
+        if (nextCheck != null){
+            checkParametersFunction(nextCheck,function);
+        }
+    }
 }

@@ -17,7 +17,7 @@ public class IntType extends Type{
 
     @Override
     public boolean compare(Type value) {
-        return (value instanceof IntType && value.TYPE.equals("INTEGER"));
+        return (value.TYPE.equals("INTEGER"));
     }
     
 }

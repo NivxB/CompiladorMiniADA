@@ -15,6 +15,7 @@ import analizadorlexico.AST.Declaration.SequenceDeclaration;
 import analizadorlexico.AST.Declaration.SimpleDeclaration;
 import analizadorlexico.AST.InitProcedure;
 import analizadorlexico.SymbolTable.FunctionNode;
+import analizadorlexico.SymbolTable.ListFunctionNode;
 import analizadorlexico.SymbolTable.Node;
 import analizadorlexico.SymbolTable.SimpleNode;
 import analizadorlexico.TypeCheck.Type;
@@ -70,8 +71,17 @@ public class SemanticAnalysis {
             FunctionNode newScope = new FunctionNode(tmp.getId(),new VoidType(),new ArrayList<>(),null);
             checkParametersFunction(tmp.getLDP(),newScope);
             checkDeclaration(tmp.getDec(),newScope);
-            if (!Parent.addHijo(tmp.getId(), newScope)){
-                hasError = true;
+            ListFunctionNode functionlist = new ListFunctionNode(tmp.getId(),new ArrayList());
+            functionlist.addFunction(newScope);
+            if (!Parent.addHijo(tmp.getId(), functionlist)){
+                if(Parent.getHijos().get(tmp.getId()) instanceof ListFunctionNode){
+                    if(!((ListFunctionNode)Parent.getHijos().get(tmp.getId())).addFunction(newScope)){
+                       hasError= true; 
+                    }
+                }else{
+                    hasError = true;
+                }
+                
             } 
         }else if (declarationCheck instanceof FunctionDeclaration){
             FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
@@ -82,7 +92,7 @@ public class SemanticAnalysis {
             if (!Parent.addHijo(tmp.getId(), newScope)){
                 hasError = true;
             }
-        }
+        }else 
         
         if (nextCheck != null){
             checkDeclaration(nextCheck,Parent);

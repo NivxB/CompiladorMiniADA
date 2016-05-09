@@ -89,8 +89,17 @@ public class SemanticAnalysis {
             FunctionNode newScope = new FunctionNode(tmp.getId(),tmp.getRetType(),new ArrayList<>(),null);
             checkParametersFunction(tmp.getLDP(),newScope);
             checkDeclaration(tmp.getDec(),newScope);
-            if (!Parent.addHijo(tmp.getId(), newScope)){
-                hasError = true;
+            ListFunctionNode functionlist = new ListFunctionNode(tmp.getId(),new ArrayList());
+            functionlist.addFunction(newScope);
+            if (!Parent.addHijo(tmp.getId(), functionlist)){
+                if(Parent.getHijos().get(tmp.getId()) instanceof ListFunctionNode){
+                    if(!((ListFunctionNode)Parent.getHijos().get(tmp.getId())).addFunction(newScope)){
+                       hasError= true; 
+                    }
+                }else{
+                    hasError = true;
+                }
+                
             }
         }else 
         

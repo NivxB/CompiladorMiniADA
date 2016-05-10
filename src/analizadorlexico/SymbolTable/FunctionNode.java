@@ -85,6 +85,16 @@ public class FunctionNode extends Node{
         return null;
     }
     
+    public Type searchFunctionNodeTypeById(String id, List<Type> params){
+        //TODO:
+        return null;
+    }
+    
+    public Node searchFunctionNodeById(String id, List<Type> params){
+        //TODO:
+        return null;
+    }
+    
     public boolean compareParameters(List<Type> params){
         boolean retVal = true;
         if (params.size() != parameterType.size()){

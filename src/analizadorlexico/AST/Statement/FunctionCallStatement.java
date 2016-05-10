@@ -18,6 +18,14 @@ public class FunctionCallStatement extends Statement{
     public FunctionCallStatement(Primary call) {
         this.call = (FunctionCall) call;
     }
+
+    public FunctionCall getCall() {
+        return call;
+    }
+
+    public void setCall(FunctionCall call) {
+        this.call = call;
+    }
    
     
 }

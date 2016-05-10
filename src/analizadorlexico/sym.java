@@ -38,6 +38,7 @@ public class sym {
   public static final int NULL = 31;
   public static final int CONSTANT = 26;
   public static final int ASIGNATION = 21;
+  public static final int LITERAL_FLOAT = 47;
   public static final int DECLARATION = 22;
   public static final int OPEN_PARENTHESIS = 8;
   public static final int LITERAL_INT = 46;
@@ -102,7 +103,8 @@ public class sym {
   "CONDITION_ELEMENT",
   "TYPE",
   "LITERAL_BOOLEAN",
-  "LITERAL_INT"
+  "LITERAL_INT",
+  "LITERAL_FLOAT"
   };
 }
 

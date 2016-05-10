@@ -17,4 +17,15 @@ public class PrimaryExpression extends Expression{
     public PrimaryExpression(Primary v) {
         value = v;
     }    
+
+    public Primary getValue() {
+        return value;
+    }
+
+    public void setValue(Primary value) {
+        this.value = value;
+       
+    }
+    
+    
 }

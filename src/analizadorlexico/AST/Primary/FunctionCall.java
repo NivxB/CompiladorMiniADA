@@ -36,8 +36,8 @@ public class FunctionCall extends Primary{
         this.Params = Params;
     }
     
-    
-    
-    
-    
+    @Override
+    public String getStringType() {
+        return "FUNCTION";
+    }
 }

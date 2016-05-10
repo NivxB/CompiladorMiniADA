@@ -60,9 +60,6 @@ public class ListFunctionNode extends Node{
         return retVal;
     }
     
-    
-    
-    
 
     @Override
     public Type getType() {

@@ -24,4 +24,9 @@ public class ID extends Primary{
         this.iD = iD;
     }
     
+    @Override
+    public String getStringType() {
+        return "ID";
+    }
+    
 }

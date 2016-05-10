@@ -9,11 +9,25 @@ package analizadorlexico.AST.Primary;
  *
  * @author kbarahona
  */
-public class EmptyPrimary extends Primary{
+public class LiteralFloat extends Primary{
+    private float value;
 
+    public LiteralFloat(float value) {
+        this.value = value;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
+    
     @Override
     public String getStringType() {
-        return "EMPTY";
+        return "FLOAT";
     }
+
     
 }

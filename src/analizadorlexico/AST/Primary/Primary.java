@@ -11,6 +11,7 @@ package analizadorlexico.AST.Primary;
  */
 public abstract class Primary {
     public Primary(){
-        
     }
+    
+    public abstract String getStringType();
 }

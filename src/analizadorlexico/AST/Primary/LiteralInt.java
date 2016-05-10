@@ -23,6 +23,11 @@ public class LiteralInt extends Primary{
     public void setValue(int value) {
         this.value = value;
     }
+    
+    @Override
+    public String getStringType() {
+        return "INTEGER";
+    }
 
     
 }

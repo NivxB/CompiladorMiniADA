@@ -53,6 +53,8 @@ parser code {:
           value = "(";
         }else if (id == sym.CLOSE_PARENTHESIS){
           value = ")";
+        }else if (id == sym.LITERAL_FLOAT){
+          value = "float";
         }
         value = "\""+value+"\"";
         return value;
@@ -94,6 +96,7 @@ terminal String ID,PUT,LITERAL_STRING,SUM_OPERATOR, MULT_OPERATOR,RELATION_OPERA
 terminal Type TYPE;
 terminal String LITERAL_BOOLEAN;
 terminal String LITERAL_INT;
+terminal String LITERAL_FLOAT;
 
 /*NON TERMINAL*/
 non terminal InitProcedure procedure;
@@ -255,6 +258,8 @@ parenthesis_operation ::= OPEN_PARENTHESIS mathematical_expression:me CLOSE_PARE
           {: RESULT = me; :}
           | LITERAL_INT:i
           {: RESULT = new PrimaryExpression(new LiteralInt(Integer.parseInt(i))); :}
+          | LITERAL_FLOAT:i
+          {: RESULT = new PrimaryExpression(new LiteralFloat(Float.parseFloat(i))); :}
           | ID:i
           {: RESULT = new PrimaryExpression(new ID(i)); :}
           | function_call:fc
@@ -283,6 +288,8 @@ primary  ::= LITERAL_BOOLEAN:e
           {:RESULT = new LiteralBoolean(Boolean.parseBoolean(e)); :}
           |   LITERAL_INT:i
           {:RESULT = new LiteralInt(Integer.parseInt(i)); :}
+          | LITERAL_FLOAT:i
+          {: RESULT = new LiteralFloat(Float.parseFloat(i)); :}
           |   LITERAL_STRING:S
           {:RESULT = new LiteralString(S);:}
           |   ID:i

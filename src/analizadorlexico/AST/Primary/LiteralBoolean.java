@@ -24,4 +24,8 @@ public class LiteralBoolean extends Primary{
         this.value = value;
     }
     
+    @Override
+    public String getStringType() {
+        return "BOOLEAN";
+    }
 }

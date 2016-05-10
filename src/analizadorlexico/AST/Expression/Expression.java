@@ -14,9 +14,7 @@ import analizadorlexico.TypeCheck.Type;
 public abstract class Expression {
     private Type Type;
 
-    public Type getType() {
-        return Type;
-    }
+   
 
     public void setType(Type Type) {
         this.Type = Type;

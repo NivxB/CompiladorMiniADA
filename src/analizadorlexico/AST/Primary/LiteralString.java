@@ -24,4 +24,9 @@ public class LiteralString extends Primary{
         this.value = value;
     }
     
+    @Override
+    public String getStringType() {
+        return "STRING";
+    }
+    
 }

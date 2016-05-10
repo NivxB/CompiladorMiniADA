@@ -28,18 +28,19 @@ import java.util.List;
  * @author Kevin Barahona
  */
 public class SemanticAnalysis {
+
     FunctionNode root;
     public static boolean hasError = false;
 
     public SemanticAnalysis(String id, Type tipo) {
-        this.root = new FunctionNode(id,tipo, new ArrayList<>());
+        this.root = new FunctionNode(id, tipo, new ArrayList<>());
     }
-    
+
     public SemanticAnalysis(InitProcedure Proc) {
-        this.root = new FunctionNode(Proc.getBeginId(),new VoidType(),new ArrayList<>());
-        checkDeclaration(Proc.getDec(),root);
+        this.root = new FunctionNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
+        checkDeclaration(Proc.getDec(), root);
     }
-   
+
     public FunctionNode getRoot() {
         return root;
     }
@@ -60,56 +61,60 @@ public class SemanticAnalysis {
             for (int i = 0; i < simple.getIDs().size(); i++) {
                 Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
             }
-        }else if (declarationCheck instanceof SimpleDeclaration){
+        } else if (declarationCheck instanceof SimpleDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
             for (int i = 0; i < simple.getIDs().size(); i++) {
                 Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
             }
-        }else if (declarationCheck instanceof ProcedureDeclaration){
-            ProcedureDeclaration tmp = (ProcedureDeclaration)declarationCheck;
+        } else if (declarationCheck instanceof ProcedureDeclaration) {
+            ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
-            FunctionNode newScope = new FunctionNode(tmp.getId(),new VoidType(),new ArrayList<>(),null);
-            checkParametersFunction(tmp.getLDP(),newScope);
-            checkDeclaration(tmp.getDec(),newScope);
-            ListFunctionNode functionlist = new ListFunctionNode(tmp.getId(),new ArrayList());
-            functionlist.addFunction(newScope);
-            if (!Parent.addHijo(tmp.getId(), functionlist)){
-                if(Parent.getHijos().get(tmp.getId()) instanceof ListFunctionNode){
-                    if(!((ListFunctionNode)Parent.getHijos().get(tmp.getId())).addFunction(newScope)){
-                       hasError= true; 
-                    }
-                }else{
+            FunctionNode newScope = new FunctionNode(tmp.getId(), new VoidType(), new ArrayList<>(), null);
+            checkParametersFunction(tmp.getLDP(), newScope);
+
+            if (Parent.getHijos().get(tmp.getId()) == null) {
+                ListFunctionNode tmpList = new ListFunctionNode(tmp.getId(), new ArrayList());
+                tmpList.addFunction(newScope);
+                if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
                 }
-                
-            } 
-        }else if (declarationCheck instanceof FunctionDeclaration){
-            FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
-            //CHANGE NULL ON FINAL
-            FunctionNode newScope = new FunctionNode(tmp.getId(),tmp.getRetType(),new ArrayList<>(),null);
-            checkParametersFunction(tmp.getLDP(),newScope);
-            checkDeclaration(tmp.getDec(),newScope);
-            ListFunctionNode functionlist = new ListFunctionNode(tmp.getId(),new ArrayList());
-            functionlist.addFunction(newScope);
-            if (!Parent.addHijo(tmp.getId(), functionlist)){
-                if(Parent.getHijos().get(tmp.getId()) instanceof ListFunctionNode){
-                    if(!((ListFunctionNode)Parent.getHijos().get(tmp.getId())).addFunction(newScope)){
-                       hasError= true; 
+            } else {
+                Node keyNode = Parent.getHijos().get(tmp.getId());
+                if (keyNode instanceof ListFunctionNode) {
+                    if (!((ListFunctionNode) keyNode).addFunction(newScope)) {
+                        hasError = true;
                     }
-                }else{
+                } else {
                     hasError = true;
                 }
-                
             }
-        }else 
-        
-        if (nextCheck != null){
-            checkDeclaration(nextCheck,Parent);
+            checkDeclaration(tmp.getDec(), newScope);
+        } else if (declarationCheck instanceof FunctionDeclaration) {
+            FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
+            //CHANGE NULL ON FINAL
+            FunctionNode newScope = new FunctionNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), null);
+            checkParametersFunction(tmp.getLDP(), newScope);
+            if (Parent.getHijos().get(tmp.getId()) == null) {
+                ListFunctionNode tmpList = new ListFunctionNode(tmp.getId(), new ArrayList());
+                tmpList.addFunction(newScope);
+                if (!Parent.addHijo(tmp.getId(), tmpList)) {
+                    hasError = true;
+                }
+            } else {
+                Node keyNode = Parent.getHijos().get(tmp.getId());
+                if (keyNode instanceof ListFunctionNode) {
+                    if (!((ListFunctionNode) keyNode).addFunction(newScope)) {
+                        hasError = true;
+                    }
+                } else {
+                    hasError = true;
+                }
+            }
+            checkDeclaration(tmp.getDec(), newScope);
         }
-        
     }
-    
-    private void checkParametersFunction(ListDeclarationParameter List,FunctionNode function){
+
+    private void checkParametersFunction(ListDeclarationParameter List, FunctionNode function) {
         Declaration declarationCheck = List.getDec();
         ListDeclarationParameter nextCheck = List.getLDP();
         if (declarationCheck instanceof AsignationDeclaration) {
@@ -118,13 +123,13 @@ public class SemanticAnalysis {
                 function.addParameter(simple.getType());
                 function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
             }
-        }else if (declarationCheck instanceof InOutDeclaration){
-            InOutDeclaration tmp = (InOutDeclaration)declarationCheck;
+        } else if (declarationCheck instanceof InOutDeclaration) {
+            InOutDeclaration tmp = (InOutDeclaration) declarationCheck;
             function.addParameter(tmp.getType());
             function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType()));
         }
-        if (nextCheck != null){
-            checkParametersFunction(nextCheck,function);
+        if (nextCheck != null) {
+            checkParametersFunction(nextCheck, function);
         }
     }
 }

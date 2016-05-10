@@ -35,32 +35,32 @@ public class ListFunctionNode extends Node{
     }
 
     public boolean addFunction(FunctionNode function) {
-        int bandera=0;
-        for (int i = 0; i < listfunction.size(); i++) {
+        boolean retVal = true;
+        for (int i = 0; i < listfunction.size() && retVal; i++) {
             FunctionNode functiontmp=listfunction.get(i);
             if(functiontmp.parameterType.size()==function.parameterType.size()){
-                for (int j = 0; j < functiontmp.parameterType.size(); j++) {
-                    if(functiontmp.parameterType.get(j)!=function.parameterType.get(j)){
-                        bandera=1;
-                    }
-                }
-                
-            }else{
-                bandera=1;
+                retVal = !compareParameters(functiontmp,function);
+                //Si se encuentran todos iguales, significa que ya existe una funcion igual
+                //TODO: comprobacion de tipo de retorno. 
             }
-            
         }
-        if(listfunction.isEmpty()){
-            bandera=1;
-        }
-        if(bandera==1){
+ 
+        if(retVal){
             this.listfunction.add(function);
-            return true;
-        }else{
-            return false;
         }
-        
+        return retVal;
     }
+    
+    private boolean compareParameters(FunctionNode ThisFunction,FunctionNode OtherFunction){
+        //Si todos son iguales return true
+        boolean retVal = true;
+        for (int j = 0; j < ThisFunction.parameterType.size() && retVal; j++) {
+            retVal = (ThisFunction.parameterType.get(j).compare(OtherFunction.parameterType.get(j)));
+        }
+        return retVal;
+    }
+    
+    
     
     
 

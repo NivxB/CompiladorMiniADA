@@ -42,6 +42,11 @@ public class ListFunctionNode extends Node{
                 retVal = !compareParameters(functiontmp,function);
                 //Si se encuentran todos iguales, significa que ya existe una funcion igual
                 //TODO: comprobacion de tipo de retorno. 
+                if(!retVal){
+                    if(functiontmp.tipo!=function.tipo){
+                        retVal=true;
+                    }
+                }
             }
         }
  

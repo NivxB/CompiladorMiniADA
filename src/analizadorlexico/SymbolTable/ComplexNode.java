@@ -13,19 +13,23 @@ import java.util.List;
  *
  * @author Carlos
  */
-public class FunctionNode extends Node{
-    String id;
-    Type tipo;
-    HashMap<String,Node> hijos;
-    FunctionNode padre;
-    List<Type> parameterType;
+public class ComplexNode extends Node{
+    private String id;
+    private Type retType;
+    private HashMap<String,Node> hijos;
+    private ComplexNode padre;
+    private List<Type> parameterType;
+    private int offset;
+    
+    
 
-    public FunctionNode(String id, Type tipo , List<Type> pType) {
+    public ComplexNode(String id, Type retType , List<Type> pType) {
         this.id = id;
-        this.tipo = tipo;
+        this.retType = retType;
         this.padre = null;
         this.parameterType = pType;
         hijos=new HashMap();
+        offset = 0;
     }
 
     public List<Type> getParameterType() {
@@ -36,20 +40,16 @@ public class FunctionNode extends Node{
         parameterType.add(type);
     }
 
-    public FunctionNode(String id, Type tipo, List<Type> pType ,FunctionNode padre) {
+    public ComplexNode(String id, Type retType, List<Type> pType ,ComplexNode padre) {
         this.id = id;
-        this.tipo = tipo;
+        this.retType = retType;
         this.padre = padre;
         hijos=new HashMap();
         this.parameterType = pType;
     }
 
-    public Type getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Type tipo) {
-        this.tipo = tipo;
+    public void setTipo(Type retType) {
+        this.retType = retType;
     }
 
     public HashMap<String, Node> getHijos() {
@@ -60,6 +60,9 @@ public class FunctionNode extends Node{
         if(hijos.containsKey(id)){
             return false;
         }else{
+            if (nodo.getType() != null){
+                offset+=nodo.getType().getSIZE();
+            }
             hijos.put(id, nodo);
             return true;
         }
@@ -110,13 +113,16 @@ public class FunctionNode extends Node{
         return padre;
     }
 
-    public void setPadre(FunctionNode padre) {
+    public void setPadre(ComplexNode padre) {
         this.padre = padre;
     }
 
     @Override
     public Type getType() {
-        return tipo;
+        return retType;
     }
     
+    public Type getRetType(){
+        return retType;
+    }
 }

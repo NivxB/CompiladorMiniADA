@@ -31,9 +31,11 @@ import analizadorlexico.AST.Statement.CaseStatement;
 import analizadorlexico.AST.Statement.ForStatement;
 import analizadorlexico.AST.Statement.FunctionCallStatement;
 import analizadorlexico.AST.Statement.IfStatement;
+import analizadorlexico.AST.Statement.SequenceStatement;
 import analizadorlexico.AST.Statement.Statement;
-import analizadorlexico.SymbolTable.FunctionNode;
-import analizadorlexico.SymbolTable.ListFunctionNode;
+import analizadorlexico.AST.Statement.WhileStatement;
+import analizadorlexico.SymbolTable.ComplexNode;
+import analizadorlexico.SymbolTable.ListComplexNode;
 import analizadorlexico.SymbolTable.Node;
 import analizadorlexico.SymbolTable.SimpleNode;
 import analizadorlexico.TypeCheck.BooleanType;
@@ -50,28 +52,28 @@ import java.util.List;
  */
 public class SemanticAnalysis {
 
-    private FunctionNode root;
-    private FunctionNode currentScope;
+    private ComplexNode root;
+    private ComplexNode currentScope;
     public static boolean hasError = false;
 
     public SemanticAnalysis(String id, Type tipo) {
-        this.root = new FunctionNode(id, tipo, new ArrayList<>());
+        this.root = new ComplexNode(id, tipo, new ArrayList<>());
     }
 
     public SemanticAnalysis(InitProcedure Proc) {
-        this.root = new FunctionNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
+        this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
         checkDeclaration(Proc.getDec(), root);
     }
 
-    public FunctionNode getRoot() {
+    public ComplexNode getRoot() {
         return root;
     }
 
-    public void setRoot(FunctionNode root) {
+    public void setRoot(ComplexNode root) {
         this.root = root;
     }
 
-    public void checkDeclaration(Declaration Dec, FunctionNode Parent) {
+    public void checkDeclaration(Declaration Dec, ComplexNode Parent) {
         Declaration declarationCheck = Dec;
         Declaration nextCheck = null;
         if (Dec instanceof SequenceDeclaration) {
@@ -91,19 +93,19 @@ public class SemanticAnalysis {
         } else if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
-            FunctionNode newScope = new FunctionNode(tmp.getId(), new VoidType(), new ArrayList<>(), null);
+            ComplexNode newScope = new ComplexNode(tmp.getId(), new VoidType(), new ArrayList<>(), null);
             checkParametersFunction(tmp.getLDP(), newScope);
 
             if (Parent.getHijos().get(tmp.getId()) == null) {
-                ListFunctionNode tmpList = new ListFunctionNode(tmp.getId(), new ArrayList());
+                ListComplexNode tmpList = new ListComplexNode(tmp.getId(), new ArrayList());
                 tmpList.addFunction(newScope);
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
                 }
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
-                if (keyNode instanceof ListFunctionNode) {
-                    if (!((ListFunctionNode) keyNode).addFunction(newScope)) {
+                if (keyNode instanceof ListComplexNode) {
+                    if (!((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
                     }
                 } else {
@@ -114,18 +116,18 @@ public class SemanticAnalysis {
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
-            FunctionNode newScope = new FunctionNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), null);
+            ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), null);
             checkParametersFunction(tmp.getLDP(), newScope);
             if (Parent.getHijos().get(tmp.getId()) == null) {
-                ListFunctionNode tmpList = new ListFunctionNode(tmp.getId(), new ArrayList());
+                ListComplexNode tmpList = new ListComplexNode(tmp.getId(), new ArrayList());
                 tmpList.addFunction(newScope);
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
                 }
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
-                if (keyNode instanceof ListFunctionNode) {
-                    if (!((ListFunctionNode) keyNode).addFunction(newScope)) {
+                if (keyNode instanceof ListComplexNode) {
+                    if (!((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
                     }
                 } else {
@@ -136,7 +138,7 @@ public class SemanticAnalysis {
         }
     }
 
-    private void checkParametersFunction(ListDeclarationParameter List, FunctionNode function) {
+    private void checkParametersFunction(ListDeclarationParameter List, ComplexNode function) {
         Declaration declarationCheck = List.getDec();
         ListDeclarationParameter nextCheck = List.getLDP();
         if (declarationCheck instanceof AsignationDeclaration) {
@@ -154,98 +156,111 @@ public class SemanticAnalysis {
             checkParametersFunction(nextCheck, function);
         }
     }
-    
-    private void checkStatement(Statement Stat,FunctionNode Parent){
-        if (Stat instanceof AsignationStatement){
-            AsignationStatement tmp = (AsignationStatement)Stat;
+
+    private void checkStatement(Statement Stat, ComplexNode Parent) {
+        Statement checkNext = null;
+        Statement thisStatement = Stat;
+        if (Stat instanceof SequenceStatement) {
+            SequenceStatement tmp = (SequenceStatement) thisStatement;
+            checkNext = tmp.getNextSequenceStatement();
+            thisStatement = tmp.getThisStatement();
+        }
+        if (thisStatement instanceof AsignationStatement) {
+            AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());
-            Type secondType = getExpressionType(tmp.getExp(),Parent);
-            if (!firstType.compare(secondType)){
+            Type secondType = getExpressionType(tmp.getExp(), Parent);
+            if (!firstType.compare(secondType)) {
                 hasError = true;
             }
-        }else if (Stat instanceof CaseStatement){
+        } else if (thisStatement instanceof CaseStatement) {
             //TODO:
-        }else if (Stat instanceof ForStatement){
-            ForStatement tmp = (ForStatement)Stat;
-            checkStatement(tmp.getAsig(),Parent);
-            checkStatement(tmp.getStat(),Parent);
+        } else if (thisStatement instanceof ForStatement) {
+            ForStatement tmp = (ForStatement) thisStatement;
+            checkStatement(tmp.getAsig(), Parent);
+            checkStatement(tmp.getStat(), Parent);
             //TODO: Expression?
-        }else if (Stat instanceof FunctionCallStatement){
-            getPrimaryType(((FunctionCallStatement)Stat).getCall(),Parent);
-        }else if (Stat instanceof IfStatement){
+        } else if (thisStatement instanceof FunctionCallStatement) {
+            getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent);
+        } else if (thisStatement instanceof IfStatement) {
+            //TODO:
+        }else if (thisStatement instanceof WhileStatement){
             //TODO:
         }
-        //TODO:
+        
+        if (checkNext != null){
+            checkStatement(checkNext,Parent);
+        }
+        
     }
-    
-    private Type getExpressionType(Expression Exp,FunctionNode Parent){
-        if (Exp instanceof AddExpression){
-            AddExpression tmp = (AddExpression)Exp;
-            Type firstType = getExpressionType(tmp.getExp1(),Parent);
-            Type secondType = getExpressionType(tmp.getExp2(),Parent);
+
+    private Type getExpressionType(Expression Exp, ComplexNode Parent) {
+        if (Exp instanceof AddExpression) {
+            AddExpression tmp = (AddExpression) Exp;
+            Type firstType = getExpressionType(tmp.getExp1(), Parent);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //AND INT, FLOAT TYPE?
-            if (firstType.compare(secondType)){
+            if (firstType.compare(secondType)) {
                 return firstType;
-            }else{
+            } else {
                 //CHANGE NULL TO ERRORTYPE
                 return null;
             }
-        }else if(Exp instanceof MultExpression){ 
-            MultExpression tmp = (MultExpression)Exp;
-            Type firstType = getExpressionType(tmp.getExp1(),Parent);
-            Type secondType = getExpressionType(tmp.getExp2(),Parent);
+        } else if (Exp instanceof MultExpression) {
+            MultExpression tmp = (MultExpression) Exp;
+            Type firstType = getExpressionType(tmp.getExp1(), Parent);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //ADD INT, FLOAT CHECK?
-            if (firstType.compare(secondType)){
+            if (firstType.compare(secondType)) {
                 return firstType;
-            }else{
+            } else {
                 //CHANGE NULL TO ERRORTYPE
                 return null;
             }
-        }else if(Exp instanceof ConditionExpression){ 
-            ConditionExpression tmp = (ConditionExpression)Exp;
-            Type firstType = getExpressionType(tmp.getExp1(),Parent);
-            Type secondType = getExpressionType(tmp.getExp2(),Parent);
+        } else if (Exp instanceof ConditionExpression) {
+            ConditionExpression tmp = (ConditionExpression) Exp;
+            Type firstType = getExpressionType(tmp.getExp1(), Parent);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //ADD BOOLEAN CHECK?
-            if (firstType.compare(secondType)){
+            if (firstType.compare(secondType)) {
                 return firstType;
-            }else{
+            } else {
                 //CHANGE NULL TO ERRORTYPE
                 return null;
             }
-        }else if(Exp instanceof RelationExpression){ 
-            RelationExpression tmp = (RelationExpression)Exp;
-            Type firstType = getExpressionType(tmp.getExp1(),Parent);
-            Type secondType = getExpressionType(tmp.getExp2(),Parent);
+        } else if (Exp instanceof RelationExpression) {
+            RelationExpression tmp = (RelationExpression) Exp;
+            Type firstType = getExpressionType(tmp.getExp1(), Parent);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //ADD BOOLEAN CHECK?
-            if (firstType.compare(secondType)){
+            if (firstType.compare(secondType)) {
                 return firstType;
-            }else{
+            } else {
                 //CHANGE NULL TO ERRORTYPE
                 return null;
             }
-        }else if (Exp instanceof PrimaryExpression){
-            return getPrimaryType(((PrimaryExpression)Exp).getValue(),Parent);
+        } else if (Exp instanceof PrimaryExpression) {
+            return getPrimaryType(((PrimaryExpression) Exp).getValue(), Parent);
         }
         //CHANGE NULL TO ERRORTYPE
         return null;
     }
-    
-    private Type getPrimaryType(Primary Prim,FunctionNode Parent){
-        if (Prim instanceof FunctionCall){
-            FunctionCall tmp = (FunctionCall)Prim;
+
+    private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
+        if (Prim instanceof FunctionCall) {
+            FunctionCall tmp = (FunctionCall) Prim;
             List<Type> tmpParams = new ArrayList();
-            for (int i = 0 ; i<tmp.getParams().getValues().size() ; i++){
-                tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i),Parent));
+            for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
+                tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
             }
-            return Parent.searchFunctionNodeTypeById(tmp.getID(),tmpParams);
-        }else if (Prim instanceof ID){
-            ID tmp = (ID)Prim;
+            return Parent.searchFunctionNodeTypeById(tmp.getID(), tmpParams);
+        } else if (Prim instanceof ID) {
+            ID tmp = (ID) Prim;
             return Parent.searchTypeById(tmp.getID());
-        }else if (Prim instanceof LiteralBoolean){
+        } else if (Prim instanceof LiteralBoolean) {
             return new BooleanType();
-        }else if (Prim instanceof LiteralFloat){
+        } else if (Prim instanceof LiteralFloat) {
             return new FloatType();
-        }else if (Prim instanceof LiteralInt){
+        } else if (Prim instanceof LiteralInt) {
             return new IntType();
         }
         return null;

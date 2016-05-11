@@ -11,6 +11,13 @@ package analizadorlexico.TypeCheck;
  */
 public abstract class Type {
     protected String TYPE;
+    protected int SIZE;
+    
+    protected final int INTEGER_SIZE = 4;//bytes
+    protected final int FLOAT_SIZE = 8;//bytes
+    protected final int BOOLEAN_SIZE = 1;//bytes
+    protected final int VOID_SIZE = 0;//bytes?
+    
     protected Type(String TYPE) {
         this.TYPE = TYPE;
     }
@@ -22,6 +29,9 @@ public abstract class Type {
     public void setTYPE(String TYPE) {
         this.TYPE = TYPE;
     }
+
+    public abstract int getSIZE();
+    
     
     public abstract boolean compare(Type value);
 }

@@ -20,4 +20,9 @@ public class VoidType extends Type{
          return (value.TYPE.equals("VOID"));
     }
     
+        @Override
+    public int getSIZE(){
+        return super.VOID_SIZE;
+    }
+    
 }

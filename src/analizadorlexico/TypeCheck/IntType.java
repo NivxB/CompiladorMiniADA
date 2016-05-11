@@ -20,4 +20,9 @@ public class IntType extends Type{
         return (value.TYPE.equals("INTEGER"));
     }
     
+        @Override
+    public int getSIZE(){
+        return super.INTEGER_SIZE;
+    }
+    
 }

@@ -19,4 +19,9 @@ public class FloatType extends Type{
     public boolean compare(Type value) {
         return (value.TYPE.equals("DOUBLE"));
     }
+    
+        @Override
+    public int getSIZE(){
+        return super.FLOAT_SIZE;
+    }
 }

@@ -12,12 +12,18 @@ package analizadorlexico.TypeCheck;
 public class BooleanType extends Type{
 
     public BooleanType() {
+        //1 byte
         super("BOOLEAN");
     }
 
     @Override
     public boolean compare(Type value) {
         return (value.TYPE.equals("BOOLEAN"));
+    }
+    
+    @Override
+    public int getSIZE(){
+        return super.BOOLEAN_SIZE;
     }
     
 }

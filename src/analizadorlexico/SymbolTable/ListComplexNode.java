@@ -13,11 +13,11 @@ import java.util.List;
  *
  * @author Carlos
  */
-public class ListFunctionNode extends Node{
+public class ListComplexNode extends Node{
     String id;
-    List<FunctionNode> listfunction;
+    List<ComplexNode> listfunction;
 
-    public ListFunctionNode(String id, List<FunctionNode> Fnode) {
+    public ListComplexNode(String id, List<ComplexNode> Fnode) {
         this.id = id;
         this.listfunction=Fnode; 
     }
@@ -30,20 +30,20 @@ public class ListFunctionNode extends Node{
         this.id = id;
     }
 
-    public List<FunctionNode> getListfunction() {
+    public List<ComplexNode> getListfunction() {
         return listfunction;
     }
 
-    public boolean addFunction(FunctionNode function) {
+    public boolean addFunction(ComplexNode function) {
         boolean retVal = true;
         for (int i = 0; i < listfunction.size() && retVal; i++) {
-            FunctionNode functiontmp=listfunction.get(i);
-            if(functiontmp.parameterType.size()==function.parameterType.size()){
+            ComplexNode functiontmp=listfunction.get(i);
+            if(functiontmp.getParameterType().size()==function.getParameterType().size()){
                 retVal = !compareParameters(functiontmp,function);
                 //Si se encuentran todos iguales, significa que ya existe una funcion igual
                 //TODO: comprobacion de tipo de retorno. 
                 if(!retVal){
-                    if(functiontmp.tipo!=function.tipo){
+                    if(functiontmp.getRetType()!=function.getRetType()){
                         retVal=true;
                     }
                 }
@@ -56,11 +56,11 @@ public class ListFunctionNode extends Node{
         return retVal;
     }
     
-    private boolean compareParameters(FunctionNode ThisFunction,FunctionNode OtherFunction){
+    private boolean compareParameters(ComplexNode ThisFunction,ComplexNode OtherFunction){
         //Si todos son iguales return true
         boolean retVal = true;
-        for (int j = 0; j < ThisFunction.parameterType.size() && retVal; j++) {
-            retVal = (ThisFunction.parameterType.get(j).compare(OtherFunction.parameterType.get(j)));
+        for (int j = 0; j < ThisFunction.getParameterType().size() && retVal; j++) {
+            retVal = (ThisFunction.getParameterType().get(j).compare(OtherFunction.getParameterType().get(j)));
         }
         return retVal;
     }
@@ -68,6 +68,6 @@ public class ListFunctionNode extends Node{
 
     @Override
     public Type getType() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 }

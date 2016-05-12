@@ -6,6 +6,7 @@
 package analizadorlexico.SymbolTable;
 
 import analizadorlexico.TypeCheck.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,6 +99,8 @@ public class ComplexNode extends Node{
         return null;
     }
     
+
+    
     public boolean compareParameters(List<Type> params){
         boolean retVal = true;
         if (params.size() != parameterType.size()){
@@ -119,7 +122,7 @@ public class ComplexNode extends Node{
 
     @Override
     public Type getType() {
-        return retType;
+        return new VoidType();
     }
     
     public Type getRetType(){

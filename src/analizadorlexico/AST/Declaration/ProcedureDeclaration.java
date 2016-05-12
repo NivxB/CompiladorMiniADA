@@ -6,6 +6,9 @@
 package analizadorlexico.AST.Declaration;
 
 import analizadorlexico.AST.Statement.Statement;
+import analizadorlexico.TypeCheck.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -43,6 +46,26 @@ public class ProcedureDeclaration extends Declaration {
 
     public void setLDP(ListDeclarationParameter LDP) {
         this.LDP = LDP;
+    }
+    
+    public List<Type> getParamsType(ListDeclarationParameter LDP,List<Type> parent){
+        List<Type> tmpRetVal = new ArrayList<>();
+        Declaration tmpDec = LDP.getDec();
+        ListDeclarationParameter tmpCheck = LDP.getLDP();
+        if (tmpDec instanceof AsignationDeclaration){
+            AsignationDeclaration tmp = (AsignationDeclaration)tmpDec;
+            SimpleDeclaration tmpSimple = (SimpleDeclaration) tmp.getSimpleDeclaration();
+            for (String id: tmpSimple.getIDs()){
+                tmpRetVal.add(tmpSimple.getType());
+            }
+        }else if (tmpDec instanceof InOutDeclaration){
+            InOutDeclaration tmp = (InOutDeclaration)tmpDec;
+            tmpRetVal.add(tmp.getType());
+        }
+        if (tmpCheck != null){
+            tmpRetVal.addAll(getParamsType(tmpCheck,tmpRetVal));
+        }
+        return tmpRetVal;
     }
     
     

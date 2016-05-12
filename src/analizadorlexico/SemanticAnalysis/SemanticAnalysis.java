@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Kevin Barahona
  */
-public class SemanticAnalysis {
+public final class SemanticAnalysis {
 
     private ComplexNode root;
     private ComplexNode currentScope;
@@ -63,6 +63,7 @@ public class SemanticAnalysis {
     public SemanticAnalysis(InitProcedure Proc) {
         this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
         checkDeclaration(Proc.getDec(), root);
+        checkStatement(Proc.getDec(),Proc.getStat(),root);        
     }
 
     public ComplexNode getRoot() {
@@ -183,14 +184,39 @@ public class SemanticAnalysis {
             getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent);
         } else if (thisStatement instanceof IfStatement) {
             //TODO:
-        }else if (thisStatement instanceof WhileStatement){
+        } else if (thisStatement instanceof WhileStatement) {
             //TODO:
         }
-        
-        if (checkNext != null){
-            checkStatement(checkNext,Parent);
+
+        if (checkNext != null) {
+            checkStatement(checkNext, Parent);
+        }
+
+    }
+
+    private void checkStatement(Declaration Dec, Statement Stat, ComplexNode Parent) {
+        Declaration declarationCheck = Dec;
+        Declaration nextCheck = null;
+        checkStatement(Stat,Parent);
+        if (Dec instanceof SequenceDeclaration) {
+            declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
+            nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
+        }
+        if (Dec instanceof FunctionDeclaration) {
+            FunctionDeclaration tmp = (FunctionDeclaration)Dec;
+            List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
+            ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
+            checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
+        } else if (Dec instanceof ProcedureDeclaration) {
+            FunctionDeclaration tmp = (FunctionDeclaration)Dec;
+            List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
+            ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
+            checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
         }
         
+        if (nextCheck != null){
+            checkStatement(nextCheck,Stat,Parent);
+        }
     }
 
     private Type getExpressionType(Expression Exp, ComplexNode Parent) {

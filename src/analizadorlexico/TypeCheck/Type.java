@@ -13,10 +13,11 @@ public abstract class Type {
     protected String TYPE;
     protected int SIZE;
     
-    protected final int INTEGER_SIZE = 4;//bytes
-    protected final int FLOAT_SIZE = 8;//bytes
-    protected final int BOOLEAN_SIZE = 1;//bytes
-    protected final int VOID_SIZE = 0;//bytes?
+    protected static final int INTEGER_SIZE = 4;//bytes
+    protected static final int FLOAT_SIZE = 8;//bytes
+    protected static final int BOOLEAN_SIZE = 1;//bytes
+    protected static final int VOID_SIZE = 0;//bytes?
+    
     
     protected Type(String TYPE) {
         this.TYPE = TYPE;

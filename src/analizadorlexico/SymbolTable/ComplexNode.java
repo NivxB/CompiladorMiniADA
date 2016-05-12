@@ -91,11 +91,38 @@ public class ComplexNode extends Node{
     
     public Type searchFunctionNodeTypeById(String id, List<Type> params){
         //TODO:
+        if(hijos.containsKey(id)){
+            if(hijos.get(id) instanceof ListComplexNode){
+                ListComplexNode functions = (ListComplexNode)hijos.get(id);
+                for (int i = 0; i < functions.getListfunction().size(); i++) {
+                    ComplexNode function=functions.getListfunction().get(i);
+                        if(function.compareParameters(params)){
+                            return retType;
+                        }else{
+                            return null;
+                        }
+                    
+                }
+            }
+        }
         return null;
     }
     
     public Node searchFunctionNodeById(String id, List<Type> params){
-        //TODO:
+        if(hijos.containsKey(id)){
+            if(hijos.get(id) instanceof ListComplexNode){
+                ListComplexNode functions = (ListComplexNode)hijos.get(id);
+                for (int i = 0; i < functions.getListfunction().size(); i++) {
+                    ComplexNode function=functions.getListfunction().get(i);
+                        if(function.compareParameters(params)){
+                            return function;
+                        }else{
+                            return null;
+                        }
+                    
+                }
+            }
+        }
         return null;
     }
     

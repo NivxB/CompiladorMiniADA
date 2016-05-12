@@ -29,6 +29,31 @@ public class IfStatement extends Statement{
 
     public IfStatement() {
     }
+
+    public Condition getCon() {
+        return Con;
+    }
+
+    public void setCon(Condition Con) {
+        this.Con = Con;
+    }
+
+    public Statement getStat() {
+        return Stat;
+    }
+
+    public void setStat(Statement Stat) {
+        this.Stat = Stat;
+    }
+
+    public Statement getElsIf() {
+        return ElsIf;
+    }
+
+    public void setElsIf(Statement ElsIf) {
+        this.ElsIf = ElsIf;
+    }
+    
     
     
 }

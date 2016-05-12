@@ -84,12 +84,16 @@ public final class SemanticAnalysis {
         if (declarationCheck instanceof AsignationDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
+                if(!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))){
+                    hasError=true;
+                }
             }
         } else if (declarationCheck instanceof SimpleDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
+                if(!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))){
+                    hasError=true;
+                }
             }
         } else if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
@@ -179,13 +183,27 @@ public final class SemanticAnalysis {
             ForStatement tmp = (ForStatement) thisStatement;
             checkStatement(tmp.getAsig(), Parent);
             checkStatement(tmp.getStat(), Parent);
-            //TODO: Expression?
+            Type AsigType = Parent.searchTypeById(tmp.getAsig().getID());
+            Type ExpType = this.getExpressionType(tmp.getExp(), Parent);
+            if(!AsigType.compare(ExpType)||ExpType==null){
+                hasError=true;
+            }
         } else if (thisStatement instanceof FunctionCallStatement) {
             getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent);
         } else if (thisStatement instanceof IfStatement) {
-            //TODO:
+            IfStatement tmp = (IfStatement) thisStatement;
+            checkStatement(tmp.getStat(), Parent);
+            if(this.getExpressionType(tmp.getCon().getExp(), Parent)==null){
+                hasError=true;
+            }
+            checkStatement(tmp.getElsIf(),Parent);
         } else if (thisStatement instanceof WhileStatement) {
-            //TODO:
+            WhileStatement tmp = (WhileStatement) thisStatement;
+            checkStatement(tmp.getStat(), Parent);
+            Type ExpType = this.getExpressionType(tmp.getCon().getExp(), Parent); 
+            if(ExpType==null){
+                hasError=true;
+            }
         }
 
         if (checkNext != null) {

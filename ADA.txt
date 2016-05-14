@@ -1,34 +1,26 @@
 procedure OneInt is
-   Index : Integer := 1 + SUM("Multiplica * 2") * 2 * 3;
-   Produ : Integer;
-   procedure I is
-      procedure Ip is
-        Pos : Boolean;
-      begin
-      end Ip; 
-      Po : Boolean;
-      procedure Io is
-        Pos : Boolean;
-      begin
-      end Io; 
+   A : Integer;
+   B : Integer;
+   F : Float;
+   function retInteger return Integer is
+    retIntegerA : Float;
+    retIntegerB : Float;
    begin
-   end I;
-  procedure Iq is
-     Pk:Integer;
+    retIntegerB := F + retIntegerA;
+   end retInteger;
+   C : Boolean;
+   function retBoolean return Boolean is
    begin
-   end Iq;
+   end retBoolean;
+   function retFloat return Float is
+   begin
+   end retFloat;
 BEGIN
-  if Index then
-      New_Line;
-	end if;		
-  TestString := true;
-  Put("The value of Index is");
-   --Put(Index);              -- The default field width is 11 columns
-   New_Line;
-   Index := Index; 
-   Put("The value of Index is");
-   Put(Index, 8);
-   New_Line;
+  if retBoolean() then
+      A:= B + 2;
+	end if;
+  C := false;
+  --B:= A * retFloat();
 end OneInt;
 
 

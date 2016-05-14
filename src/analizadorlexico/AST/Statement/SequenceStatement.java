@@ -26,8 +26,8 @@ public class SequenceStatement extends Statement{
         this.ThisStatement = ThisStatement;
     }
 
-    public SequenceStatement getNextSequenceStatement() {
-        return (SequenceStatement) NextSequenceStatement;
+    public Statement getNextSequenceStatement() {
+        return NextSequenceStatement;
     }
 
     public void setNextSequenceStatement(SequenceStatement NextSequenceStatement) {

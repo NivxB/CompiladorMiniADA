@@ -54,7 +54,8 @@ endInstruction  = ";"
 id          ={letter}({letter}*{number}*{especialChar}*)*
 letter      = [a-zA-Z]
 literalBoolean = "true" | "false"
-literalInteger     = {number}+ | {number}+"#"({number}| [A-F])+"#"
+literalInteger     = {number}+
+literalFloat      = {number}+\.{number}+
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
@@ -117,9 +118,9 @@ reverse     = "reverse"
                           if (text.equals("INTEGER")){
                             retType = new IntType();
                           }else if (text.equals("FLOAT")){
-                            retType = new DoubleType();
+                            retType = new FloatType();
                           }else if (text.equals("BOOLEAN")){
-                            retType = null;
+                            retType = new BooleanType();
                           }
                           return symbol(sym.TYPE,retType); 
                         }

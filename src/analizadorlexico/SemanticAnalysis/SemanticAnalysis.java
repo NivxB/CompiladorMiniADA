@@ -7,6 +7,7 @@ package analizadorlexico.SemanticAnalysis;
 
 import analizadorlexico.AST.Declaration.AsignationDeclaration;
 import analizadorlexico.AST.Declaration.Declaration;
+import analizadorlexico.AST.Declaration.EmptyDeclaration;
 import analizadorlexico.AST.Declaration.FunctionDeclaration;
 import analizadorlexico.AST.Declaration.InOutDeclaration;
 import analizadorlexico.AST.Declaration.ListDeclarationParameter;
@@ -28,6 +29,7 @@ import analizadorlexico.AST.Primary.LiteralInt;
 import analizadorlexico.AST.Primary.Primary;
 import analizadorlexico.AST.Statement.AsignationStatement;
 import analizadorlexico.AST.Statement.CaseStatement;
+import analizadorlexico.AST.Statement.EmptyStatement;
 import analizadorlexico.AST.Statement.ForStatement;
 import analizadorlexico.AST.Statement.FunctionCallStatement;
 import analizadorlexico.AST.Statement.IfStatement;
@@ -63,6 +65,7 @@ public final class SemanticAnalysis {
     public SemanticAnalysis(InitProcedure Proc) {
         this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
         checkDeclaration(Proc.getDec(), root);
+        System.out.println("");
         checkStatement(Proc.getDec(),Proc.getStat(),root);        
     }
 
@@ -81,6 +84,7 @@ public final class SemanticAnalysis {
             declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
             nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
         }
+        System.out.println(declarationCheck.getClass().toString());
         if (declarationCheck instanceof AsignationDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
@@ -98,7 +102,7 @@ public final class SemanticAnalysis {
         } else if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
-            ComplexNode newScope = new ComplexNode(tmp.getId(), new VoidType(), new ArrayList<>(), null);
+            ComplexNode newScope = new ComplexNode(tmp.getId(), new VoidType(), new ArrayList<>(), Parent);
             checkParametersFunction(tmp.getLDP(), newScope);
 
             if (Parent.getHijos().get(tmp.getId()) == null) {
@@ -117,11 +121,13 @@ public final class SemanticAnalysis {
                     hasError = true;
                 }
             }
+            System.out.println("");
+            System.out.println("Checking Declarations On: " +tmp.getId());
             checkDeclaration(tmp.getDec(), newScope);
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
-            ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), null);
+            ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), Parent);
             checkParametersFunction(tmp.getLDP(), newScope);
             if (Parent.getHijos().get(tmp.getId()) == null) {
                 ListComplexNode tmpList = new ListComplexNode(tmp.getId(), new ArrayList());
@@ -139,7 +145,13 @@ public final class SemanticAnalysis {
                     hasError = true;
                 }
             }
+            System.out.println("");
+            System.out.println("Checking Declarations On: " +tmp.getId());
             checkDeclaration(tmp.getDec(), newScope);
+        }
+        
+        if (nextCheck != null){
+            checkDeclaration(nextCheck,Parent);
         }
     }
 
@@ -163,6 +175,7 @@ public final class SemanticAnalysis {
     }
 
     private void checkStatement(Statement Stat, ComplexNode Parent) {
+        
         Statement checkNext = null;
         Statement thisStatement = Stat;
         if (Stat instanceof SequenceStatement) {
@@ -170,6 +183,7 @@ public final class SemanticAnalysis {
             checkNext = tmp.getNextSequenceStatement();
             thisStatement = tmp.getThisStatement();
         }
+        System.out.println(thisStatement.getClass().toString());
         if (thisStatement instanceof AsignationStatement) {
             AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());
@@ -206,13 +220,14 @@ public final class SemanticAnalysis {
             }
         }
 
-        if (checkNext != null) {
+        if (checkNext != null || checkNext instanceof EmptyStatement) {
             checkStatement(checkNext, Parent);
         }
 
     }
 
     private void checkStatement(Declaration Dec, Statement Stat, ComplexNode Parent) {
+        
         Declaration declarationCheck = Dec;
         Declaration nextCheck = null;
         checkStatement(Stat,Parent);
@@ -220,15 +235,17 @@ public final class SemanticAnalysis {
             declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
             nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
         }
-        if (Dec instanceof FunctionDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration)Dec;
+        if (declarationCheck instanceof FunctionDeclaration) {
+            FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
             List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
             ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
+            System.out.println("Entering Function: " + tmpParent.getId());
             checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
-        } else if (Dec instanceof ProcedureDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration)Dec;
+        } else if (declarationCheck instanceof ProcedureDeclaration) {
+            FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
             List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
             ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
+            System.out.println("Entering Procedure: " + tmpParent.getId());
             checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
         }
         
@@ -238,6 +255,7 @@ public final class SemanticAnalysis {
     }
 
     private Type getExpressionType(Expression Exp, ComplexNode Parent) {
+        System.out.println(Exp.getClass().toString());
         if (Exp instanceof AddExpression) {
             AddExpression tmp = (AddExpression) Exp;
             Type firstType = getExpressionType(tmp.getExp1(), Parent);
@@ -247,7 +265,8 @@ public final class SemanticAnalysis {
                 return firstType;
             } else {
                 //CHANGE NULL TO ERRORTYPE
-                return null;
+                hasError = true;
+                return firstType;
             }
         } else if (Exp instanceof MultExpression) {
             MultExpression tmp = (MultExpression) Exp;
@@ -258,7 +277,8 @@ public final class SemanticAnalysis {
                 return firstType;
             } else {
                 //CHANGE NULL TO ERRORTYPE
-                return null;
+                hasError = true;
+                return firstType;
             }
         } else if (Exp instanceof ConditionExpression) {
             ConditionExpression tmp = (ConditionExpression) Exp;
@@ -269,7 +289,8 @@ public final class SemanticAnalysis {
                 return firstType;
             } else {
                 //CHANGE NULL TO ERRORTYPE
-                return null;
+                hasError = true;
+                return firstType;
             }
         } else if (Exp instanceof RelationExpression) {
             RelationExpression tmp = (RelationExpression) Exp;
@@ -280,16 +301,18 @@ public final class SemanticAnalysis {
                 return firstType;
             } else {
                 //CHANGE NULL TO ERRORTYPE
-                return null;
+                hasError = true;
+                return firstType;
             }
         } else if (Exp instanceof PrimaryExpression) {
             return getPrimaryType(((PrimaryExpression) Exp).getValue(), Parent);
         }
         //CHANGE NULL TO ERRORTYPE
-        return null;
+        return new IntType();
     }
 
     private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
+        System.out.println(Prim.getClass().toString());
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
             List<Type> tmpParams = new ArrayList();
@@ -298,6 +321,7 @@ public final class SemanticAnalysis {
             }
             return Parent.searchFunctionNodeTypeById(tmp.getID(), tmpParams);
         } else if (Prim instanceof ID) {
+            //System.out.println("id");
             ID tmp = (ID) Prim;
             return Parent.searchTypeById(tmp.getID());
         } else if (Prim instanceof LiteralBoolean) {
@@ -307,6 +331,6 @@ public final class SemanticAnalysis {
         } else if (Prim instanceof LiteralInt) {
             return new IntType();
         }
-        return null;
+        return new IntType();
     }
 }

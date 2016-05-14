@@ -42,7 +42,8 @@ public class Main {
             p.parse();
             SemanticAnalysis semantic = new SemanticAnalysis(p.FINALOBJECT);
             mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
-            mapper.writeValue(new File("./TABLE.json"), semantic.getRoot());
+            System.out.println(SemanticAnalysis.hasError);
+            //mapper.writeValue(new File("./TABLE.json"), semantic.getRoot());
        
         
         //for (Symbol sim : symbolList){

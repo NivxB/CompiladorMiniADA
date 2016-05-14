@@ -12,12 +12,12 @@ package analizadorlexico.TypeCheck;
 public class FloatType extends Type{
 
     public FloatType() {
-        super("DOUBLE");
+        super("FLOAT");
     }
     
     @Override
     public boolean compare(Type value) {
-        return (value.TYPE.equals("DOUBLE"));
+        return (value.TYPE.equals("FLOAT"));
     }
     
         @Override

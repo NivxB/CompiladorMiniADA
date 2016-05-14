@@ -12,14 +12,11 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/AST/Expression/Condition.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/SymbolTable/ComplexNode.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/AST/Statement/ForStatement.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/AST/Statement/WhileStatement.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/CUP/Gramar.cup</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/SemanticAnalysis/SemanticAnalysis.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/AST/Statement/IfStatement.java</file>
-            <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/Main.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/SemanticAnalysis/SemanticAnalysis.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/TypeCheck/IntType.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/Main.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/TypeCheck/FloatType.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/SymbolTable/ComplexNode.java</file>
         </group>
     </open-files>
 </project-private>

@@ -14,22 +14,21 @@ import java.util.List;
  *
  * @author Carlos
  */
-public class ComplexNode extends Node{
+public class ComplexNode extends Node {
+
     private String id;
     private Type retType;
-    private HashMap<String,Node> hijos;
+    private HashMap<String, Node> hijos;
     private ComplexNode padre;
     private List<Type> parameterType;
     private int offset;
-    
-    
 
-    public ComplexNode(String id, Type retType , List<Type> pType) {
+    public ComplexNode(String id, Type retType, List<Type> pType) {
         this.id = id;
         this.retType = retType;
         this.padre = null;
         this.parameterType = pType;
-        hijos=new HashMap();
+        hijos = new HashMap();
         offset = 0;
     }
 
@@ -37,15 +36,15 @@ public class ComplexNode extends Node{
         return parameterType;
     }
 
-    public void addParameter(Type type){
+    public void addParameter(Type type) {
         parameterType.add(type);
     }
 
-    public ComplexNode(String id, Type retType, List<Type> pType ,ComplexNode padre) {
+    public ComplexNode(String id, Type retType, List<Type> pType, ComplexNode padre) {
         this.id = id;
         this.retType = retType;
         this.padre = padre;
-        hijos=new HashMap();
+        hijos = new HashMap();
         this.parameterType = pType;
     }
 
@@ -58,87 +57,88 @@ public class ComplexNode extends Node{
     }
 
     public boolean addHijo(String id, Node nodo) {
-        if(hijos.containsKey(id)){
+        if (hijos.containsKey(id)) {
             return false;
-        }else{
-            if (nodo.getType() != null){
-                offset+=nodo.getType().getSIZE();
+        } else {
+            if (nodo.getType() != null) {
+                offset += nodo.getType().getSIZE();
             }
             hijos.put(id, nodo);
             return true;
         }
     }
-    
-    public Type searchTypeById(String id){
+
+    public Type searchTypeById(String id) {
+
         Node retVal = searchNodeById(id);
-        if (retVal != null){
+        if (retVal != null) {
             return retVal.getType();
         }
         return null;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     
-    public Node searchNodeById(String id){
-        if (hijos.containsKey("id")){
+
+    public Node searchNodeById(String id) {
+        System.out.println("Searching: " +id) ;
+        System.out.println("Searching on: " + this.id);
+        if (hijos.containsKey(id)) {
             return hijos.get(id);
-        }else if (padre != null){
+        } else if (padre != null) {
+            //System.out.println("Searching Parent");
             Node retVal = padre.searchNodeById(id);
-            if (retVal != null){
+            
+            if (retVal != null) {
                 return retVal;
             }
         }
         return null;
     }
-    
-    public Type searchFunctionNodeTypeById(String id, List<Type> params){
-        //TODO:
-        if(hijos.containsKey(id)){
-            if(hijos.get(id) instanceof ListComplexNode){
-                ListComplexNode functions = (ListComplexNode)hijos.get(id);
-                for (int i = 0; i < functions.getListfunction().size(); i++) {
-                    ComplexNode function=functions.getListfunction().get(i);
-                        if(function.compareParameters(params)){
-                            return retType;
-                        }else{
-                            return null;
-                        }
-                    
-                }
-            }
-        }
-        return null;
-    }
-    
-    public Node searchFunctionNodeById(String id, List<Type> params){
-        if(hijos.containsKey(id)){
-            if(hijos.get(id) instanceof ListComplexNode){
-                ListComplexNode functions = (ListComplexNode)hijos.get(id);
-                for (int i = 0; i < functions.getListfunction().size(); i++) {
-                    ComplexNode function=functions.getListfunction().get(i);
-                        if(function.compareParameters(params)){
-                            return function;
-                        }else{
-                            return null;
-                        }
-                    
-                }
-            }
-        }
-        return null;
-    }
-    
 
-    
-    public boolean compareParameters(List<Type> params){
+    public Type searchFunctionNodeTypeById(String id, List<Type> params) {
+        Node retVal = searchFunctionNodeById(id, params);
+        if (retVal != null) {
+            return ((ComplexNode) retVal).retType;
+        }
+        return null;
+    }
+
+    public Node searchFunctionNodeById(String id, List<Type> params) {
+        if (hijos.containsKey(id)) {
+            if (hijos.get(id) instanceof ListComplexNode) {
+                ListComplexNode functions = (ListComplexNode) hijos.get(id);
+                for (int i = 0; i < functions.getListfunction().size(); i++) {
+                    ComplexNode function = functions.getListfunction().get(i);
+                    if (function.compareParameters(params)) {
+                        return function;
+                    } else {
+                        return null;
+                    }
+
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean compareParameters(List<Type> params) {
         boolean retVal = true;
-        if (params.size() != parameterType.size()){
+        if (params.size() != parameterType.size()) {
             retVal = false;
         }
-        for (int i = 0 ; i < params.size() && retVal ; i++){
+        for (int i = 0; i < params.size() && retVal; i++) {
             retVal = parameterType.get(i).compare(params.get(i));
         }
         return retVal;
     }
-    
+
     public Node getPadre() {
         return padre;
     }
@@ -151,8 +151,8 @@ public class ComplexNode extends Node{
     public Type getType() {
         return new VoidType();
     }
-    
-    public Type getRetType(){
+
+    public Type getRetType() {
         return retType;
     }
 }

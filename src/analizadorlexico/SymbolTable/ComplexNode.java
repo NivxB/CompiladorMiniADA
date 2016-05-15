@@ -68,15 +68,6 @@ public class ComplexNode extends Node {
         }
     }
 
-    public Type searchTypeById(String id) {
-
-        Node retVal = searchNodeById(id);
-        if (retVal != null) {
-            return retVal.getType();
-        }
-        return null;
-    }
-
     public String getId() {
         return id;
     }
@@ -84,20 +75,25 @@ public class ComplexNode extends Node {
     public void setId(String id) {
         this.id = id;
     }
-    
+
+    public Type searchTypeById(String id) {
+
+        Node retVal = searchNodeById(id);
+        if (retVal != null) {
+            return retVal.getType();
+        }
+        return new IntType();
+    }
 
     public Node searchNodeById(String id) {
-        System.out.println("Searching: " +id) ;
+        System.out.println("Searching: " + id);
         System.out.println("Searching on: " + this.id);
         if (hijos.containsKey(id)) {
             return hijos.get(id);
         } else if (padre != null) {
             //System.out.println("Searching Parent");
             Node retVal = padre.searchNodeById(id);
-            
-            if (retVal != null) {
-                return retVal;
-            }
+            return retVal;
         }
         return null;
     }
@@ -107,10 +103,12 @@ public class ComplexNode extends Node {
         if (retVal != null) {
             return ((ComplexNode) retVal).retType;
         }
-        return null;
+        return new IntType();
     }
 
     public Node searchFunctionNodeById(String id, List<Type> params) {
+        System.out.println("Searching: " + id);
+        System.out.println("Searching on: " + this.id);
         if (hijos.containsKey(id)) {
             if (hijos.get(id) instanceof ListComplexNode) {
                 ListComplexNode functions = (ListComplexNode) hijos.get(id);
@@ -118,13 +116,17 @@ public class ComplexNode extends Node {
                     ComplexNode function = functions.getListfunction().get(i);
                     if (function.compareParameters(params)) {
                         return function;
-                    } else {
-                        return null;
                     }
 
                 }
             }
+        } else if (padre != null) {
+            System.err.println("Didn't found " + id + " on " + this.id);
+            System.err.println("Searching parent");
+            Node retVal = padre.searchFunctionNodeById(id, params);
+            return retVal;
         }
+        System.err.println("Didn't found " + id + " anywhere");
         return null;
     }
 

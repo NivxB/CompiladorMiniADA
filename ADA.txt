@@ -3,17 +3,19 @@ procedure OneInt is
    B : Integer;
    F : Float;
    function retInteger return Integer is
-    retIntegerA : Float;
-    retIntegerB : Float;
+      retIntegerA : Float;
+      retIntegerB : Float;
+      function retBoolean return Boolean is
+      begin
+      end retBoolean;
    begin
-    retIntegerB := F + retIntegerA;
+      retIntegerB := F + retIntegerA;
    end retInteger;
    C : Boolean;
-   function retBoolean return Boolean is
-   begin
-   end retBoolean;
    function retFloat return Float is
+      retFloatA: Boolean;
    begin
+      retFloatA:= retBoolean();
    end retFloat;
 BEGIN
   if retBoolean() then

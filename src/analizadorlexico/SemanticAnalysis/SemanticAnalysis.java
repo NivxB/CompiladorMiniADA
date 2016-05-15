@@ -66,7 +66,7 @@ public final class SemanticAnalysis {
         this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
         checkDeclaration(Proc.getDec(), root);
         System.out.println("");
-        checkStatement(Proc.getDec(),Proc.getStat(),root);        
+        checkStatement(Proc.getDec(), Proc.getStat(), root);
     }
 
     public ComplexNode getRoot() {
@@ -88,15 +88,17 @@ public final class SemanticAnalysis {
         if (declarationCheck instanceof AsignationDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if(!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))){
-                    hasError=true;
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))) {
+                    hasError = true;
+                    System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
             }
         } else if (declarationCheck instanceof SimpleDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if(!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))){
-                    hasError=true;
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))) {
+                    hasError = true;
+                    System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
             }
         } else if (declarationCheck instanceof ProcedureDeclaration) {
@@ -110,20 +112,25 @@ public final class SemanticAnalysis {
                 tmpList.addFunction(newScope);
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
+                    System.err.println(tmp.getId() + ": already exists, duplicated value");
                 }
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
                 if (keyNode instanceof ListComplexNode) {
                     if (!((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
+                        System.err.println(tmp.getId() + ": already exists, duplicated value");
                     }
                 } else {
                     hasError = true;
+                    System.err.println(tmp.getId() + ": already exists, duplicated value");
                 }
             }
             System.out.println("");
-            System.out.println("Checking Declarations On: " +tmp.getId());
+            System.out.println("Checking Declarations On: " + tmp.getId());
             checkDeclaration(tmp.getDec(), newScope);
+            System.out.println("Finish Declarations On: " + tmp.getId());
+            System.out.println();
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
@@ -134,24 +141,29 @@ public final class SemanticAnalysis {
                 tmpList.addFunction(newScope);
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
+                    System.err.println(tmp.getId() + ": already exists, duplicated value");
                 }
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
                 if (keyNode instanceof ListComplexNode) {
                     if (!((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
+                        System.err.println(tmp.getId() + ": already exists, duplicated value");
                     }
                 } else {
                     hasError = true;
+                    System.err.println(tmp.getId() + ": already exists, duplicated value");
                 }
             }
             System.out.println("");
-            System.out.println("Checking Declarations On: " +tmp.getId());
+            System.out.println("Checking Declarations On: " + tmp.getId());
             checkDeclaration(tmp.getDec(), newScope);
+            System.out.println("Finish Declarations On: " + tmp.getId());
+            System.out.println("");
         }
-        
-        if (nextCheck != null){
-            checkDeclaration(nextCheck,Parent);
+
+        if (nextCheck != null) {
+            checkDeclaration(nextCheck, Parent);
         }
     }
 
@@ -175,7 +187,7 @@ public final class SemanticAnalysis {
     }
 
     private void checkStatement(Statement Stat, ComplexNode Parent) {
-        
+
         Statement checkNext = null;
         Statement thisStatement = Stat;
         if (Stat instanceof SequenceStatement) {
@@ -190,6 +202,7 @@ public final class SemanticAnalysis {
             Type secondType = getExpressionType(tmp.getExp(), Parent);
             if (!firstType.compare(secondType)) {
                 hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
         } else if (thisStatement instanceof CaseStatement) {
             //TODO:
@@ -199,24 +212,28 @@ public final class SemanticAnalysis {
             checkStatement(tmp.getStat(), Parent);
             Type AsigType = Parent.searchTypeById(tmp.getAsig().getID());
             Type ExpType = this.getExpressionType(tmp.getExp(), Parent);
-            if(!AsigType.compare(ExpType)||ExpType==null){
-                hasError=true;
+            if (!AsigType.compare(ExpType) || ExpType == null) {
+                hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
         } else if (thisStatement instanceof FunctionCallStatement) {
             getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent);
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);
-            if(this.getExpressionType(tmp.getCon().getExp(), Parent)==null){
-                hasError=true;
+            Type tmpType = this.getExpressionType(tmp.getCon().getExp(), Parent);
+            if (tmpType == null || tmpType instanceof IntType) {
+                hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
-            checkStatement(tmp.getElsIf(),Parent);
+            checkStatement(tmp.getElsIf(), Parent);
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);
-            Type ExpType = this.getExpressionType(tmp.getCon().getExp(), Parent); 
-            if(ExpType==null){
-                hasError=true;
+            Type ExpType = this.getExpressionType(tmp.getCon().getExp(), Parent);
+            if (ExpType == null || ExpType instanceof IntType) {
+                hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
         }
 
@@ -227,30 +244,42 @@ public final class SemanticAnalysis {
     }
 
     private void checkStatement(Declaration Dec, Statement Stat, ComplexNode Parent) {
-        
+
         Declaration declarationCheck = Dec;
         Declaration nextCheck = null;
-        checkStatement(Stat,Parent);
+        if (Stat != null) {
+            System.out.println("");
+            System.out.println("Staring CheckStatement On: " + Parent.getId());
+            checkStatement(Stat, Parent);
+            System.out.println("Ending CheckStatement On:  " + Parent.getId());
+            System.out.println("");
+        }
         if (Dec instanceof SequenceDeclaration) {
             declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
             nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
         }
         if (declarationCheck instanceof FunctionDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
+            FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
             ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
+            System.out.println("");
             System.out.println("Entering Function: " + tmpParent.getId());
-            checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
+            checkStatement(tmp.getDec(), tmp.getStat(), tmpParent);
+            System.out.println("Exit Function " + tmpParent.getId());
+            System.out.println("");
         } else if (declarationCheck instanceof ProcedureDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration)declarationCheck;
+            FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
+            System.out.println("");
             ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
             System.out.println("Entering Procedure: " + tmpParent.getId());
-            checkStatement(tmp.getDec(),tmp.getStat(),tmpParent);
+            checkStatement(tmp.getDec(), tmp.getStat(), tmpParent);
+            System.out.println("Exit Function " + tmpParent.getId());
+            System.out.println("");
         }
-        
-        if (nextCheck != null){
-            checkStatement(nextCheck,Stat,Parent);
+
+        if (nextCheck != null) {
+            checkStatement(nextCheck, null, Parent);
         }
     }
 
@@ -266,6 +295,7 @@ public final class SemanticAnalysis {
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;
+                System.err.println("Invalid Type operation on: ");
                 return firstType;
             }
         } else if (Exp instanceof MultExpression) {
@@ -278,6 +308,7 @@ public final class SemanticAnalysis {
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;
+                System.err.println("Invalid Type operation on: ");
                 return firstType;
             }
         } else if (Exp instanceof ConditionExpression) {
@@ -290,6 +321,7 @@ public final class SemanticAnalysis {
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;
+                System.err.println("Invalid Type operation on: ");
                 return firstType;
             }
         } else if (Exp instanceof RelationExpression) {
@@ -302,6 +334,7 @@ public final class SemanticAnalysis {
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;
+                System.err.println("Invalid Type operation on: ");
                 return firstType;
             }
         } else if (Exp instanceof PrimaryExpression) {

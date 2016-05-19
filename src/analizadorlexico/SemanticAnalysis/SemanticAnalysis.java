@@ -41,6 +41,7 @@ import analizadorlexico.SymbolTable.ListComplexNode;
 import analizadorlexico.SymbolTable.Node;
 import analizadorlexico.SymbolTable.SimpleNode;
 import analizadorlexico.TypeCheck.BooleanType;
+import analizadorlexico.TypeCheck.ErrorType;
 import analizadorlexico.TypeCheck.FloatType;
 import analizadorlexico.TypeCheck.IntType;
 import analizadorlexico.TypeCheck.Type;
@@ -341,7 +342,7 @@ public final class SemanticAnalysis {
             return getPrimaryType(((PrimaryExpression) Exp).getValue(), Parent);
         }
         //CHANGE NULL TO ERRORTYPE
-        return new IntType();
+        return new ErrorType();
     }
 
     private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
@@ -364,6 +365,6 @@ public final class SemanticAnalysis {
         } else if (Prim instanceof LiteralInt) {
             return new IntType();
         }
-        return new IntType();
+        return new ErrorType();
     }
 }

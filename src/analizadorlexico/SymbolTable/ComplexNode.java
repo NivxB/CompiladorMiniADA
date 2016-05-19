@@ -82,7 +82,7 @@ public class ComplexNode extends Node {
         if (retVal != null) {
             return retVal.getType();
         }
-        return new IntType();
+        return new ErrorType();
     }
 
     public Node searchNodeById(String id) {
@@ -95,6 +95,7 @@ public class ComplexNode extends Node {
             Node retVal = padre.searchNodeById(id);
             return retVal;
         }
+        System.err.println("Didn't found " + id +" anywhere");
         return null;
     }
 
@@ -103,7 +104,7 @@ public class ComplexNode extends Node {
         if (retVal != null) {
             return ((ComplexNode) retVal).retType;
         }
-        return new IntType();
+        return new ErrorType();
     }
 
     public Node searchFunctionNodeById(String id, List<Type> params) {
@@ -115,8 +116,9 @@ public class ComplexNode extends Node {
                 for (int i = 0; i < functions.getListfunction().size(); i++) {
                     ComplexNode function = functions.getListfunction().get(i);
                     if (function.compareParameters(params)) {
+                        System.out.println("Returning function with " + params.size());
                         return function;
-                    }
+                    }  
 
                 }
             }
@@ -131,8 +133,11 @@ public class ComplexNode extends Node {
     }
 
     public boolean compareParameters(List<Type> params) {
+        System.out.println("Comparing parameters on: " + this.id);
+        
         boolean retVal = true;
         if (params.size() != parameterType.size()) {
+            
             retVal = false;
         }
         for (int i = 0; i < params.size() && retVal; i++) {

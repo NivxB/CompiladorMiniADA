@@ -13,10 +13,15 @@ procedure OneInt is
    function retFloat return Float is
       retFloatA: Boolean;
    begin
-      retFloatA:= retBoolean();
+      etIntegerA := 5;
+      retFloatA:= retBoolean(5);
       return 1.0;
    end retFloat;
    function retBoolean return Boolean is
+   begin
+     return true;
+   end retBoolean;
+   function retBoolean(A: Integer) return Boolean is
    begin
      return true;
    end retBoolean;
@@ -25,6 +30,7 @@ BEGIN
       A:= B + 2;
 	end if;
   C := false;
+  --A := 5.0;
   --B:= A * retFloat();
 end OneInt;
 

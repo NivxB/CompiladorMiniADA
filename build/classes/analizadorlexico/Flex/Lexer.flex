@@ -54,8 +54,8 @@ endInstruction  = ";"
 id          ={letter}({letter}*{number}*{especialChar}*)*
 letter      = [a-zA-Z]
 literalBoolean = "true" | "false"
+literalFloat      = {number}+"."{number}+
 literalInteger     = {number}+
-literalFloat      = {number}+\.{number}+
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
@@ -112,7 +112,7 @@ reverse     = "reverse"
   {multOperator}        {return symbol(sym.MULT_OPERATOR,yytext());}
   {relationOperator}    {return symbol(sym.RELATION_OPERATOR,yytext());}
   {beginComment}          { yybegin(COMMENT); }
-  {type}                { 
+  {type}                {
                           String text = yytext().toUpperCase();
                           Type retType = null;
                           if (text.equals("INTEGER")){
@@ -122,8 +122,9 @@ reverse     = "reverse"
                           }else if (text.equals("BOOLEAN")){
                             retType = new BooleanType();
                           }
-                          return symbol(sym.TYPE,retType); 
+                          return symbol(sym.TYPE,retType);
                         }
+  {literalFloat}        {return symbol(sym.LITERAL_FLOAT,yytext());}
   {literalBoolean}      {return symbol(sym.LITERAL_BOOLEAN,yytext());}
   {literalInteger}      {return symbol(sym.LITERAL_INT,yytext());}
   {endInstruction}      {return symbol(sym.END_INSTRUCTION);}

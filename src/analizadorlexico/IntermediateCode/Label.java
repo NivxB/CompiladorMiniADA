@@ -18,6 +18,10 @@ public class Label {
         name = "l" + count;
         count++;
     }
+    
+    public Label(String name){
+        this.name = name;
+    }
     @Override
     public String toString() {
         return name;

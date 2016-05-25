@@ -36,6 +36,7 @@ import analizadorlexico.AST.Statement.IfStatement;
 import analizadorlexico.AST.Statement.SequenceStatement;
 import analizadorlexico.AST.Statement.Statement;
 import analizadorlexico.AST.Statement.WhileStatement;
+import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.SymbolTable.ComplexNode;
 import analizadorlexico.SymbolTable.ListComplexNode;
 import analizadorlexico.SymbolTable.Node;
@@ -57,11 +58,9 @@ public final class SemanticAnalysis {
 
     private ComplexNode root;
     private ComplexNode currentScope;
+   
     public static boolean hasError = false;
 
-    public SemanticAnalysis(String id, Type tipo) {
-        this.root = new ComplexNode(id, tipo, new ArrayList<>());
-    }
 
     public SemanticAnalysis(InitProcedure Proc) {
         this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());

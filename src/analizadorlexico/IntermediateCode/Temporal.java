@@ -17,6 +17,10 @@ public class Temporal {
         name = "t"+count;
         count++;
     }
+    
+    public Temporal(String name){
+        this.name = name;
+    }
 
     @Override
     public String toString() {

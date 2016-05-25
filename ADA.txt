@@ -1,36 +1,15 @@
 procedure OneInt is
    A : Integer;
    B : Integer;
-   F : Float;
-   function retInteger return Integer is
-      retIntegerA : Float;
-      retIntegerB : Float;
-   begin
-      retIntegerB := F + retIntegerA;
-      return retIntegerB;
-   end retInteger;
    C : Boolean;
-   function retFloat return Float is
-      retFloatA: Boolean;
-   begin
-      etIntegerA := 5;
-      retFloatA:= retBoolean(5);
-      return 1.0;
-   end retFloat;
-   function retBoolean return Boolean is
-   begin
-     return true;
-   end retBoolean;
-   function retBoolean(A: Integer) return Boolean is
-   begin
-     return true;
-   end retBoolean;
+   F : Float;
+
 BEGIN
-  if retBoolean() then
+  if true then
       A:= B + 2;
 	end if;
-  C := false;
-  --A := 5.0;
+  C := false ;
+  A := 5 + (2 + 25) - 8 * B;
   --B:= A * retFloat();
 end OneInt;
 

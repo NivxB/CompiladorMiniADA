@@ -9,14 +9,14 @@ package analizadorlexico.IntermediateCode;
  *
  * @author Kevin Barahona
  */
-public class SimpleOperation extends Operation{
+public class ThreeOperation extends Operation{
     private String firstValue;
     private String secondValue;
     private String thirdValue;
     private String firstOperator;
     private String secondOperator;
 
-    public SimpleOperation(String firstValue, String secondValue, String thirdValue, String firstOperator, String secondOperator) {
+    public ThreeOperation(String firstValue, String secondValue, String thirdValue, String firstOperator, String secondOperator) {
         this.firstValue = firstValue;
         this.secondValue = secondValue;
         this.thirdValue = thirdValue;

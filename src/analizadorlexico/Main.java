@@ -5,6 +5,7 @@
  */
 package analizadorlexico;
 
+import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
 import analizadorlexico.TypeCheck.VoidType;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -42,11 +43,17 @@ public class Main {
         parser p = new parser(lexer);
         p.parse();
         SemanticAnalysis semantic = new SemanticAnalysis(p.FINALOBJECT);
-        mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
+        IntermediateCode intermediateCode = new IntermediateCode(p.FINALOBJECT,semantic);
+        if (!SemanticAnalysis.hasError){
+            System.out.println("NO ERROR");
+            intermediateCode.generate();
+            System.out.println(intermediateCode.getStringRepresentation());
+        }else{
+            System.err.println("Program has errors\nterminating compile");
+        }
         
-        System.out.println("");
-        System.out.println("Final Program hasError: ");
-        System.out.println(SemanticAnalysis.hasError);
+        
+        mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
         //mapper.writeValue(new File("./TABLE.json"), semantic.getRoot());
 
         //for (Symbol sim : symbolList){

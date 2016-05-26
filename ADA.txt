@@ -3,9 +3,10 @@ procedure OneInt is
    B : Integer;
    C : Boolean;
    F : Float;
+   D : Boolean;
 
 BEGIN
-  if true then
+  if C and D then
       A:= B + 2;
 	end if;
   C := false ;

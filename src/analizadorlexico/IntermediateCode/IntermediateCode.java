@@ -364,14 +364,16 @@ public class IntermediateCode {
                 generateRelationCode(element.getExp1(), nextFirstCheck, falseLabel);
             }
             generateLabelOperation(nextFirstCheck.toString());
+            
 
             Label nextSecondCheck = new Label();
             if (element.getExp2() instanceof ConditionExpression) {
                 generateConditionCode((ConditionExpression) element.getExp2(), nextSecondCheck, falseLabel);
+                generateLabelOperation(nextSecondCheck.toString());
             } else {
-                generateRelationCode(element.getExp2(), nextSecondCheck, falseLabel);
+                generateRelationCode(element.getExp2(), trueLabel, falseLabel);
             }
-            generateLabelOperation(nextSecondCheck.toString());
+            
 
         } else if (element.getConditionOperator().equalsIgnoreCase("or")) {
             Label nextFirstCheck = new Label();
@@ -380,14 +382,16 @@ public class IntermediateCode {
             } else {
                 generateRelationCode(element.getExp1(), trueLabel, nextFirstCheck);
             }
+            generateLabelOperation(nextFirstCheck.toString());
 
             Label nextSecondCheck = new Label();
             if (element.getExp2() instanceof ConditionExpression) {
                 generateConditionCode((ConditionExpression) element.getExp2(), trueLabel, nextSecondCheck);
+                generateLabelOperation(nextSecondCheck.toString());
             } else {
-                generateRelationCode(element.getExp2(), trueLabel, nextSecondCheck);
+                generateRelationCode(element.getExp2(), trueLabel, falseLabel);
             }
-            generateLabelOperation(nextSecondCheck.toString());
+            
         }
     }
 

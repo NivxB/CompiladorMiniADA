@@ -59,7 +59,7 @@ literalInteger     = {number}+
 number      = [0-9]
 especialChar = [_-]
 ignoreChar = [ \t\r\n\f]
-conditionelement = "and"|"or";
+conditionelement = "or" | "and"
 literalChar = \'.\'
 if     = "if"
 then        = "then"
@@ -87,6 +87,7 @@ reverse     = "reverse"
 
 <YYINITIAL>{
   {to}                  {return symbol(sym.TO);}
+  {conditionelement}    {return symbol(sym.CONDITION_ELEMENT,yytext());}
   {package}             {return symbol(sym.PACKAGE);}
   {others}              {return symbol(sym.OTHERS);}
   {return}              {return symbol(sym.RETURN);}
@@ -95,7 +96,6 @@ reverse     = "reverse"
   {procedure}           {return symbol(sym.PROCEDURE);}
   {function}            {return symbol(sym.FUNCTION);}
   {constant}            {return symbol(sym.CONSTANT);}
-  {conditionelement}    {return symbol(sym.CONDITION_ELEMENT,yytext());}
   {with}                {return symbol(sym.WITH);}
   {is}                  {return symbol(sym.IS);}
   {begin}               {return symbol(sym.BEGIN);}

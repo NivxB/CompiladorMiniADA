@@ -164,6 +164,23 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
+            Label nextLabel = new Label();
+            Label trueLabel = new Label();
+            Label falseLabel = new Label();
+            Expression toCheckExp = tmp.getCon().getExp();
+            if (toCheckExp instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) toCheckExp, trueLabel, falseLabel);
+            } else {
+                Temporal temporal = generateExpression(toCheckExp, Parent);
+                generateIfOperation(temporal.toString(), "", "", trueLabel.toString());
+                generateGotoOperation(falseLabel.toString());
+            }
+            generateLabelOperation(trueLabel.toString());
+            generateStatement(tmp.getStat(), Parent);
+            generateGotoOperation(nextLabel.toString());
+            generateLabelOperation(falseLabel.toString());
+            generateStatement(tmp.getElsIf(), Parent);
+            generateLabelOperation(nextLabel.toString());
 
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
@@ -261,7 +278,7 @@ public class IntermediateCode {
             //?????????????????????????????
 
         } else if (Exp instanceof RelationExpression) {
-            RelationExpression tmp = (RelationExpression) Exp;  
+            RelationExpression tmp = (RelationExpression) Exp;
             Temporal firstTemp;
             Temporal secondTemp;
             if (tmp.getExp1() instanceof PrimaryExpression) {
@@ -336,5 +353,75 @@ public class IntermediateCode {
             return (Integer.toString(tmp.getValue()));
         }
         return null;
+    }
+
+    private void generateConditionCode(ConditionExpression element, Label trueLabel, Label falseLabel) {
+        if (element.getConditionOperator().equalsIgnoreCase("and")) {
+            Label nextFirstCheck = new Label();
+            if (element.getExp1() instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) element.getExp1(), nextFirstCheck, falseLabel);
+            } else {
+                generateRelationCode(element.getExp1(), nextFirstCheck, falseLabel);
+            }
+            generateLabelOperation(nextFirstCheck.toString());
+
+            Label nextSecondCheck = new Label();
+            if (element.getExp2() instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) element.getExp2(), nextSecondCheck, falseLabel);
+            } else {
+                generateRelationCode(element.getExp2(), nextSecondCheck, falseLabel);
+            }
+            generateLabelOperation(nextSecondCheck.toString());
+
+        } else if (element.getConditionOperator().equalsIgnoreCase("or")) {
+            Label nextFirstCheck = new Label();
+            if (element.getExp1() instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) element.getExp1(), trueLabel, nextFirstCheck);
+            } else {
+                generateRelationCode(element.getExp1(), trueLabel, nextFirstCheck);
+            }
+
+            Label nextSecondCheck = new Label();
+            if (element.getExp2() instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) element.getExp2(), trueLabel, nextSecondCheck);
+            } else {
+                generateRelationCode(element.getExp2(), trueLabel, nextSecondCheck);
+            }
+            generateLabelOperation(nextSecondCheck.toString());
+        }
+    }
+
+    private void generateRelationCode(Expression element, Label trueLabel, Label falseLabel) {
+        Temporal tOne;
+        Temporal tTwo;
+        String compareType = "";
+        if (element instanceof PrimaryExpression) {
+            PrimaryExpression tmp = (PrimaryExpression) element;
+            tOne = new Temporal(getPrimary(tmp.getValue()));
+            tTwo = new Temporal("");
+        } else if (element instanceof RelationExpression) {
+            RelationExpression tmp = (RelationExpression) element;
+            compareType = tmp.getRelationOperator();
+            if (tmp.getExp1() instanceof PrimaryExpression) {
+                PrimaryExpression tmpRelation = (PrimaryExpression) tmp.getExp1();
+                tOne = new Temporal(getPrimary(tmpRelation.getValue()));
+            } else {
+                tOne = generateExpression(tmp.getExp1(), null);
+            }
+
+            if (tmp.getExp2() instanceof PrimaryExpression) {
+                PrimaryExpression tmpRelation = (PrimaryExpression) tmp.getExp2();
+                tTwo = new Temporal(getPrimary(tmpRelation.getValue()));
+            } else {
+                tTwo = generateExpression(tmp.getExp2(), null);
+            }
+        } else {
+            System.out.println("WUT");
+            return;
+        }
+
+        generateIfOperation(tOne.toString(), tTwo.toString(), compareType, trueLabel.toString());
+        generateGotoOperation(falseLabel.toString());
+
     }
 }

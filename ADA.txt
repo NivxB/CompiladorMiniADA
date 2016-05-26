@@ -3,6 +3,7 @@ procedure OneInt is
    B : Integer;
    C : Boolean;
    F : Float;
+<<<<<<< HEAD
    function getInt(AB:Integer) return Integer is
 	Begin
 	end getInt;
@@ -12,8 +13,12 @@ procedure OneInt is
    function getInt(AB:Float) return Integer is
 	Begin
 	end getInt;
+=======
+   D : Boolean;
+
+>>>>>>> origin/master
 BEGIN
-  if true then
+  if C and D then
       A:= B + 2;
 	end if;
   C := false ;

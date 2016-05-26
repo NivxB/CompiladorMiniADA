@@ -35,15 +35,16 @@ public class ListComplexNode extends Node{
     }
 
     public boolean addFunction(ComplexNode function) {
+        System.out.println("Entro Para agregar la funcion a la lista");
         boolean retVal = true;
         for (int i = 0; i < listfunction.size() && retVal; i++) {
             ComplexNode functiontmp=listfunction.get(i);
             if(functiontmp.getParameterType().size()==function.getParameterType().size()){
                 retVal = !compareParameters(functiontmp,function);
-                //Si se encuentran todos iguales, significa que ya existe una funcion igual
-                //TODO: comprobacion de tipo de retorno. 
                 if(!retVal){
-                    if(functiontmp.getRetType()!=function.getRetType()){
+                    if(!functiontmp.getRetType().compare(function.getRetType())){
+                        System.out.println("Valor retorno Funcion 1 asdf"+functiontmp.getRetType());
+            System.out.println("Valor retorno Funcion 2 asdf"+function.getRetType());
                         retVal=true;
                     }
                 }
@@ -59,8 +60,14 @@ public class ListComplexNode extends Node{
     private boolean compareParameters(ComplexNode ThisFunction,ComplexNode OtherFunction){
         //Si todos son iguales return true
         boolean retVal = true;
+        System.out.println("Entro a Parametros Parametros:");
+        System.out.println(ThisFunction.getParameterType().size());
         for (int j = 0; j < ThisFunction.getParameterType().size() && retVal; j++) {
             retVal = (ThisFunction.getParameterType().get(j).compare(OtherFunction.getParameterType().get(j)));
+            System.out.println("Parametros:");
+            System.out.println("Valor parametro Funcion 1"+ThisFunction.getParameterType().get(j).getTYPE());
+            System.out.println("Valor parametro Funcion 2"+OtherFunction.getParameterType().get(j).getTYPE());
+            System.out.println("Retval = "+ retVal);
         }
         return retVal;
     }

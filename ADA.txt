@@ -3,7 +3,15 @@ procedure OneInt is
    B : Integer;
    C : Boolean;
    F : Float;
-
+   function getInt(AB:Integer) return Integer is
+	Begin
+	end getInt;
+   function getInt(AB:Integer) return Float is
+	Begin
+	end getInt;
+   function getInt(AB:Float) return Integer is
+	Begin
+	end getInt;
 BEGIN
   if true then
       A:= B + 2;

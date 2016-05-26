@@ -132,6 +132,7 @@ public final class SemanticAnalysis {
             System.out.println("Finish Declarations On: " + tmp.getId());
             System.out.println();
         } else if (declarationCheck instanceof FunctionDeclaration) {
+        System.out.println("Es un FunctionDeclaration");
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
             ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), Parent);
@@ -146,7 +147,7 @@ public final class SemanticAnalysis {
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
                 if (keyNode instanceof ListComplexNode) {
-                    if (!((ListComplexNode) keyNode).addFunction(newScope)) {
+                    if (((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
                         System.err.println(tmp.getId() + ": already exists, duplicated value");
                     }

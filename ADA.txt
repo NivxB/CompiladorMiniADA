@@ -3,20 +3,20 @@ procedure OneInt is
    B : Integer;
    C : Boolean;
    F : Float;
-<<<<<<< HEAD
-   function getInt(AB:Integer) return Integer is
+  
+  function getInt(AB:Integer) return Integer is
 	Begin
 	end getInt;
-   function getInt(AB:Integer) return Float is
+  
+  function getInt(AB:Integer) return Float is
 	Begin
 	end getInt;
-   function getInt(AB:Float) return Integer is
+  
+  function getInt(AB:Float) return Integer is
 	Begin
 	end getInt;
-=======
-   D : Boolean;
-
->>>>>>> origin/master
+  
+  D : Boolean;
 BEGIN
   if C and D then
       A:= B + 2;
@@ -24,7 +24,7 @@ BEGIN
   C := false ;
   A := 5 + (2 + 25) - 8 * B;
   --B:= A * retFloat();
-end OneInt;
+END OneInt;
 
 
 

@@ -196,7 +196,10 @@ public final class SemanticAnalysis {
             checkNext = tmp.getNextSequenceStatement();
             thisStatement = tmp.getThisStatement();
         }
-        System.out.println(thisStatement.getClass().toString());
+        
+        if (thisStatement != null){
+            System.out.println(thisStatement.getClass().toString());
+        }
         if (thisStatement instanceof AsignationStatement) {
             AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());

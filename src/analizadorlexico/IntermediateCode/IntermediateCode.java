@@ -160,6 +160,25 @@ public class IntermediateCode {
             //TODO:
         } else if (thisStatement instanceof ForStatement) {
             ForStatement tmp = (ForStatement) thisStatement;
+            Temporal asigTemporal = generateExpression(tmp.getAsig().getExp(), Parent);
+            generateTwoOperation(tmp.getAsig().getID(), asigTemporal.toString());
+            Label checkExpression = new Label();
+            Label trueLabel = new Label();
+            Label nextLabel = new Label();
+            
+            generateLabelOperation(checkExpression.toString());
+            Temporal expressionTemporal = generateExpression(tmp.getExp(),Parent);
+            
+            generateIfOperation(asigTemporal.toString(), expressionTemporal.toString(), "<", trueLabel.toString());
+            generateGotoOperation(nextLabel.toString());
+            
+            generateLabelOperation(trueLabel.toString());
+            generateStatement(tmp.getStat(),Parent);
+            generateThreeOperation(asigTemporal.toString(),asigTemporal.toString(),"1","+");
+            generateGotoOperation(checkExpression.toString());
+            
+            generateLabelOperation(nextLabel.toString());
+            
         } else if (thisStatement instanceof FunctionCallStatement) {
 
         } else if (thisStatement instanceof IfStatement) {
@@ -184,6 +203,19 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
+            Expression toCheckExp = tmp.getCon().getExp();
+            Label nextLabel = new Label();
+            Label trueLabel = new Label();
+            if (toCheckExp instanceof ConditionExpression) {
+                generateConditionCode((ConditionExpression) toCheckExp, trueLabel, nextLabel);
+            } else {
+                Temporal temporal = generateExpression(toCheckExp, Parent);
+                generateIfOperation(temporal.toString(), "", "", trueLabel.toString());
+                generateGotoOperation(nextLabel.toString());
+            }
+            generateLabelOperation(trueLabel.toString());
+            generateStatement(tmp.getStat(),Parent);
+            generateLabelOperation(nextLabel.toString());
         }
 
         if (checkNext != null || checkNext instanceof EmptyStatement) {
@@ -257,25 +289,16 @@ public class IntermediateCode {
             return retVal;
 
         } else if (Exp instanceof ConditionExpression) {
-            ConditionExpression tmp = (ConditionExpression) Exp;
-            Temporal firstTemp;
-            Temporal secondTemp;
-            if (tmp.getExp1() instanceof PrimaryExpression) {
-                PrimaryExpression primaryTemp = (PrimaryExpression) tmp.getExp1();
-                firstTemp = new Temporal(getPrimary(primaryTemp.getValue()));
-            } else {
-                firstTemp = generateExpression(tmp.getExp1(), Parent);
-            }
-            if (tmp.getExp2() instanceof PrimaryExpression) {
-                PrimaryExpression primaryTemp = (PrimaryExpression) tmp.getExp2();
-                secondTemp = new Temporal(getPrimary(primaryTemp.getValue()));
-            } else {
-                secondTemp = generateExpression(tmp.getExp2(), Parent);
-            }
-            Temporal retVal = new Temporal();
-            generateThreeOperation(retVal.toString(), firstTemp.toString(), secondTemp.toString(), tmp.getConditionOperator());
+            Label trueLabel = new Label();
+            Label falseLabel = new Label();
+            generateConditionCode((ConditionExpression) Exp,trueLabel,falseLabel);
+            generateLabelOperation(trueLabel.toString());
+            Temporal retVal = new Temporal(); 
+            generateTwoOperation(retVal.toString(),"true");
+            generateLabelOperation(falseLabel.toString());
+            generateTwoOperation(retVal.toString(),"false");
             return retVal;
-            //?????????????????????????????
+            
 
         } else if (Exp instanceof RelationExpression) {
             RelationExpression tmp = (RelationExpression) Exp;
@@ -364,7 +387,6 @@ public class IntermediateCode {
                 generateRelationCode(element.getExp1(), nextFirstCheck, falseLabel);
             }
             generateLabelOperation(nextFirstCheck.toString());
-            
 
             Label nextSecondCheck = new Label();
             if (element.getExp2() instanceof ConditionExpression) {
@@ -373,7 +395,6 @@ public class IntermediateCode {
             } else {
                 generateRelationCode(element.getExp2(), trueLabel, falseLabel);
             }
-            
 
         } else if (element.getConditionOperator().equalsIgnoreCase("or")) {
             Label nextFirstCheck = new Label();
@@ -391,7 +412,7 @@ public class IntermediateCode {
             } else {
                 generateRelationCode(element.getExp2(), trueLabel, falseLabel);
             }
-            
+
         }
     }
 

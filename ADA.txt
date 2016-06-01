@@ -4,16 +4,16 @@ procedure OneInt is
    C : Boolean;
    F : Float;
    E : Boolean;
-  
+
   function getInt(AB:Integer) return Integer is
 	Begin
 	end getInt;
-  
+
   function getnIt(AB:Integer) return Float is
 	Begin
 	end getInt;
-  
-  
+
+
   D : Boolean;
 BEGIN
   if C and (D or E) then
@@ -22,6 +22,9 @@ BEGIN
   C := false ;
   A := 5 + (2 + 25) - 8 * B;
   --B:= A * retFloat();
+  for A:=1 to 10
+    B:= 3;
+  end for;
 END OneInt;
 
 

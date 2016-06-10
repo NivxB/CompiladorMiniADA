@@ -187,7 +187,7 @@ public class FinalCode {
             if (isInteger(value)) {
                 finalCode.add("li " + retVal + "," + value + "\n");
             } else {
-                finalCode.add("lw " + retVal + "," + value + "\n");
+                finalCode.add("lw " + retVal + ", _" + value + "\n");
             }
             return retVal;
         }

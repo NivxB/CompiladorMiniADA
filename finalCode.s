@@ -11,7 +11,7 @@ sw $t2, _b
 li $t1,3
 li $t0,2
 mul $t2,$t1,$t0
-lw $t1,b
+lw $t1, _b
 sub $t0,$t1,$t2
 li $t1,3
 div $t2,$t0,$t1
@@ -20,23 +20,23 @@ sub $t1,$t2,$t0
 sw $t1, _a
 li $t1,4
 sw $t1, _c
-lw $t1,a
-lw $t0,c
+lw $t1, _a
+lw $t0, _c
 bgt $t1,$t0,label4
 b label5
 label5:
-lw $t1,b
-lw $t0,c
+lw $t1, _b
+lw $t0, _c
 bgt $t1,$t0,label4
 b label3
 label4:
-lw $t1,a
+lw $t1, _a
 li $t0,0
 beq $t1,$t0,label1
 b label3
 label3:
-lw $t1,a
-lw $t0,c
+lw $t1, _a
+lw $t0, _c
 blt $t1,$t0,label1
 b label2
 label1:

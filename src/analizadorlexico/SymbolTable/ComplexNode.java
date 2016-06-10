@@ -56,6 +56,14 @@ public class ComplexNode extends Node {
         return hijos;
     }
 
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
     public boolean addHijo(String id, Node nodo) {
         if (hijos.containsKey(id)) {
             return false;
@@ -68,6 +76,14 @@ public class ComplexNode extends Node {
         }
     }
 
+    public boolean addHijoParam(String id, Node nodo) {
+        if (hijos.containsKey(id)) {
+            return false;
+        } else {
+            hijos.put(id, nodo);
+            return true;
+        }
+    }
     public String getId() {
         return id;
     }

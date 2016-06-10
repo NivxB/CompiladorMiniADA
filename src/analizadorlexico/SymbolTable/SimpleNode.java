@@ -14,12 +14,31 @@ import analizadorlexico.TypeCheck.*;
 public class SimpleNode extends Node{
     String id;
     Type tipo;
+    int offset;
     
 
-    public SimpleNode(String Nombre, Type tipo) {
+    public SimpleNode(String Nombre, Type tipo, int offset) {
         this.id = Nombre;
         this.tipo = tipo;
+        this.offset = offset;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    
 
     public String getNombre() {
         return id;

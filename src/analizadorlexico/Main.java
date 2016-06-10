@@ -5,7 +5,9 @@
  */
 package analizadorlexico;
 
+import analizadorlexico.FinalCode.FinalCode;
 import analizadorlexico.IntermediateCode.IntermediateCode;
+import analizadorlexico.IntermediateCode.Operation;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
 import analizadorlexico.TypeCheck.VoidType;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +31,7 @@ public class Main {
         // TODO code application logic here
         Lexer lexer = null;
         try {
-            lexer = new Lexer(new FileReader("./ADA.txt"));
+            lexer = new Lexer(new FileReader("./suma.adb"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,16 +46,27 @@ public class Main {
         parser p = new parser(lexer);
         p.parse();
         SemanticAnalysis semantic = new SemanticAnalysis(p.FINALOBJECT);
-        IntermediateCode intermediateCode = new IntermediateCode(p.FINALOBJECT,semantic);
-        if (!SemanticAnalysis.hasError){
+        IntermediateCode intermediateCode = new IntermediateCode(p.FINALOBJECT, semantic);
+        if (!SemanticAnalysis.hasError) {
             System.out.println("NO ERROR");
             intermediateCode.generate();
-            System.out.println(intermediateCode.getStringRepresentation());
-        }else{
+            FileWriter writer1 = new FileWriter("./intermediateCode.BP");
+            for (Operation str : intermediateCode.getCodeOperations()) {
+                writer1.write(str.getStringValue()+"\n");
+            }
+            writer1.close();
+            //System.out.println(intermediateCode.getStringRepresentation());
+            FinalCode finalCode = new FinalCode(semantic, intermediateCode);
+            finalCode.initialGeneration();
+            FileWriter writer = new FileWriter("./finalCode.s");
+            for (String str : finalCode.getFinalCode()) {
+                writer.write(str);
+            }
+            writer.close();
+        } else {
             System.err.println("Program has errors\nterminating compile");
         }
-        
-        
+
         mapper.writeValue(new File("./AST.json"), p.FINALOBJECT);
         //mapper.writeValue(new File("./TABLE.json"), semantic.getRoot());
 

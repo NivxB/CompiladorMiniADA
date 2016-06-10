@@ -12,6 +12,7 @@ import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.IntermediateCode.LabelOperation;
 import analizadorlexico.IntermediateCode.Operation;
 import analizadorlexico.IntermediateCode.ThreeOperation;
+import analizadorlexico.IntermediateCode.TwoOperation;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
 import analizadorlexico.SymbolTable.ComplexNode;
 import analizadorlexico.SymbolTable.Node;
@@ -89,14 +90,18 @@ public class FinalCode {
                 IfOperation tmp = (IfOperation) operationCheck;
                 String compareString = tmp.getCompareOperator();
                 if (compareString.trim().equals("")) {
-                    String firstVal = checkTemporalValue(tmp.getFirstValue());
+                    String firstVal = getLoadTemporalValue(tmp.getFirstValue());
                     String nextTemp = Temporal.getFreeTemporal();
                     finalCode.add("li " + nextTemp + ",1" + "\n");
                     finalCode.add("beq " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
                     if (firstVal.charAt(0) == '$') {
-                        Temporal.freeTemporal.push(firstVal);
+                        if (!Temporal.freeTemporal.contains(firstVal)) {
+                            Temporal.freeTemporal.push(firstVal);
+                        }
                     }
-                    Temporal.freeTemporal.push(nextTemp);
+                    if (!Temporal.freeTemporal.contains(nextTemp)) {
+                        Temporal.freeTemporal.push(nextTemp);
+                    }
 
                 } else {
                     String compare = "";
@@ -111,13 +116,13 @@ public class FinalCode {
                     } else if (compareString.trim().equals("=")) {
                         compare = "beq";
                     }
-                    String firstVal = checkTemporalValue(tmp.getFirstValue());
-                    String nextTemp = checkTemporalValue(tmp.getSecondValue());
+                    String firstVal = getLoadTemporalValue(tmp.getFirstValue());
+                    String nextTemp = getLoadTemporalValue(tmp.getSecondValue());
                     finalCode.add(compare + " " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
-                    if (firstVal.charAt(0) == '$') {
+                    if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
                         Temporal.freeTemporal.push(firstVal);
                     }
-                    if (nextTemp.charAt(0) == '$') {
+                    if (nextTemp.charAt(0) == '$' && !Temporal.freeTemporal.contains(nextTemp)) {
                         Temporal.freeTemporal.push(nextTemp);
                     }
 
@@ -125,19 +130,56 @@ public class FinalCode {
             } else if (operationCheck instanceof LabelOperation) {
                 LabelOperation tmp = (LabelOperation) operationCheck;
                 finalCode.add(tmp.getLabel() + ":" + "\n");
-            }/*else if(operationCheck instanceof ThreeOperation){
-                ThreeOperation tmp = (ThreeOperation)operationCheck;
-                if (tmp.getFirstOperator().charAt(0) != '$'){
-                        
-                }else{
-                    
+            } else if (operationCheck instanceof ThreeOperation) {
+                ThreeOperation tmp = (ThreeOperation) operationCheck;
+                String firstVal = getLoadTemporalValue(tmp.getSecondValue());
+                String secondVal = getLoadTemporalValue(tmp.getThirdValue());
+                String toValue = getLoadTemporalValue(tmp.getFirstValue());
+                String oper = "";
+                if (tmp.getSecondOperator().equalsIgnoreCase("+")) {
+                    oper = "add";
+                } else if (tmp.getSecondOperator().equalsIgnoreCase("-")) {
+                    oper = "sub";
+                } else if (tmp.getSecondOperator().equalsIgnoreCase("*")) {
+                    oper = "mul";
+                } else if (tmp.getSecondOperator().equalsIgnoreCase("/")) {
+                    oper = "div";
                 }
-            }*/
+                //Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), toValue);
+                finalCode.add(oper + " " + toValue + "," + firstVal + "," + secondVal + "\n");
+                if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
+                    Temporal.freeTemporal.push(firstVal);
+                }
+                if (secondVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(secondVal)) {
+                    Temporal.freeTemporal.push(secondVal);
+                }
+                if (tmp.getFirstValue().charAt(0) != '$') {
+                    finalCode.add("sw " + toValue + ", _" + tmp.getFirstValue() + "\n");
+                    if (!Temporal.freeTemporal.contains(toValue)) {
+                        Temporal.freeTemporal.push(toValue);
+                    }
+                }
+            } else if (operationCheck instanceof TwoOperation) {
+                TwoOperation tmp = (TwoOperation) operationCheck;
+                if (tmp.getFirstValue().charAt(0) != '$') {
+                    String toVal = Temporal.mapFakeTemporalToReal.get(tmp.getSecondValue());
+                    //Temporal.mapFakeTemporalToReal.remove(tmp.getSecondValue());
+                    finalCode.add("sw " + toVal + ", _" + tmp.getFirstValue() + "\n");
+                    if (!Temporal.freeTemporal.contains(toVal)) {
+                        Temporal.freeTemporal.push(toVal);
+                    }
+                } else {
+                    //???
+                    String tmpTemporal = getLoadTemporalValue(tmp.getSecondValue());
+                    Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(),tmpTemporal);
+                }
+            }
             generateMainProcedure();
         }
     }
 
-    private String checkTemporalValue(String value) {
+    private String getLoadTemporalValue(String value) {
+
         if (value.charAt(0) == '$') {
             return Temporal.getTempValue(value);
         } else {

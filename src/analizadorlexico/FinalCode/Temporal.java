@@ -32,26 +32,29 @@ public class Temporal {
     }
 
     public static String getFreeTemporal() {
+       
         return freeTemporal.pop();
     }
 
     public static String checkForTemporal(String id) {
-        return currentTemporal.getOrDefault(id, "EMPTY");
-    }
-
-    public static void liberateTemporal(String temporal) {
-        freeTemporal.push(temporal);
+        String retVal = currentTemporal.getOrDefault(id, "EMPTY");
+        return retVal;
     }
 
     public static String getTempValue(String intermediateTemp) {
+       
         if (intermediateTemp.charAt(0) == '$') {
             if (mapFakeTemporalToReal.containsKey(intermediateTemp)) {
-                return mapFakeTemporalToReal.get(intermediateTemp);
+                
+                String retVal =  mapFakeTemporalToReal.get(intermediateTemp);
+               // Temporal.mapFakeTemporalToReal.remove(intermediateTemp);
+                return retVal;
             }
             String tmpRetVal = getFreeTemporal();
             mapFakeTemporalToReal.put(intermediateTemp, tmpRetVal);
             return tmpRetVal;
         } else {
+            
             String retVal = checkForTemporal(intermediateTemp);
             if (retVal.equalsIgnoreCase("EMPTY")) {
                 String tmpRetVal = getFreeTemporal();

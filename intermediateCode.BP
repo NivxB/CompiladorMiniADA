@@ -1,0 +1,26 @@
+$t0=2+3
+b=$t0
+$t1=3*2
+$t2=b-$t1
+$t3=$t2/3
+$t4=$t3-5
+a=$t4
+$t5=4
+c=$t5
+if a>c GOTO label4
+goto label5
+label5:
+if b>c GOTO label4
+goto label3
+label4:
+if a=0 GOTO label1
+goto label3
+label3:
+if a<c GOTO label1
+goto label2
+label1:
+$t6=8
+c=$t6
+goto label0
+label2:
+label0:

@@ -3,6 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/IntermediateCode/ParamOperation.java</file>
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/Flex/Lexer.flex</file>
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/SymbolTable/ComplexNode.java</file>
@@ -14,6 +15,11 @@
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/SemanticAnalysis/SemanticAnalysis.java</file>
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/Main.java</file>
             <file>file:/C:/AnalizadorLexicoADA/src/analizadorlexico/IntermediateCode/CallOperation.java</file>
+=======
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/IntermediateCode/IntermediateCode.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/Main.java</file>
+            <file>file:/C:/Users/Kevin%20Barahona/Desktop/AnalizadorLexico/src/analizadorlexico/FinalCode/FinalCode.java</file>
+>>>>>>> a1507f5e38496efe8cd02ffc444789413c4bc5c6
         </group>
     </open-files>
 </project-private>

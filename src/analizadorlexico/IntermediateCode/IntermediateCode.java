@@ -66,6 +66,14 @@ public class IntermediateCode {
         this.treeRoot = IP;
     }
 
+    public List<Operation> getCodeOperations() {
+        return codeOperations;
+    }
+
+    public void setCodeOperations(List<Operation> codeOperations) {
+        this.codeOperations = codeOperations;
+    }
+
     private void generateThreeOperation(String toValue, String firstOperation, String secondOperation, String typeOperation) {
         // t1 = t2 + 5
         /*
@@ -139,8 +147,6 @@ public class IntermediateCode {
             }
         } else if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
-            Declaration declaration=tmp.getDec();
-            if(declaration instanceof declarationCheck)
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
         }
@@ -173,20 +179,20 @@ public class IntermediateCode {
             Label checkExpression = new Label();
             Label trueLabel = new Label();
             Label nextLabel = new Label();
-            
+
             generateLabelOperation(checkExpression.toString());
-            Temporal expressionTemporal = generateExpression(tmp.getExp(),Parent);
-            
+            Temporal expressionTemporal = generateExpression(tmp.getExp(), Parent);
+
             generateIfOperation(asigTemporal.toString(), expressionTemporal.toString(), "<", trueLabel.toString());
             generateGotoOperation(nextLabel.toString());
-            
+
             generateLabelOperation(trueLabel.toString());
-            generateStatement(tmp.getStat(),Parent);
-            generateThreeOperation(asigTemporal.toString(),asigTemporal.toString(),"1","+");
+            generateStatement(tmp.getStat(), Parent);
+            generateThreeOperation(asigTemporal.toString(), asigTemporal.toString(), "1", "+");
             generateGotoOperation(checkExpression.toString());
-            
+
             generateLabelOperation(nextLabel.toString());
-            
+
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
             List<Primary> para=tmp.getCall().getParams().getValues();
@@ -232,7 +238,7 @@ public class IntermediateCode {
                 generateGotoOperation(nextLabel.toString());
             }
             generateLabelOperation(trueLabel.toString());
-            generateStatement(tmp.getStat(),Parent);
+            generateStatement(tmp.getStat(), Parent);
             generateLabelOperation(nextLabel.toString());
         }
 
@@ -309,14 +315,13 @@ public class IntermediateCode {
         } else if (Exp instanceof ConditionExpression) {
             Label trueLabel = new Label();
             Label falseLabel = new Label();
-            generateConditionCode((ConditionExpression) Exp,trueLabel,falseLabel);
+            generateConditionCode((ConditionExpression) Exp, trueLabel, falseLabel);
             generateLabelOperation(trueLabel.toString());
-            Temporal retVal = new Temporal(); 
-            generateTwoOperation(retVal.toString(),"true");
+            Temporal retVal = new Temporal();
+            generateTwoOperation(retVal.toString(), "true");
             generateLabelOperation(falseLabel.toString());
-            generateTwoOperation(retVal.toString(),"false");
+            generateTwoOperation(retVal.toString(), "false");
             return retVal;
-            
 
         } else if (Exp instanceof RelationExpression) {
             RelationExpression tmp = (RelationExpression) Exp;
@@ -466,5 +471,16 @@ public class IntermediateCode {
         generateIfOperation(tOne.toString(), tTwo.toString(), compareType, trueLabel.toString());
         generateGotoOperation(falseLabel.toString());
 
+    }
+
+    public Operation getNextOperation() {
+        Operation retVal;
+        //System.out.println(codeOperations.size() + " LENGH");
+        if (codeOperations.size() > 0) {
+            retVal = codeOperations.get(0);
+            codeOperations.remove(0);
+            return retVal;
+        }
+        return null;
     }
 }

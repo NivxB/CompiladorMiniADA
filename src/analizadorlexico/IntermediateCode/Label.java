@@ -15,7 +15,7 @@ public class Label {
     private String name;
 
     public Label() {
-        name = "l" + count;
+        name = "label" + count;
         count++;
     }
     

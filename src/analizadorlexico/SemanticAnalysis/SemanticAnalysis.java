@@ -58,9 +58,8 @@ public final class SemanticAnalysis {
 
     private ComplexNode root;
     private ComplexNode currentScope;
-   
-    public static boolean hasError = false;
 
+    public static boolean hasError = false;
 
     public SemanticAnalysis(InitProcedure Proc) {
         this.root = new ComplexNode(Proc.getBeginId(), new VoidType(), new ArrayList<>());
@@ -88,7 +87,7 @@ public final class SemanticAnalysis {
         if (declarationCheck instanceof AsignationDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))) {
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),Parent.getOffset()))) {
                     hasError = true;
                     System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
@@ -96,7 +95,7 @@ public final class SemanticAnalysis {
         } else if (declarationCheck instanceof SimpleDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()))) {
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),Parent.getOffset()))) {
                     hasError = true;
                     System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
@@ -132,7 +131,7 @@ public final class SemanticAnalysis {
             System.out.println("Finish Declarations On: " + tmp.getId());
             System.out.println();
         } else if (declarationCheck instanceof FunctionDeclaration) {
-        System.out.println("Es un FunctionDeclaration");
+            System.out.println("Es un FunctionDeclaration");
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             //CHANGE NULL ON FINAL
             ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), Parent);
@@ -175,12 +174,20 @@ public final class SemanticAnalysis {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
                 function.addParameter(simple.getType());
-                function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType()));
+                if (i < 4) {
+                    function.addHijoParam(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),-1));
+                } else {
+                    function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),-1));
+                }
             }
         } else if (declarationCheck instanceof InOutDeclaration) {
             InOutDeclaration tmp = (InOutDeclaration) declarationCheck;
             function.addParameter(tmp.getType());
-            function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType()));
+            if (function.getParameterType().size() < 4) {
+                function.addHijoParam(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(),-1));
+            } else {
+                function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(),-1));
+            }
         }
         if (nextCheck != null) {
             checkParametersFunction(nextCheck, function);
@@ -196,8 +203,8 @@ public final class SemanticAnalysis {
             checkNext = tmp.getNextSequenceStatement();
             thisStatement = tmp.getThisStatement();
         }
-        
-        if (thisStatement != null){
+
+        if (thisStatement != null) {
             System.out.println(thisStatement.getClass().toString());
         }
         if (thisStatement instanceof AsignationStatement) {
@@ -343,7 +350,7 @@ public final class SemanticAnalysis {
             Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //ADD BOOLEAN CHECK?
             if (firstType.compare(secondType)) {
-                return firstType;
+                return new BooleanType();
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;
@@ -356,7 +363,7 @@ public final class SemanticAnalysis {
             Type secondType = getExpressionType(tmp.getExp2(), Parent);
             //ADD BOOLEAN CHECK?
             if (firstType.compare(secondType)) {
-                return firstType;
+                return new BooleanType();
             } else {
                 //CHANGE NULL TO ERRORTYPE
                 hasError = true;

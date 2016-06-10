@@ -106,7 +106,36 @@ public class ComplexNode extends Node {
         }
         return new ErrorType();
     }
+    
+    public List<Node> searchFunctionNodesById(String id, List<Type> params) {
+        System.out.println("Searching: " + id);
+        System.out.println("Searching on: " + this.id);
+        List<Node> nodes=new ArrayList();
+        if (hijos.containsKey(id)) {
+            if (hijos.get(id) instanceof ListComplexNode) {
+                ListComplexNode functions = (ListComplexNode) hijos.get(id);
+                for (int i = 0; i < functions.getListfunction().size(); i++) {
+                    ComplexNode function = functions.getListfunction().get(i);
+                    if (function.compareParameters(params)) {
+                        System.out.println("Returning function with " + params.size());
+                        nodes.add(function);
+                    }  
 
+                }
+                if(nodes.size()>0){
+                    return nodes;
+                }
+            }
+        } else if (padre != null) {
+            System.err.println("Didn't found " + id + " on " + this.id);
+            System.err.println("Searching parent");
+            List<Node> retVal = padre.searchFunctionNodesById(id, params);
+            return retVal;
+        }
+        System.err.println("Didn't found " + id + " anywhere");
+        return null;
+    }
+    
     public Node searchFunctionNodeById(String id, List<Type> params) {
         System.out.println("Searching: " + id);
         System.out.println("Searching on: " + this.id);

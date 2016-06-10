@@ -77,7 +77,14 @@ public class IntermediateCode {
         ThreeOperation newOp = new ThreeOperation(toValue, firstOperation, secondOperation, "=", typeOperation);
         codeOperations.add(newOp);
     }
-
+    private void generateCall(String toValue,int paramnum) {
+        CallOperation tmp = new CallOperation(toValue,paramnum);
+        codeOperations.add(tmp);
+    }
+    private void generateParamOperation(String toValue) {
+        ParamOperation tmp = new ParamOperation(toValue);
+        codeOperations.add(tmp);
+    }
     private void generateTwoOperation(String toValue, String firstOperation) {
         TwoOperation tmp = new TwoOperation(toValue, firstOperation, "=");
         codeOperations.add(tmp);
@@ -132,7 +139,8 @@ public class IntermediateCode {
             }
         } else if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
-
+            Declaration declaration=tmp.getDec();
+            if(declaration instanceof declarationCheck)
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
         }
@@ -180,7 +188,17 @@ public class IntermediateCode {
             generateLabelOperation(nextLabel.toString());
             
         } else if (thisStatement instanceof FunctionCallStatement) {
-
+            FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
+            List<Primary> para=tmp.getCall().getParams().getValues();
+            for (int i = 0; i < para.size(); i++) {
+                Temporal temp = generatePrimary(para.get(i),Parent);
+                generateParamOperation(temp.toString());
+            }
+            generateCall(tmp.getCall().getID(),para.size());
+            Temporal temp = new Temporal();
+            Temporal temp2 = new Temporal("RET");
+            this.generateTwoOperation(temp.toString(),temp2.toString());
+            
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             Label nextLabel = new Label();

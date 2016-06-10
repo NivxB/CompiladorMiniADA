@@ -203,11 +203,33 @@ public final class SemanticAnalysis {
         if (thisStatement instanceof AsignationStatement) {
             AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());
+            if(tmp.getExp() instanceof PrimaryExpression){
+                PrimaryExpression tmpprimary = (PrimaryExpression)tmp.getExp();
+                if(tmpprimary.getValue() instanceof FunctionCall){
+                    System.out.println("TmpDebug Proval:"+tmpprimary.getValue().getStringType());
+                    List<Type> rettypes= getReturnValues(((FunctionCall)tmpprimary.getValue()), Parent);
+                    for (int i = 0; i < rettypes.size(); i++) {
+                        if(!firstType.compare(rettypes.get(i))){
+                            hasError = true;
+                            System.err.println("Invalid Type operation on: ");
+                            break;
+                        }
+                    }
+                }else{
+                    Type secondType = getExpressionType(tmp.getExp(), Parent);
+                    if (!firstType.compare(secondType)) {
+                        hasError = true;
+                        System.err.println("Invalid Type operation on: ");
+                    }
+                }
+            }else{
             Type secondType = getExpressionType(tmp.getExp(), Parent);
             if (!firstType.compare(secondType)) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
             }
+            }
+            
         } else if (thisStatement instanceof CaseStatement) {
             //TODO:
         } else if (thisStatement instanceof ForStatement) {
@@ -347,7 +369,23 @@ public final class SemanticAnalysis {
         //CHANGE NULL TO ERRORTYPE
         return new ErrorType();
     }
-
+    private List<Type> getReturnValues(FunctionCall tmp, ComplexNode Parent){
+            List<Type> retval = new ArrayList();
+            List<Type> tmpParams = new ArrayList();
+            for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
+                tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
+            }
+            List<Node> nodes= Parent.searchFunctionNodesById(tmp.getID(), tmpParams);
+            for (int i = 0; i < nodes.size(); i++) {
+                retval.add(((ComplexNode)nodes).getRetType());
+            }
+            if(retval.size()>0){
+            return retval;
+            }else{
+                retval.add(new ErrorType());
+                return retval;
+            }
+    }
     private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
         System.out.println(Prim.getClass().toString());
         if (Prim instanceof FunctionCall) {

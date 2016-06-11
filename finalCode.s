@@ -18,7 +18,7 @@ div $t2,$t0,$t1
 li $t0,5
 sub $t1,$t2,$t0
 sw $t1, _a
-li $t1,4
+lw $t1, _RET
 sw $t1, _c
 lw $t1, _a
 lw $t0, _c

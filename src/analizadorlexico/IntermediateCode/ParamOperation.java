@@ -25,7 +25,7 @@ public class ParamOperation extends Operation{
     
     @Override
     public String getStringValue() {
-        return "Param("+temporal+")";
+        return "param "+temporal+"";
     }
     
 }

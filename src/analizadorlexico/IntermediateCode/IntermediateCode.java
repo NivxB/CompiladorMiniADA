@@ -85,14 +85,17 @@ public class IntermediateCode {
         ThreeOperation newOp = new ThreeOperation(toValue, firstOperation, secondOperation, "=", typeOperation);
         codeOperations.add(newOp);
     }
-    private void generateCall(String toValue,int paramnum) {
-        CallOperation tmp = new CallOperation(toValue,paramnum);
+
+    private void generateCall(String toValue, int paramnum) {
+        CallOperation tmp = new CallOperation(toValue, paramnum);
         codeOperations.add(tmp);
     }
+
     private void generateParamOperation(String toValue) {
         ParamOperation tmp = new ParamOperation(toValue);
         codeOperations.add(tmp);
     }
+
     private void generateTwoOperation(String toValue, String firstOperation) {
         TwoOperation tmp = new TwoOperation(toValue, firstOperation, "=");
         codeOperations.add(tmp);
@@ -195,16 +198,8 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
-            List<Primary> para=tmp.getCall().getParams().getValues();
-            for (int i = 0; i < para.size(); i++) {
-                Temporal temp = generatePrimary(para.get(i),Parent);
-                generateParamOperation(temp.toString());
-            }
-            generateCall(tmp.getCall().getID(),para.size());
-            Temporal temp = new Temporal();
-            Temporal temp2 = new Temporal("RET");
-            this.generateTwoOperation(temp.toString(),temp2.toString());
-            
+            Temporal temp = generatePrimary(tmp.getCall(),Parent);
+            ;
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             Label nextLabel = new Label();
@@ -263,7 +258,7 @@ public class IntermediateCode {
         if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
         } else if (declarationCheck instanceof ProcedureDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
+            ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
         }
 
         if (nextCheck != null) {
@@ -358,9 +353,12 @@ public class IntermediateCode {
     private Temporal generatePrimary(Primary Prim, ComplexNode Parent) {
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
-
+            for (Primary tmpPrimary : tmp.getParams().getValues()) {
+                generateParamOperation(getPrimary(tmpPrimary));
+            }
+            generateCall(tmp.getID(), tmp.getParams().getValues().size());
+            return new Temporal("RET");
         } else if (Prim instanceof ID) {
-
             ID tmp = (ID) Prim;
             return new Temporal(tmp.getID());
         } else if (Prim instanceof LiteralBoolean) {
@@ -381,7 +379,11 @@ public class IntermediateCode {
     private String getPrimary(Primary Prim) {
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
-
+            for (Primary tmpPrimary : tmp.getParams().getValues()) {
+                generateParamOperation(getPrimary(tmpPrimary));
+            }
+            generateCall(tmp.getID(), tmp.getParams().getValues().size());
+            return "RET";
         } else if (Prim instanceof ID) {
 
             ID tmp = (ID) Prim;

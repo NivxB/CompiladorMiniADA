@@ -87,7 +87,7 @@ public final class SemanticAnalysis {
         if (declarationCheck instanceof AsignationDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),Parent.getOffset()))) {
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), Parent.getOffset()))) {
                     hasError = true;
                     System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
@@ -95,7 +95,7 @@ public final class SemanticAnalysis {
         } else if (declarationCheck instanceof SimpleDeclaration) {
             SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
             for (int i = 0; i < simple.getIDs().size(); i++) {
-                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),Parent.getOffset()))) {
+                if (!Parent.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), Parent.getOffset()))) {
                     hasError = true;
                     System.err.println(simple.getIDs().get(i) + ": already exists, duplicated value");
                 }
@@ -142,17 +142,20 @@ public final class SemanticAnalysis {
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {
                     hasError = true;
                     System.err.println(tmp.getId() + ": already exists, duplicated value");
+                    return;
                 }
             } else {
                 Node keyNode = Parent.getHijos().get(tmp.getId());
                 if (keyNode instanceof ListComplexNode) {
-                    if (((ListComplexNode) keyNode).addFunction(newScope)) {
+                    if (!((ListComplexNode) keyNode).addFunction(newScope)) {
                         hasError = true;
                         System.err.println(tmp.getId() + ": already exists, duplicated value");
+                        return;
                     }
                 } else {
                     hasError = true;
                     System.err.println(tmp.getId() + ": already exists, duplicated value");
+                    return;
                 }
             }
             System.out.println("");
@@ -175,18 +178,28 @@ public final class SemanticAnalysis {
             for (int i = 0; i < simple.getIDs().size(); i++) {
                 function.addParameter(simple.getType());
                 if (i < 4) {
-                    function.addHijoParam(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),-1));
+                    function.addHijoParam(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), -1));
                 } else {
-                    function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(),-1));
+                    function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), -1));
+                }
+            }
+        } else if (declarationCheck instanceof SimpleDeclaration) {
+            SimpleDeclaration simple = ((SimpleDeclaration) declarationCheck);
+            for (int i = 0; i < simple.getIDs().size(); i++) {
+                function.addParameter(simple.getType());
+                if (i < 4) {
+                    function.addHijoParam(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), -1));
+                } else {
+                    function.addHijo(simple.getIDs().get(i), new SimpleNode(simple.getIDs().get(i), simple.getType(), -1));
                 }
             }
         } else if (declarationCheck instanceof InOutDeclaration) {
             InOutDeclaration tmp = (InOutDeclaration) declarationCheck;
             function.addParameter(tmp.getType());
             if (function.getParameterType().size() < 4) {
-                function.addHijoParam(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(),-1));
+                function.addHijoParam(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(), -1));
             } else {
-                function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(),-1));
+                function.addHijo(tmp.getId(), new SimpleNode(tmp.getId(), tmp.getType(), -1));
             }
         }
         if (nextCheck != null) {
@@ -210,33 +223,33 @@ public final class SemanticAnalysis {
         if (thisStatement instanceof AsignationStatement) {
             AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());
-            if(tmp.getExp() instanceof PrimaryExpression){
-                PrimaryExpression tmpprimary = (PrimaryExpression)tmp.getExp();
-                if(tmpprimary.getValue() instanceof FunctionCall){
-                    System.out.println("TmpDebug Proval:"+tmpprimary.getValue().getStringType());
-                    List<Type> rettypes= getReturnValues(((FunctionCall)tmpprimary.getValue()), Parent);
+            if (tmp.getExp() instanceof PrimaryExpression) {
+                PrimaryExpression tmpprimary = (PrimaryExpression) tmp.getExp();
+                if (tmpprimary.getValue() instanceof FunctionCall) {
+                    System.out.println("TmpDebug Proval:" + tmpprimary.getValue().getStringType());
+                    List<Type> rettypes = getReturnValues(((FunctionCall) tmpprimary.getValue()), Parent);
                     for (int i = 0; i < rettypes.size(); i++) {
-                        if(!firstType.compare(rettypes.get(i))){
+                        if (!firstType.compare(rettypes.get(i))) {
                             hasError = true;
                             System.err.println("Invalid Type operation on: ");
                             break;
                         }
                     }
-                }else{
+                } else {
                     Type secondType = getExpressionType(tmp.getExp(), Parent);
                     if (!firstType.compare(secondType)) {
                         hasError = true;
                         System.err.println("Invalid Type operation on: ");
                     }
                 }
-            }else{
-            Type secondType = getExpressionType(tmp.getExp(), Parent);
-            if (!firstType.compare(secondType)) {
-                hasError = true;
-                System.err.println("Invalid Type operation on: ");
+            } else {
+                Type secondType = getExpressionType(tmp.getExp(), Parent);
+                if (!firstType.compare(secondType)) {
+                    hasError = true;
+                    System.err.println("Invalid Type operation on: ");
+                }
             }
-            }
-            
+
         } else if (thisStatement instanceof CaseStatement) {
             //TODO:
         } else if (thisStatement instanceof ForStatement) {
@@ -301,7 +314,7 @@ public final class SemanticAnalysis {
             System.out.println("Exit Function " + tmpParent.getId());
             System.out.println("");
         } else if (declarationCheck instanceof ProcedureDeclaration) {
-            FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
+            ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             List<Type> checkParams = tmp.getParamsType(tmp.getLDP(), new ArrayList());
             System.out.println("");
             ComplexNode tmpParent = (ComplexNode) Parent.searchFunctionNodeById(tmp.getId(), checkParams);
@@ -376,23 +389,25 @@ public final class SemanticAnalysis {
         //CHANGE NULL TO ERRORTYPE
         return new ErrorType();
     }
-    private List<Type> getReturnValues(FunctionCall tmp, ComplexNode Parent){
-            List<Type> retval = new ArrayList();
-            List<Type> tmpParams = new ArrayList();
-            for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
-                tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
-            }
-            List<Node> nodes= Parent.searchFunctionNodesById(tmp.getID(), tmpParams);
-            for (int i = 0; i < nodes.size(); i++) {
-                retval.add(((ComplexNode)nodes).getRetType());
-            }
-            if(retval.size()>0){
+
+    private List<Type> getReturnValues(FunctionCall tmp, ComplexNode Parent) {
+        List<Type> retval = new ArrayList();
+        List<Type> tmpParams = new ArrayList();
+        for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
+            tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
+        }
+        List<Node> nodes = Parent.searchFunctionNodesById(tmp.getID(), tmpParams);
+        for (int i = 0; i < nodes.size(); i++) {
+            retval.add(((ComplexNode) nodes.get(i)).getRetType());
+        }
+        if (retval.size() > 0) {
             return retval;
-            }else{
-                retval.add(new ErrorType());
-                return retval;
-            }
+        } else {
+            retval.add(new ErrorType());
+            return retval;
+        }
     }
+
     private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
         System.out.println(Prim.getClass().toString());
         if (Prim instanceof FunctionCall) {

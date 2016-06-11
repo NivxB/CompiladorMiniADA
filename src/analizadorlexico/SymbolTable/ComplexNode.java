@@ -179,7 +179,8 @@ public class ComplexNode extends Node {
 
     public boolean compareParameters(List<Type> params) {
         System.out.println("Comparing parameters on: " + this.id);
-        
+        System.out.println(this.id + " params "+parameterType.size());
+        System.out.println("compareParams "+ params.size());
         boolean retVal = true;
         if (params.size() != parameterType.size()) {
             

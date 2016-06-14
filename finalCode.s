@@ -12,7 +12,8 @@ li $t2,2
 add $t3,$t1,$t2
 _testV0:
 main:
-jal test0li $t2,2
+jal _test0
+li $t2,2
 li $t2,3
 add $t1,$t2,$t2
 sw $t1, _b
@@ -27,7 +28,9 @@ li $t4,5
 sub $t2,$t1,$t4
 sw $t2, _a
 li $t4,5
-move $a0,$t4jal d1lw $t2, _RET
+move $a0,$t4
+jal _d1
+move $t2,$v0
 sw $t2, _c
 lw $t2, _a
 lw $t4, _c

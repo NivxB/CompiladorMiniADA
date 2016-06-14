@@ -182,18 +182,24 @@ public class FinalCode {
                 if (A.equalsIgnoreCase("NULL")) {
                     /* STACK MAHOU */
                 } else {
-                    finalCode.add("move "+A+","+temporalString);
+                    finalCode.add("move "+A+","+temporalString+"\n");
                 }
             }else if (operationCheck instanceof CallOperation){
                 CallOperation tmp = (CallOperation)operationCheck;
-                finalCode.add("jal "+tmp.getNombre()+tmp.getParamnumber());
+                //SAVE PARAMS
+                finalCode.add("jal _"+tmp.getNombre()+tmp.getParamnumber()+"\n");
             }
             generateMainProcedure();
         }
     }
 
     private String getLoadTemporalValue(String value) {
-
+        if (value.equalsIgnoreCase("RET") || value.equalsIgnoreCase("_RET")){
+            String retVal = Temporal.getFreeTemporal();
+            //RESTORE
+            finalCode.add("move "+retVal+",$v0"+"\n");
+            return retVal;
+        }
         if (value.charAt(0) == '$') {
             return Temporal.getTempValue(value);
         } else {

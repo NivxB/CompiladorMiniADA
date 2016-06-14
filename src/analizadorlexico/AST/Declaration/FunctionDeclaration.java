@@ -63,6 +63,11 @@ public class FunctionDeclaration extends Declaration{
             for (String id: tmpSimple.getIDs()){
                 tmpRetVal.add(tmpSimple.getType());
             }
+        }else if (tmpDec instanceof SimpleDeclaration){
+            SimpleDeclaration tmpSimple = (SimpleDeclaration) tmpDec;
+            for (String id: tmpSimple.getIDs()){
+                tmpRetVal.add(tmpSimple.getType());
+            }
         }else if (tmpDec instanceof InOutDeclaration){
             InOutDeclaration tmp = (InOutDeclaration)tmpDec;
             tmpRetVal.add(tmp.getType());

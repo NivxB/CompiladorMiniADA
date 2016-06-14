@@ -32,6 +32,7 @@ import analizadorlexico.AST.Statement.EmptyStatement;
 import analizadorlexico.AST.Statement.ForStatement;
 import analizadorlexico.AST.Statement.FunctionCallStatement;
 import analizadorlexico.AST.Statement.IfStatement;
+import analizadorlexico.AST.Statement.ReturnStatement;
 import analizadorlexico.AST.Statement.SequenceStatement;
 import analizadorlexico.AST.Statement.Statement;
 import analizadorlexico.AST.Statement.WhileStatement;
@@ -100,6 +101,11 @@ public class IntermediateCode {
         TwoOperation tmp = new TwoOperation(toValue, firstOperation, "=");
         codeOperations.add(tmp);
     }
+    
+    private void generateReturn(String toRet){
+        ReturnOperation tmp = new ReturnOperation(toRet);
+        codeOperations.add(tmp);
+    }
 
     private void generateLabelOperation(String label) {
         //LABEL:
@@ -119,6 +125,8 @@ public class IntermediateCode {
 
     public void generate() {
         generateDeclaration(treeRoot.getDec(), null);
+        //generateDeclarationOnly(treeRoot.getDec());
+        generateLabelOperation("main");
         generateStatement(treeRoot.getDec(), treeRoot.getStat(), null);
     }
 
@@ -137,21 +145,20 @@ public class IntermediateCode {
         if (Dec instanceof SequenceDeclaration) {
             declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
             nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
-        }
-
-        if (declarationCheck instanceof AsignationDeclaration) {
-            SimpleDeclaration simple = (SimpleDeclaration) ((AsignationDeclaration) declarationCheck).getSimpleDeclaration();
-            for (int i = 0; i < simple.getIDs().size(); i++) {
-
-            }
-        } else if (declarationCheck instanceof SimpleDeclaration) {
-            SimpleDeclaration simple = (SimpleDeclaration) declarationCheck;
-            for (int i = 0; i < simple.getIDs().size(); i++) {
-            }
-        } else if (declarationCheck instanceof ProcedureDeclaration) {
+        } 
+        
+        if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
+            generateDeclaration(tmp.getDec(), null);
+            int size = tmp.getParamsType(tmp.getLDP(), new ArrayList<>()).size();
+            generateLabelOperation("_" + tmp.getId() + "V" + size);
+            generateStatement(tmp.getStat(), null);
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
+            generateDeclaration(tmp.getDec(), null);
+            int size = tmp.getParamsType(tmp.getLDP(), new ArrayList<>()).size();
+            generateLabelOperation("_" + tmp.getId() + tmp.getRetType().getTYPE().charAt(0) + size);
+            generateStatement(tmp.getStat(), null);
         }
 
         if (nextCheck != null) {
@@ -198,8 +205,8 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
-            Temporal temp = generatePrimary(tmp.getCall(),Parent);
-            ;
+            Temporal temp = generatePrimary(tmp.getCall(), Parent);
+            
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             Label nextLabel = new Label();
@@ -235,6 +242,10 @@ public class IntermediateCode {
             generateLabelOperation(trueLabel.toString());
             generateStatement(tmp.getStat(), Parent);
             generateLabelOperation(nextLabel.toString());
+        } else if (thisStatement instanceof ReturnStatement){
+            ReturnStatement tmp = (ReturnStatement)thisStatement;
+            Temporal tmpTemp = generateExpression(tmp.getRetVal(),null);
+            generateReturn(tmpTemp.toString());
         }
 
         if (checkNext != null || checkNext instanceof EmptyStatement) {

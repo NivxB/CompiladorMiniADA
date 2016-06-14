@@ -4,40 +4,49 @@ _b .word 0
 _c .word 0
 .text
 .globl main
-li $t0,2
-li $t1,3
-add $t2,$t0,$t1
-sw $t2, _b
-li $t1,3
-li $t0,2
-mul $t2,$t1,$t0
-lw $t1, _b
-sub $t0,$t1,$t2
-li $t1,3
-div $t2,$t0,$t1
-li $t0,5
-sub $t1,$t2,$t0
-sw $t1, _a
-lw $t1, _RET
-sw $t1, _c
-lw $t1, _a
-lw $t0, _c
-bgt $t1,$t0,label4
+_dI0:
+li $t0,0
+_dI1:
+lw $t1, _i
+li $t2,2
+add $t3,$t1,$t2
+_testV0:
+main:
+jal test0li $t2,2
+li $t2,3
+add $t1,$t2,$t2
+sw $t1, _b
+li $t2,3
+li $t2,2
+mul $t1,$t2,$t2
+lw $t2, _b
+sub $t4,$t2,$t1
+li $t2,3
+div $t1,$t4,$t2
+li $t4,5
+sub $t2,$t1,$t4
+sw $t2, _a
+li $t4,5
+move $a0,$t4jal d1lw $t2, _RET
+sw $t2, _c
+lw $t2, _a
+lw $t4, _c
+bgt $t2,$t4,label4
 b label5
 label5:
-lw $t1, _b
-lw $t0, _c
-bgt $t1,$t0,label4
+lw $t2, _b
+lw $t4, _c
+bgt $t2,$t4,label4
 b label3
 label4:
-lw $t1, _a
+lw $t2, _a
 li $t0,0
-beq $t1,$t0,label1
+beq $t2,$t0,label1
 b label3
 label3:
-lw $t1, _a
-lw $t0, _c
-blt $t1,$t0,label1
+lw $t2, _a
+lw $t4, _c
+blt $t2,$t4,label1
 b label2
 label1:
 li $t0,8

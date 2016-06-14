@@ -1,15 +1,23 @@
+_dI0:
+$t0=0
+RET $t0
+_dI1:
+$t1=i+2
+RET $t1
+_testV0:
+main:
 call test , 0
-$t0=2+3
-b=$t0
-$t1=3*2
-$t2=b-$t1
-$t3=$t2/3
-$t4=$t3-5
-a=$t4
+$t2=2+3
+b=$t2
+$t3=3*2
+$t4=b-$t3
+$t5=$t4/3
+$t6=$t5-5
+a=$t6
 param 5
 call d , 1
-$t5=RET
-c=$t5
+$t7=RET
+c=$t7
 if a>c GOTO label4
 goto label5
 label5:
@@ -22,8 +30,8 @@ label3:
 if a<c GOTO label1
 goto label2
 label1:
-$t6=8
-c=$t6
+$t8=8
+c=$t8
 goto label0
 label2:
 label0:

@@ -18,6 +18,14 @@ public class ReturnStatement extends Statement {
     public ReturnStatement(Expression retVal) {
         this.retVal = retVal;
     }
+
+    public Expression getRetVal() {
+        return retVal;
+    }
+
+    public void setRetVal(Expression retVal) {
+        this.retVal = retVal;
+    }
     
     
 }

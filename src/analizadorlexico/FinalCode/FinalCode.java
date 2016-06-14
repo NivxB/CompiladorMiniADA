@@ -6,11 +6,13 @@
 package analizadorlexico.FinalCode;
 
 import analizadorlexico.AST.InitProcedure;
+import analizadorlexico.IntermediateCode.CallOperation;
 import analizadorlexico.IntermediateCode.GotoOperation;
 import analizadorlexico.IntermediateCode.IfOperation;
 import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.IntermediateCode.LabelOperation;
 import analizadorlexico.IntermediateCode.Operation;
+import analizadorlexico.IntermediateCode.ParamOperation;
 import analizadorlexico.IntermediateCode.ThreeOperation;
 import analizadorlexico.IntermediateCode.TwoOperation;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
@@ -171,8 +173,20 @@ public class FinalCode {
                 } else {
                     //???
                     String tmpTemporal = getLoadTemporalValue(tmp.getSecondValue());
-                    Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(),tmpTemporal);
+                    Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), tmpTemporal);
                 }
+            } else if (operationCheck instanceof ParamOperation) {
+                ParamOperation tmp = (ParamOperation) operationCheck;
+                String temporalString = getLoadTemporalValue(tmp.getTemporal());
+                String A = Temporal.getNextA();
+                if (A.equalsIgnoreCase("NULL")) {
+                    /* STACK MAHOU */
+                } else {
+                    finalCode.add("move "+A+","+temporalString);
+                }
+            }else if (operationCheck instanceof CallOperation){
+                CallOperation tmp = (CallOperation)operationCheck;
+                finalCode.add("jal "+tmp.getNombre()+tmp.getParamnumber());
             }
             generateMainProcedure();
         }

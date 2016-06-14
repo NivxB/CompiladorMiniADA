@@ -15,14 +15,14 @@ public class ParamOperation extends Operation{
         this.temporal=name;
     }
 
-    public String getName() {
+    public String getTemporal() {
         return temporal;
     }
 
-    public void setName(String name) {
-        this.temporal = name;
+    public void setTemporal(String temporal) {
+        this.temporal = temporal;
     }
-    
+
     @Override
     public String getStringValue() {
         return "param "+temporal+"";

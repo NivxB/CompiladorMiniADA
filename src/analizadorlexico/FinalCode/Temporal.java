@@ -18,16 +18,34 @@ public class Temporal {
     public static HashMap<String, String> currentTemporal;
     public static HashMap<String, String> mapFakeTemporalToReal;
     public static Stack<String> freeTemporal;
-    public static final String[] temporalList = {
-        "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9", "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7"
+    public static final String[] TEMPORAL_LIST = {
+        "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"
+    };
+    
+    public static final String[] S_TEMPORAL_LIST = {
+        "$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7"
+    };
+    
+    public static int A_POS = 0;
+    
+    public static final String[] A_LIST = {
+       "$a0","$a1","$a2","$a3"
+    };
+    
+    public static String getNextA(){
+        if (A_POS == 4){
+            return "NULL";
+        }else{
+            return A_LIST[A_POS];
+        }
     };
 
     public static void initAll() {
         currentTemporal = new HashMap();
         mapFakeTemporalToReal = new HashMap();
         freeTemporal = new Stack();
-        for (int i = temporalList.length - 1; i >= 0; i--) {
-            freeTemporal.push(temporalList[i]);
+        for (int i = TEMPORAL_LIST.length - 1; i >= 0; i--) {
+            freeTemporal.push(TEMPORAL_LIST[i]);
         }
     }
 

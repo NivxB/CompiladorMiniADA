@@ -6,6 +6,7 @@ procedure pruebaSuma is
       return 0;
     end d;
     Function d(i:Integer) return Integer is
+        f: Integer;
     begin
       return i + 2;
     end d;

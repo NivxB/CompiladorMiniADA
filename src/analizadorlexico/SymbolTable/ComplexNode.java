@@ -8,6 +8,7 @@ package analizadorlexico.SymbolTable;
 import analizadorlexico.TypeCheck.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class ComplexNode extends Node {
 
     private String id;
     private Type retType;
-    private HashMap<String, Node> hijos;
+    private LinkedHashMap<String, Node> hijos;
     private ComplexNode padre;
     private List<Type> parameterType;
     private int offset;
@@ -28,7 +29,7 @@ public class ComplexNode extends Node {
         this.retType = retType;
         this.padre = null;
         this.parameterType = pType;
-        hijos = new HashMap();
+        hijos = new LinkedHashMap();
         offset = 0;
     }
 
@@ -44,7 +45,7 @@ public class ComplexNode extends Node {
         this.id = id;
         this.retType = retType;
         this.padre = padre;
-        hijos = new HashMap();
+        hijos = new LinkedHashMap();
         this.parameterType = pType;
     }
 
@@ -52,7 +53,7 @@ public class ComplexNode extends Node {
         this.retType = retType;
     }
 
-    public HashMap<String, Node> getHijos() {
+    public LinkedHashMap<String, Node> getHijos() {
         return hijos;
     }
 

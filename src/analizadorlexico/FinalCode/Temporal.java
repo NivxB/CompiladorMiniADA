@@ -7,7 +7,7 @@ package analizadorlexico.FinalCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -18,9 +18,10 @@ import java.util.Stack;
  */
 public class Temporal {
 
-    public static HashMap<String, String> currentTemporal;
-    public static HashMap<String, String> mapFakeTemporalToReal;
+    public static LinkedHashMap<String, String> currentTemporal;
+    public static LinkedHashMap<String, String> mapFakeTemporalToReal;
     public static Stack<String> freeTemporal;
+    public static LinkedHashMap<String,String> argumentToTemporal;
     public static final String[] TEMPORAL_LIST = {
         "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"
     };
@@ -48,9 +49,11 @@ public class Temporal {
     ;
 
     public static void initAll() {
-        currentTemporal = new HashMap();
-        mapFakeTemporalToReal = new HashMap();
+        currentTemporal = new LinkedHashMap();
+        mapFakeTemporalToReal = new LinkedHashMap();
         freeTemporal = new Stack();
+        argumentToTemporal = new LinkedHashMap();
+        A_POS = 0;
         for (int i = TEMPORAL_LIST.length - 1; i >= 0; i--) {
             freeTemporal.push(TEMPORAL_LIST[i]);
         }
@@ -91,8 +94,8 @@ public class Temporal {
         }
     }
 
-    public HashMap<String, String> currentSavedTemporal;
-    public HashMap<String, String> savedMapFakeTemporalToReal;
+    public LinkedHashMap<String, String> currentSavedTemporal;
+    public LinkedHashMap<String, String> savedMapFakeTemporalToReal;
     public Stack<String> savedFreeTemporal;
 
     public Temporal() {

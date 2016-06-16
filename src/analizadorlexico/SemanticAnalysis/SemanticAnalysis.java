@@ -136,7 +136,7 @@ public final class SemanticAnalysis {
             //CHANGE NULL ON FINAL
             ComplexNode newScope = new ComplexNode(tmp.getId(), tmp.getRetType(), new ArrayList<>(), Parent);
             checkParametersFunction(tmp.getLDP(), newScope);
-            if (Parent.getHijos().get(tmp.getId()) == null) {
+            if (!Parent.getHijos().containsKey(tmp.getId())) {
                 ListComplexNode tmpList = new ListComplexNode(tmp.getId(), new ArrayList());
                 tmpList.addFunction(newScope);
                 if (!Parent.addHijo(tmp.getId(), tmpList)) {

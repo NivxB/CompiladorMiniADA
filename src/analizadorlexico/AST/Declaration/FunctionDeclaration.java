@@ -98,7 +98,7 @@ public class FunctionDeclaration extends Declaration{
     private Type RetType;
 
     public FunctionDeclaration(String Id, String EndId, ListDeclarationParameter LDP, Declaration Dec, Statement Stat, Type RetType) {
-        this.Id = Id;
+        this.Id = Id+RetType.getTYPE().charAt(0);
         this.EndId = EndId;
         this.LDP = LDP;
         this.Dec = Dec;

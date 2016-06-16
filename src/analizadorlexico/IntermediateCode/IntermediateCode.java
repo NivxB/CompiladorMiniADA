@@ -151,14 +151,14 @@ public class IntermediateCode {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             generateDeclaration(tmp.getDec(), null);
             int size = tmp.getParamsType(tmp.getLDP(), new ArrayList<>()).size();
-            generateLabelOperation("_" + tmp.getId() + "V" + size);
+            generateLabelOperation("_" + tmp.getId() + size);
             generateStatement(tmp.getStat(), null);
             generateLabelOperation("ENDFUNCTION");
         } else if (declarationCheck instanceof FunctionDeclaration) {
             FunctionDeclaration tmp = (FunctionDeclaration) declarationCheck;
             generateDeclaration(tmp.getDec(), null);
             int size = tmp.getParamsType(tmp.getLDP(), new ArrayList<>()).size();
-            generateLabelOperation("_" + tmp.getId() + tmp.getRetType().getTYPE().charAt(0) + size);
+            generateLabelOperation("_" + tmp.getId() + size);
             generateStatement(tmp.getStat(), null);
             generateLabelOperation("ENDFUNCTION");
         }

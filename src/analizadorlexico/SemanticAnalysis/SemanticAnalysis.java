@@ -226,6 +226,8 @@ public final class SemanticAnalysis {
             if (tmp.getExp() instanceof PrimaryExpression) {
                 PrimaryExpression tmpprimary = (PrimaryExpression) tmp.getExp();
                 if (tmpprimary.getValue() instanceof FunctionCall) {
+                    FunctionCall function = (FunctionCall)tmpprimary.getValue();
+                    function.setID(function.getID()+firstType.getTYPE().charAt(0));
                     System.out.println("TmpDebug Proval:" + tmpprimary.getValue().getStringType());
                     List<Type> rettypes = getReturnValues(((FunctionCall) tmpprimary.getValue()), Parent);
                     for (int i = 0; i < rettypes.size(); i++) {

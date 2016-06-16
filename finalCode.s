@@ -103,3 +103,24 @@ sw $t0, _c
 b label0
 label2:
 label0:
+li $t0,0
+sw $t0, _a
+label9:
+li $t0,10
+blt $t0,$t0,label10
+b label11
+label10:
+li $t2,3
+sw $t2, _b
+li $t0,1
+add $t0,$t0,$t0
+b label9
+label11:
+lw $t0, _e
+li $t4,1
+beq $t0,$t4,label13
+b label12
+label13:
+li $t2,3
+sw $t2, _b
+label12:

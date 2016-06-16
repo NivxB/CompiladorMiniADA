@@ -46,3 +46,22 @@ c=$t10
 goto label0
 label2:
 label0:
+$t11=0
+a=$t11
+label9:
+$t12=10
+if $t11<$t12 GOTO label10
+goto label11
+label10:
+$t13=3
+b=$t13
+$t11=$t11+1
+goto label9
+label11:
+$t14=e
+if $t14 GOTO label13
+goto label12
+label13:
+$t15=3
+b=$t15
+label12:

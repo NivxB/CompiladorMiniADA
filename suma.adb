@@ -26,5 +26,11 @@ begin
    	if(a>c or b>c and a=0 or a<c) then
    		c:=8;
    	end if;
+    for a:=0 to 10
+      b:= 3;
+    end for;
+    while e loop
+      b:=3;
+    end loop;
    	-- a:= 3;
 end pruebaSuma;

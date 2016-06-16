@@ -5,12 +5,38 @@ _c .word 0
 .text
 .globl main
 _dI0:
+sw $fp,-4($sp)
+sw $ra,-8($sp)
+move $fp,$sp
+sub $sp,$sp,12
 li $t0,0
+move $sp,$fp
+lw $ra,-8($sp)
+lw $fp,-4($sp)
+jr $ra
 _dI1:
+sw $fp,-4($sp)
+sw $ra,-8($sp)
+sw $s0,-12($sp)
+move $fp,$sp
+sub $sp,$sp,16
+move $s0,$a0
 lw $t1, _i
 li $t2,2
 add $t3,$t1,$t2
+move $sp,$fp
+lw $ra,-8($sp)
+lw $fp,-4($sp)
+jr $ra
 _testV0:
+sw $fp,-4($sp)
+sw $ra,-8($sp)
+move $fp,$sp
+sub $sp,$sp,12
+move $sp,$fp
+lw $ra,-8($sp)
+lw $fp,-4($sp)
+jr $ra
 main:
 jal _test0
 li $t2,2

@@ -25,6 +25,7 @@ import analizadorlexico.AST.Primary.ID;
 import analizadorlexico.AST.Primary.LiteralBoolean;
 import analizadorlexico.AST.Primary.LiteralFloat;
 import analizadorlexico.AST.Primary.LiteralInt;
+import analizadorlexico.AST.Primary.LiteralString;
 import analizadorlexico.AST.Primary.Primary;
 import analizadorlexico.AST.Statement.AsignationStatement;
 import analizadorlexico.AST.Statement.CaseStatement;
@@ -86,14 +87,17 @@ public class IntermediateCode {
         ThreeOperation newOp = new ThreeOperation(toValue, firstOperation, secondOperation, "=", typeOperation);
         codeOperations.add(newOp);
     }
+
     private void generateGET(String toValue, String id) {
         GetCall tmp = new GetCall(toValue, id);
         codeOperations.add(tmp);
     }
+
     private void generatePUT(String toValue, String message) {
         PutCall tmp = new PutCall(toValue, message);
         codeOperations.add(tmp);
     }
+
     private void generateCall(String toValue, int paramnum) {
         CallOperation tmp = new CallOperation(toValue, paramnum);
         codeOperations.add(tmp);
@@ -108,8 +112,8 @@ public class IntermediateCode {
         TwoOperation tmp = new TwoOperation(toValue, firstOperation, "=");
         codeOperations.add(tmp);
     }
-    
-    private void generateReturn(String toRet){
+
+    private void generateReturn(String toRet) {
         ReturnOperation tmp = new ReturnOperation(toRet);
         codeOperations.add(tmp);
     }
@@ -152,8 +156,8 @@ public class IntermediateCode {
         if (Dec instanceof SequenceDeclaration) {
             declarationCheck = ((SequenceDeclaration) Dec).getThisDeclaration();
             nextCheck = ((SequenceDeclaration) Dec).getNextDeclarations();
-        } 
-        
+        }
+
         if (declarationCheck instanceof ProcedureDeclaration) {
             ProcedureDeclaration tmp = (ProcedureDeclaration) declarationCheck;
             generateDeclaration(tmp.getDec(), null);
@@ -214,32 +218,38 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
-            if(tmp.getCall().getID().equals("get")){
-                generateGET(tmp.getCall().getID(),getPrimary(tmp.getCall().getParams().getValues().get(0)));
-            }else if(tmp.getCall().getID().equals("put")){
-                generatePUT(tmp.getCall().getID(),getPrimary(tmp.getCall().getParams().getValues().get(0)));
-            }else{
+            if (tmp.getCall().getID().equals("get")) {
+                generateGET(tmp.getCall().getID(), generateExpression(tmp.getCall().getParams().getValues().get(0), null).toString());
+            } else if (tmp.getCall().getID().equals("put")) {
+                generatePUT(tmp.getCall().getID(), generateExpression(tmp.getCall().getParams().getValues().get(0), null).toString());
+            } else {
                 Temporal temp = generatePrimary(tmp.getCall(), Parent);
             }
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
-            Label nextLabel = new Label();
-            Label trueLabel = new Label();
-            Label falseLabel = new Label();
-            Expression toCheckExp = tmp.getCon().getExp();
-            if (toCheckExp instanceof ConditionExpression) {
-                generateConditionCode((ConditionExpression) toCheckExp, trueLabel, falseLabel);
+            if (tmp.getCon() != null) {
+                Label nextLabel = new Label();
+                Label trueLabel = new Label();
+                Label falseLabel = new Label();
+                Expression toCheckExp = tmp.getCon().getExp();
+                if (toCheckExp instanceof ConditionExpression) {
+                    generateConditionCode((ConditionExpression) toCheckExp, trueLabel, falseLabel);
+                } else if (toCheckExp instanceof RelationExpression) {
+                    generateRelationCode((RelationExpression) toCheckExp, trueLabel, falseLabel);
+                } else {
+                    Temporal temporal = generateExpression(toCheckExp, Parent);
+                    generateIfOperation(temporal.toString(), "", "", trueLabel.toString());
+                    generateGotoOperation(falseLabel.toString());
+                }
+                generateLabelOperation(trueLabel.toString());
+                generateStatement(tmp.getStat(), Parent);
+                generateGotoOperation(nextLabel.toString());
+                generateLabelOperation(falseLabel.toString());
+                generateStatement(tmp.getElsIf(), Parent);
+                generateLabelOperation(nextLabel.toString());
             } else {
-                Temporal temporal = generateExpression(toCheckExp, Parent);
-                generateIfOperation(temporal.toString(), "", "", trueLabel.toString());
-                generateGotoOperation(falseLabel.toString());
+                generateStatement(tmp.getStat(), Parent);
             }
-            generateLabelOperation(trueLabel.toString());
-            generateStatement(tmp.getStat(), Parent);
-            generateGotoOperation(nextLabel.toString());
-            generateLabelOperation(falseLabel.toString());
-            generateStatement(tmp.getElsIf(), Parent);
-            generateLabelOperation(nextLabel.toString());
 
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
@@ -256,9 +266,9 @@ public class IntermediateCode {
             generateLabelOperation(trueLabel.toString());
             generateStatement(tmp.getStat(), Parent);
             generateLabelOperation(nextLabel.toString());
-        } else if (thisStatement instanceof ReturnStatement){
-            ReturnStatement tmp = (ReturnStatement)thisStatement;
-            Temporal tmpTemp = generateExpression(tmp.getRetVal(),null);
+        } else if (thisStatement instanceof ReturnStatement) {
+            ReturnStatement tmp = (ReturnStatement) thisStatement;
+            Temporal tmpTemp = generateExpression(tmp.getRetVal(), null);
             generateReturn(tmpTemp.toString());
         }
 
@@ -378,8 +388,8 @@ public class IntermediateCode {
     private Temporal generatePrimary(Primary Prim, ComplexNode Parent) {
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
-            for (Primary tmpPrimary : tmp.getParams().getValues()) {
-                generateParamOperation(getPrimary(tmpPrimary));
+            for (Expression tmpPrimary : tmp.getParams().getValues()) {
+                generateParamOperation(generateExpression(tmpPrimary, null).toString());
             }
             generateCall(tmp.getID(), tmp.getParams().getValues().size());
             return new Temporal("RET");
@@ -397,6 +407,10 @@ public class IntermediateCode {
 
             LiteralInt tmp = (LiteralInt) Prim;
             return new Temporal(Integer.toString(tmp.getValue()));
+        } else if (Prim instanceof LiteralString) {
+            LiteralString tmp = (LiteralString) Prim;
+            /* ADD TO FUCKING TABLE*/
+            return new Temporal("\""+(tmp.getValue())+"\"");
         }
         return null;
     }
@@ -404,8 +418,8 @@ public class IntermediateCode {
     private String getPrimary(Primary Prim) {
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
-            for (Primary tmpPrimary : tmp.getParams().getValues()) {
-                generateParamOperation(getPrimary(tmpPrimary));
+            for (Expression tmpPrimary : tmp.getParams().getValues()) {
+                generateParamOperation(generateExpression(tmpPrimary, null).toString());
             }
             generateCall(tmp.getID(), tmp.getParams().getValues().size());
             return "RET";

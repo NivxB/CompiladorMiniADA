@@ -5,6 +5,7 @@
  */
 package analizadorlexico.AST.Primary;
 
+import analizadorlexico.AST.Expression.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,15 +14,15 @@ import java.util.List;
  * @author kbarahona
  */
 public class ListPrimary {
-    private List<Primary> values;
+    private List<Expression> values;
     
 
-    public ListPrimary(Primary Val) {
+    public ListPrimary(Expression Val) {
         this.values = new ArrayList<>();
         this.values.add(Val);
     }
     
-    public ListPrimary(Primary Val, ListPrimary Previous){
+    public ListPrimary(Expression Val, ListPrimary Previous){
         this.values = Previous.values;
         this.values.add(Val);
     };
@@ -30,15 +31,15 @@ public class ListPrimary {
         values = new ArrayList<>();
     }
 
-    public List<Primary> getValues() {
+    public List<Expression> getValues() {
         return values;
     }
 
-    public void setValues(List<Primary> values) {
+    public void setValues(List<Expression> values) {
         this.values = values;
     }
     
-    public void addValue(Primary val){
+    public void addValue(Expression val){
         values.add(val);
     }
 }

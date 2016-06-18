@@ -15,8 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.PrintStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,7 +29,8 @@ import java.util.logging.Logger;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
+        PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+        System.setOut(out);
         // TODO code application logic here
         Lexer lexer = null;
         try {
@@ -52,7 +55,7 @@ public class Main {
             intermediateCode.generate();
             FileWriter writer1 = new FileWriter("./intermediateCode.BP");
             for (Operation str : intermediateCode.getCodeOperations()) {
-                writer1.write(str.getStringValue()+"\n");
+                writer1.write(str.getStringValue() + "\n");
             }
             writer1.close();
             //System.out.println(intermediateCode.getStringRepresentation());

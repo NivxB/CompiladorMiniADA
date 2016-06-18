@@ -158,11 +158,11 @@ public class FinalCode {
                     finalCode.add("li " + nextTemp + ",1" + "\n");
                     finalCode.add("beq " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
                     if (firstVal.charAt(0) == '$') {
-                        if (!Temporal.freeTemporal.contains(firstVal)) {
+                        if (!Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                             Temporal.freeTemporal.push(firstVal);
                         }
                     }
-                    if (!Temporal.freeTemporal.contains(nextTemp)) {
+                    if (!Temporal.freeTemporal.contains(nextTemp) && nextTemp.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(nextTemp);
                     }
 
@@ -182,10 +182,10 @@ public class FinalCode {
                     String firstVal = getLoadArgumentValue(tmp.getFirstValue());
                     String nextTemp = getLoadArgumentValue(tmp.getSecondValue());
                     finalCode.add(compare + " " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
-                    if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
+                    if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(firstVal);
                     }
-                    if (nextTemp.charAt(0) == '$' && !Temporal.freeTemporal.contains(nextTemp)) {
+                    if (nextTemp.charAt(0) == '$' && !Temporal.freeTemporal.contains(nextTemp) && nextTemp.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(nextTemp);
                     }
 
@@ -213,13 +213,13 @@ public class FinalCode {
                 }
                 //Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), toValue);
                 finalCode.add(oper + " " + toValue + "," + firstVal + "," + secondVal + "\n");
-                if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
+                if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                     Temporal.freeTemporal.push(firstVal);
                 }
-                if (secondVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(secondVal)) {
+                if (secondVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(secondVal) && secondVal.matches("\\$t\\d+")) {
                     Temporal.freeTemporal.push(secondVal);
                 }
-                if (tmp.getFirstValue().charAt(0) != '$') {
+                /*if (tmp.getFirstValue().charAt(0) != '$') {
                     String innerFirstVal = getLoadArgumentValue(tmp.getFirstValue());
                     if (innerFirstVal.charAt(0) == '-') {
                         finalCode.add("sw " + toValue + ", _" + innerFirstVal + "\n");
@@ -227,17 +227,26 @@ public class FinalCode {
                             Temporal.freeTemporal.push(toValue);
                         }
                     }
-
-                }
+                }*/
             } else if (operationCheck instanceof TwoOperation) {
                 TwoOperation tmp = (TwoOperation) operationCheck;
                 if (tmp.getFirstValue().charAt(0) != '$') {
-                    String toVal = Temporal.mapFakeTemporalToReal.get(tmp.getSecondValue());
-                    //Temporal.mapFakeTemporalToReal.remove(tmp.getSecondValue());
-                    finalCode.add("sw " + toVal + ", _" + tmp.getFirstValue() + "\n");
-                    if (!Temporal.freeTemporal.contains(toVal)) {
+                    String toVal = getLoadArgumentValue(tmp.getSecondValue());
+                    String val = tmp.getFirstValue();
+                    if (Temporal.argumentToTemporal.containsKey(val)) {
+                        String argumentValue = Temporal.argumentToTemporal.get(val);
+                        if (argumentValue.charAt(0) == '$') {
+                            finalCode.add("move " + argumentValue + ", " + toVal +"\n");
+                        } else {
+                            finalCode.add("sw " + toVal + ", " + argumentValue +"\n");
+                        }
+                    } else {
+                        finalCode.add("sw " + toVal + ", _" + tmp.getFirstValue() + "\n");
+                    }
+                    if (!Temporal.freeTemporal.contains(toVal) && toVal.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(toVal);
                     }
+
                 } else {
                     //???
                     String tmpTemporal = getLoadArgumentValue(tmp.getSecondValue());
@@ -302,11 +311,11 @@ public class FinalCode {
                     finalCode.add("li " + nextTemp + ",1" + "\n");
                     finalCode.add("beq " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
                     if (firstVal.charAt(0) == '$') {
-                        if (!Temporal.freeTemporal.contains(firstVal)) {
+                        if (!Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                             Temporal.freeTemporal.push(firstVal);
                         }
                     }
-                    if (!Temporal.freeTemporal.contains(nextTemp)) {
+                    if (!Temporal.freeTemporal.contains(nextTemp) && nextTemp.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(nextTemp);
                     }
 
@@ -326,10 +335,10 @@ public class FinalCode {
                     String firstVal = getLoadTemporalValue(tmp.getFirstValue());
                     String nextTemp = getLoadTemporalValue(tmp.getSecondValue());
                     finalCode.add(compare + " " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
-                    if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
+                    if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(firstVal);
                     }
-                    if (nextTemp.charAt(0) == '$' && !Temporal.freeTemporal.contains(nextTemp)) {
+                    if (nextTemp.charAt(0) == '$' && !Temporal.freeTemporal.contains(nextTemp) && nextTemp.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(nextTemp);
                     }
 
@@ -354,25 +363,25 @@ public class FinalCode {
                 }
                 //Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), toValue);
                 finalCode.add(oper + " " + toValue + "," + firstVal + "," + secondVal + "\n");
-                if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
+                if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                     Temporal.freeTemporal.push(firstVal);
                 }
-                if (secondVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(secondVal)) {
+                if (secondVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(secondVal) && secondVal.matches("\\$t\\d+")) {
                     Temporal.freeTemporal.push(secondVal);
                 }
-                if (tmp.getFirstValue().charAt(0) != '$') {
+                /*if (tmp.getFirstValue().charAt(0) != '$') {
                     finalCode.add("sw " + toValue + ", _" + tmp.getFirstValue() + "\n");
                     if (!Temporal.freeTemporal.contains(toValue)) {
                         Temporal.freeTemporal.push(toValue);
                     }
-                }
+                }*/
             } else if (operationCheck instanceof TwoOperation) {
                 TwoOperation tmp = (TwoOperation) operationCheck;
                 if (tmp.getFirstValue().charAt(0) != '$') {
                     String toVal = Temporal.mapFakeTemporalToReal.get(tmp.getSecondValue());
                     //Temporal.mapFakeTemporalToReal.remove(tmp.getSecondValue());
                     finalCode.add("sw " + toVal + ", _" + tmp.getFirstValue() + "\n");
-                    if (!Temporal.freeTemporal.contains(toVal)) {
+                    if (!Temporal.freeTemporal.contains(toVal) && toVal.matches("\\$t\\d+")) {
                         Temporal.freeTemporal.push(toVal);
                     }
                 } else {
@@ -460,6 +469,8 @@ public class FinalCode {
                 String val = Temporal.argumentToTemporal.get(value);
                 if (Temporal.currentTemporal.containsKey(val)) {
                     return Temporal.currentTemporal.get(val);
+                } else if (val.charAt(0) == '$') {
+                    return val;
                 } else {
                     String innerRetVal = Temporal.getTempValue(val);
                     finalCode.add("lw " + innerRetVal + "," + val + "\n");

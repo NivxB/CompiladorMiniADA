@@ -226,8 +226,8 @@ public final class SemanticAnalysis {
             if (tmp.getExp() instanceof PrimaryExpression) {
                 PrimaryExpression tmpprimary = (PrimaryExpression) tmp.getExp();
                 if (tmpprimary.getValue() instanceof FunctionCall) {
-                    FunctionCall function = (FunctionCall)tmpprimary.getValue();
-                    function.setID(function.getID()+firstType.getTYPE().charAt(0));
+                    FunctionCall function = (FunctionCall) tmpprimary.getValue();
+                    function.setID(function.getID() + firstType.getTYPE().charAt(0));
                     List<Type> rettypes = getReturnValues(((FunctionCall) tmpprimary.getValue()), Parent);
                     for (int i = 0; i < rettypes.size(); i++) {
                         if (!firstType.compare(rettypes.get(i))) {
@@ -265,32 +265,31 @@ public final class SemanticAnalysis {
             }
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement function = ((FunctionCallStatement) thisStatement);
-            if(function.getCall().getID().equals("put")){
+            if (function.getCall().getID().equals("put")) {
                 System.out.println("------------------------");
                 System.out.println("------------------------");
                 System.out.println("PUT Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            }else if(function.getCall().getID().equals("get")){
+            } else if (function.getCall().getID().equals("get")) {
                 System.out.println("------------------------");
                 System.out.println("------------------------");
                 System.out.println("GET Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            }else{
-                if(getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent) instanceof ErrorType){
-                    hasError=true;
-                    System.err.println("Invalid Type operation on: ");
-                }
-                
+            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent) instanceof ErrorType) {
+                hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);
-            Type tmpType = this.getExpressionType(tmp.getCon().getExp(), Parent);
-            if (tmpType == null || tmpType instanceof IntType) {
-                hasError = true;
-                System.err.println("Invalid Type operation on: ");
+            if (tmp.getCon() != null) {
+                Type tmpType = getExpressionType(tmp.getCon().getExp(), Parent);
+                if (tmpType == null || tmpType instanceof IntType) {
+                    hasError = true;
+                    System.err.println("Invalid Type operation on: ");
+                }
             }
             checkStatement(tmp.getElsIf(), Parent);
         } else if (thisStatement instanceof WhileStatement) {
@@ -414,7 +413,7 @@ public final class SemanticAnalysis {
         List<Type> retval = new ArrayList();
         List<Type> tmpParams = new ArrayList();
         for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
-            tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
+            tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent));
         }
         List<Node> nodes = Parent.searchFunctionNodesById(tmp.getID(), tmpParams);
         for (int i = 0; i < nodes.size(); i++) {
@@ -434,7 +433,7 @@ public final class SemanticAnalysis {
             FunctionCall tmp = (FunctionCall) Prim;
             List<Type> tmpParams = new ArrayList();
             for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
-                tmpParams.add(getPrimaryType(tmp.getParams().getValues().get(i), Parent));
+                tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent));
             }
             return Parent.searchFunctionNodeTypeById(tmp.getID(), tmpParams);
         } else if (Prim instanceof ID) {

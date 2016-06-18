@@ -1,76 +1,64 @@
-_dI0:
-$t0=0
+_factI1:
+if num=0 GOTO label1
+goto label2
+label1:
+$t0=1
 RET $t0
+goto label0
+label2:
+$t1=num-1
+param $t1
+call fact , 1
+$t2=num*RET
+RET $t2
+label0:
+ENDFUNCTION:
+_dI0:
+$t3=0
+RET $t3
 ENDFUNCTION:
 _dI1:
-$t1=i+24
-f=$t1
-$t2=f+a
-RET $t2
-ENDFUNCTION:
-_dB1:
-$t3=i+2
-RET $t3
+$t4=5
+f=$t4
+$t5=i+1
+i=$t5
+$t6=f
+i=$t6
+$t7=i+24
+f=$t7
+$t8=f+a
+RET $t8
 ENDFUNCTION:
 _test0:
 ENDFUNCTION:
 main:
-call test , 0
-$t4=2+3
-b=$t4
-$t5=3*2
-$t6=b-$t5
-$t7=$t6/3
-$t8=$t7-5
-a=$t8
-param 5
-call dI , 1
-$t9=RET
-c=$t9
-param 5
-call dB , 1
-<<<<<<< Updated upstream
-$t9=RET
-e=$t9
-get a
-print a
-=======
+$t9=5
+a=$t9
+$t11=a
+param $t11
+call factI , 1
 $t10=RET
-e=$t10
->>>>>>> Stashed changes
-if a>c GOTO label4
-goto label5
-label5:
-if b>c GOTO label4
-goto label3
-label4:
-if a=0 GOTO label1
-goto label3
+resFact=$t10
+$t12=a
+print $t12
+$t13="test"
+print $t13
+$t14=0
+a=$t14
 label3:
-if a<c GOTO label1
-goto label2
-label1:
-$t11=8
-c=$t11
-goto label0
-label2:
-label0:
-$t12=0
-a=$t12
-label9:
-$t13=10
-if $t12<$t13 GOTO label10
-goto label11
-label10:
-$t14=3
-b=$t14
-$t12=$t12+1
-goto label9
-label11:
-$t15=e
-if $t15 GOTO label13
-goto label12
-label13:
+$t15=10
+if $t14<$t15 GOTO label4
+goto label5
+label4:
 $t16=3
 b=$t16
-label12:
+$t14=$t14+1
+goto label3
+label5:
+$t17=a>5
+if $t17 GOTO label7
+goto label6
+label7:
+$t18=3
+b=$t18
+label6:

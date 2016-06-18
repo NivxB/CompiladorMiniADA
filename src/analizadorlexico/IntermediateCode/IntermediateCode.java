@@ -86,7 +86,14 @@ public class IntermediateCode {
         ThreeOperation newOp = new ThreeOperation(toValue, firstOperation, secondOperation, "=", typeOperation);
         codeOperations.add(newOp);
     }
-
+    private void generateGET(String toValue, String id) {
+        GetCall tmp = new GetCall(toValue, id);
+        codeOperations.add(tmp);
+    }
+    private void generatePUT(String toValue, String message) {
+        PutCall tmp = new PutCall(toValue, message);
+        codeOperations.add(tmp);
+    }
     private void generateCall(String toValue, int paramnum) {
         CallOperation tmp = new CallOperation(toValue, paramnum);
         codeOperations.add(tmp);
@@ -207,8 +214,13 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
-            Temporal temp = generatePrimary(tmp.getCall(), Parent);
-            
+            if(tmp.getCall().getID().equals("get")){
+                generateGET(tmp.getCall().getID(),getPrimary(tmp.getCall().getParams().getValues().get(0)));
+            }else if(tmp.getCall().getID().equals("put")){
+                generatePUT(tmp.getCall().getID(),getPrimary(tmp.getCall().getParams().getValues().get(0)));
+            }else{
+                Temporal temp = generatePrimary(tmp.getCall(), Parent);
+            }
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             Label nextLabel = new Label();

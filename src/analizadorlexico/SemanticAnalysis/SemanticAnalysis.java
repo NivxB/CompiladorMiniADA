@@ -228,7 +228,6 @@ public final class SemanticAnalysis {
                 if (tmpprimary.getValue() instanceof FunctionCall) {
                     FunctionCall function = (FunctionCall)tmpprimary.getValue();
                     function.setID(function.getID()+firstType.getTYPE().charAt(0));
-                    System.out.println("TmpDebug Proval:" + tmpprimary.getValue().getStringType());
                     List<Type> rettypes = getReturnValues(((FunctionCall) tmpprimary.getValue()), Parent);
                     for (int i = 0; i < rettypes.size(); i++) {
                         if (!firstType.compare(rettypes.get(i))) {
@@ -265,7 +264,26 @@ public final class SemanticAnalysis {
                 System.err.println("Invalid Type operation on: ");
             }
         } else if (thisStatement instanceof FunctionCallStatement) {
-            getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent);
+            FunctionCallStatement function = ((FunctionCallStatement) thisStatement);
+            if(function.getCall().getID().equals("put")){
+                System.out.println("------------------------");
+                System.out.println("------------------------");
+                System.out.println("PUT Encontrado");
+                System.out.println("------------------------");
+                System.out.println("------------------------");
+            }else if(function.getCall().getID().equals("get")){
+                System.out.println("------------------------");
+                System.out.println("------------------------");
+                System.out.println("GET Encontrado");
+                System.out.println("------------------------");
+                System.out.println("------------------------");
+            }else{
+                if(getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent) instanceof ErrorType){
+                    hasError=true;
+                    System.err.println("Invalid Type operation on: ");
+                }
+                
+            }
         } else if (thisStatement instanceof IfStatement) {
             IfStatement tmp = (IfStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);

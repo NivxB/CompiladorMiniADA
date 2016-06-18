@@ -29,6 +29,8 @@ param 5
 call dB , 1
 $t9=RET
 e=$t9
+get a
+print a
 if a>c GOTO label4
 goto label5
 label5:

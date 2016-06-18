@@ -24,6 +24,8 @@ begin
    	a:= (b - 3 * 2) / 3 - 5;
    	c:= d(5);
     e:= d(5);
+    get(a);
+    put(a);
    	if(a>c or b>c and a=0 or a<c) then
    		c:=8;
    	end if;

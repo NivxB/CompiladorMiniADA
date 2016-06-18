@@ -13,6 +13,7 @@ import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.IntermediateCode.LabelOperation;
 import analizadorlexico.IntermediateCode.Operation;
 import analizadorlexico.IntermediateCode.ParamOperation;
+import analizadorlexico.IntermediateCode.ReturnOperation;
 import analizadorlexico.IntermediateCode.ThreeOperation;
 import analizadorlexico.IntermediateCode.TwoOperation;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
@@ -81,10 +82,12 @@ public class FinalCode {
             }
         }
         Temporal.initAll();
+        String funName = "";
         Operation operationCheck = intermediateCode.getNextOperation();
         if (operationCheck instanceof LabelOperation) {
             LabelOperation tmp = (LabelOperation) operationCheck;
             finalCode.add(tmp.getLabel() + ":" + "\n");
+            funName = tmp.getLabel();
         } else {
             System.out.println("WUT");
         }
@@ -108,7 +111,7 @@ public class FinalCode {
                     Temporal.argumentToTemporal.put(((SimpleNode) tmp).getId(), "$s" + (argumentNumber));
                     argumentNumber++;
                 } else {
-                    Temporal.argumentToTemporal.put(((SimpleNode) tmp).getId(), "-" + offset + "($s" + (argumentNumber) + ")");
+                    Temporal.argumentToTemporal.put(((SimpleNode) tmp).getId(), "-" + offset + "($fp)");
                     offset += 4;
                 }
 
@@ -123,10 +126,15 @@ public class FinalCode {
             }
         }
 
-        generateFunctionCode(parent);
+        generateFunctionCode(parent, "returnCode" + funName);
+        String exitLabel = "_returnCode" + funName;
+        if (finalCode.get(finalCode.size() - 1).equalsIgnoreCase("b " + exitLabel + "\n")) {
+            finalCode.remove(finalCode.size() - 1);
+        }
+        finalCode.add(exitLabel + ":" + "\n");
         finalCode.add("move $sp,$fp" + "\n");
         for (int i = argumentNumber; i > 0; i--) {
-            finalCode.add("lw $s" + (i - 1) + ",-" + ((i * 4) + 8) + "($sp)" + "\n");
+            finalCode.add("lw $s" + (i - 1) + ",-" + ((i * 4) + 8) + "($fp)" + "\n");
 
         }
         finalCode.add("lw $ra,-8($sp)" + "\n");
@@ -134,7 +142,7 @@ public class FinalCode {
         finalCode.add("jr $ra" + "\n");
     }
 
-    public void generateFunctionCode(ComplexNode parent) {
+    public void generateFunctionCode(ComplexNode parent, String exitLabel) {
         Operation operationCheck = intermediateCode.getNextOperation();
         //System.err.println(operationCheck);
         if (operationCheck != null) {
@@ -212,10 +220,14 @@ public class FinalCode {
                     Temporal.freeTemporal.push(secondVal);
                 }
                 if (tmp.getFirstValue().charAt(0) != '$') {
-                    finalCode.add("sw " + toValue + ", _" + tmp.getFirstValue() + "\n");
-                    if (!Temporal.freeTemporal.contains(toValue)) {
-                        Temporal.freeTemporal.push(toValue);
+                    String innerFirstVal = getLoadArgumentValue(tmp.getFirstValue());
+                    if (innerFirstVal.charAt(0) == '-') {
+                        finalCode.add("sw " + toValue + ", _" + innerFirstVal + "\n");
+                        if (!Temporal.freeTemporal.contains(toValue)) {
+                            Temporal.freeTemporal.push(toValue);
+                        }
                     }
+
                 }
             } else if (operationCheck instanceof TwoOperation) {
                 TwoOperation tmp = (TwoOperation) operationCheck;
@@ -264,8 +276,13 @@ public class FinalCode {
                     //newPosition+=4;
                 }
 
+            } else if (operationCheck instanceof ReturnOperation) {
+                ReturnOperation tmp = (ReturnOperation) operationCheck;
+                String temporalString = getLoadTemporalValue(tmp.getRetVal());
+                finalCode.add("move $v0," + temporalString + "\n");
+                finalCode.add("b _" + exitLabel + "\n");
             }
-            generateFunctionCode(parent);
+            generateFunctionCode(parent, exitLabel);
         }
     }
 
@@ -395,7 +412,6 @@ public class FinalCode {
                     finalCode.add("lw " + currentTemporal + ", -" + ((i + 1) * 4) + "($sp)" + "\n");
                     //newPosition+=4;
                 }
-
             }
             generateMainProcedure();
         }
@@ -441,7 +457,14 @@ public class FinalCode {
                     Temporal.currentTemporal.remove(Temporal.mapFakeTemporalToReal.get(retVal));
                 }
             } else if (Temporal.argumentToTemporal.containsKey(value)) {
-                return Temporal.argumentToTemporal.get(value);
+                String val = Temporal.argumentToTemporal.get(value);
+                if (Temporal.currentTemporal.containsKey(val)) {
+                    return Temporal.currentTemporal.get(val);
+                } else {
+                    String innerRetVal = Temporal.getTempValue(val);
+                    finalCode.add("lw " + innerRetVal + "," + val + "\n");
+                    return innerRetVal;
+                }
             } else {
                 finalCode.add("lw " + retVal + ", _" + value + "\n");
             }

@@ -11,6 +11,8 @@ sw $ra,-8($sp)
 move $fp,$sp
 sub $sp,$sp,8
 li $t0,0
+move $v0,$t0
+_returnCode_dI0:
 move $sp,$fp
 lw $ra,-8($sp)
 lw $fp,-4($sp)
@@ -22,10 +24,17 @@ sw $s0,-12($sp)
 move $fp,$sp
 sub $sp,$sp,16
 move $s0,$a0
-li $t1,2
-add $t2,$s0,$t1
+lw $t1,$s0
+li $t2,24
+add $t3,$t1,$t2
+sw $t3, _f
+lw $t2,-16($fp)
+lw $t1, _a
+add $t4,$t2,$t1
+move $v0,$t4
+_returnCode_dI1:
 move $sp,$fp
-lw $s0,-12($sp)
+lw $s0,-12($fp)
 lw $ra,-8($sp)
 lw $fp,-4($sp)
 jr $ra
@@ -36,10 +45,13 @@ sw $s0,-12($sp)
 move $fp,$sp
 sub $sp,$sp,12
 move $s0,$a0
-li $t1,2
-add $t2,$s0,$t1
+lw $t1,$s0
+li $t2,2
+add $t3,$t1,$t2
+move $v0,$t3
+_returnCode_dB1:
 move $sp,$fp
-lw $s0,-12($sp)
+lw $s0,-12($fp)
 lw $ra,-8($sp)
 lw $fp,-4($sp)
 jr $ra
@@ -48,6 +60,7 @@ sw $fp,-4($sp)
 sw $ra,-8($sp)
 move $fp,$sp
 sub $sp,$sp,8
+_returnCode_test0:
 move $sp,$fp
 lw $ra,-8($sp)
 lw $fp,-4($sp)

@@ -8,7 +8,8 @@ procedure pruebaSuma is
     Function d(i:Integer) return Integer is
         f: Integer;
     begin
-      return i + 2;
+      f := i + 24;
+      return f + a;
     end d;
     Function d(i:Integer) return Boolean is
     begin

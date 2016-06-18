@@ -80,6 +80,7 @@ public class FinalCode {
                 }
             }
         }
+        Temporal.initAll();
         Operation operationCheck = intermediateCode.getNextOperation();
         if (operationCheck instanceof LabelOperation) {
             LabelOperation tmp = (LabelOperation) operationCheck;
@@ -99,24 +100,34 @@ public class FinalCode {
             offset += 4;
         }
         finalCode.add("move $fp,$sp" + "\n");
-        finalCode.add("sub $sp,$sp," + offset + "\n");
-        int variableCount = (offset - 12) / 4;
-        for (int i = 0; i < variableCount; i++) {
+        int argumentNumber = 0;
+        for (int i = 0; i < parent.getHijos().keySet().size(); i++) {
+            Node tmp = parent.getHijos().get((String) parent.getHijos().keySet().toArray()[i]);
+            if (tmp instanceof SimpleNode) {
+                if (((SimpleNode) tmp).getOffset() < 0) {
+                    Temporal.argumentToTemporal.put(((SimpleNode) tmp).getId(), "$s" + (argumentNumber));
+                    argumentNumber++;
+                } else {
+                    Temporal.argumentToTemporal.put(((SimpleNode) tmp).getId(), "-" + offset + "($s" + (argumentNumber) + ")");
+                    offset += 4;
+                }
+
+            }
+        }
+        finalCode.add("sub $sp,$sp," + (offset - 4) + "\n");
+        for (int i = 0; i < argumentNumber; i++) {
             if (i < 3) {
                 finalCode.add("move $s" + i + "," + "$a" + i + "\n");
             } else {
                 /*MAHOU*/
             }
         }
+
         generateFunctionCode(parent);
         finalCode.add("move $sp,$fp" + "\n");
-        for (int i = offset - 4; i >= 12; i++) {
-            if (i < 9) {
-                finalCode.add("sw $s" + (i / 4) + ",-" + offset + "($sp)" + "\n");
-            } else {
-                /*MAHOU*/
-            }
-            offset -= 4;
+        for (int i = argumentNumber; i > 0; i--) {
+            finalCode.add("lw $s" + (i - 1) + ",-" + ((i * 4) + 8) + "($sp)" + "\n");
+
         }
         finalCode.add("lw $ra,-8($sp)" + "\n");
         finalCode.add("lw $fp,-4($sp)" + "\n");
@@ -134,7 +145,7 @@ public class FinalCode {
                 IfOperation tmp = (IfOperation) operationCheck;
                 String compareString = tmp.getCompareOperator();
                 if (compareString.trim().equals("")) {
-                    String firstVal = getLoadTemporalValue(tmp.getFirstValue());
+                    String firstVal = getLoadArgumentValue(tmp.getFirstValue());
                     String nextTemp = Temporal.getFreeTemporal();
                     finalCode.add("li " + nextTemp + ",1" + "\n");
                     finalCode.add("beq " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
@@ -160,8 +171,8 @@ public class FinalCode {
                     } else if (compareString.trim().equals("=")) {
                         compare = "beq";
                     }
-                    String firstVal = getLoadTemporalValue(tmp.getFirstValue());
-                    String nextTemp = getLoadTemporalValue(tmp.getSecondValue());
+                    String firstVal = getLoadArgumentValue(tmp.getFirstValue());
+                    String nextTemp = getLoadArgumentValue(tmp.getSecondValue());
                     finalCode.add(compare + " " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
                     if (firstVal.charAt(0) == '$' && !Temporal.freeTemporal.contains(firstVal)) {
                         Temporal.freeTemporal.push(firstVal);
@@ -173,15 +184,15 @@ public class FinalCode {
                 }
             } else if (operationCheck instanceof LabelOperation) {
                 LabelOperation tmp = (LabelOperation) operationCheck;
-                if (tmp.getLabel().equalsIgnoreCase("ENDFUNCTION")){
+                if (tmp.getLabel().equalsIgnoreCase("ENDFUNCTION")) {
                     return;
                 }
                 finalCode.add(tmp.getLabel() + ":" + "\n");
             } else if (operationCheck instanceof ThreeOperation) {
                 ThreeOperation tmp = (ThreeOperation) operationCheck;
-                String firstVal = getLoadTemporalValue(tmp.getSecondValue());
-                String secondVal = getLoadTemporalValue(tmp.getThirdValue());
-                String toValue = getLoadTemporalValue(tmp.getFirstValue());
+                String firstVal = getLoadArgumentValue(tmp.getSecondValue());
+                String secondVal = getLoadArgumentValue(tmp.getThirdValue());
+                String toValue = getLoadArgumentValue(tmp.getFirstValue());
                 String oper = "";
                 if (tmp.getSecondOperator().equalsIgnoreCase("+")) {
                     oper = "add";
@@ -217,12 +228,12 @@ public class FinalCode {
                     }
                 } else {
                     //???
-                    String tmpTemporal = getLoadTemporalValue(tmp.getSecondValue());
+                    String tmpTemporal = getLoadArgumentValue(tmp.getSecondValue());
                     Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), tmpTemporal);
                 }
             } else if (operationCheck instanceof ParamOperation) {
                 ParamOperation tmp = (ParamOperation) operationCheck;
-                String temporalString = getLoadTemporalValue(tmp.getTemporal());
+                String temporalString = getLoadArgumentValue(tmp.getTemporal());
                 String A = Temporal.getNextA();
                 if (A.equalsIgnoreCase("NULL")) {
                     /* STACK MAHOU */
@@ -403,6 +414,34 @@ public class FinalCode {
             String retVal = Temporal.getTempValue(value);
             if (isInteger(value)) {
                 finalCode.add("li " + retVal + "," + value + "\n");
+                if (Temporal.mapFakeTemporalToReal.containsKey(retVal)) {
+                    Temporal.currentTemporal.remove(Temporal.mapFakeTemporalToReal.get(retVal));
+                }
+            } else {
+                finalCode.add("lw " + retVal + ", _" + value + "\n");
+            }
+            return retVal;
+        }
+    }
+
+    private String getLoadArgumentValue(String value) {
+        if (value.equalsIgnoreCase("RET") || value.equalsIgnoreCase("_RET")) {
+            String retVal = Temporal.getFreeTemporal();
+            //RESTORE
+            finalCode.add("move " + retVal + ",$v0" + "\n");
+            return retVal;
+        }
+        if (value.charAt(0) == '$') {
+            return Temporal.getTempValue(value);
+        } else {
+            String retVal = Temporal.getTempValue(value);
+            if (isInteger(value)) {
+                finalCode.add("li " + retVal + "," + value + "\n");
+                if (Temporal.mapFakeTemporalToReal.containsKey(retVal)) {
+                    Temporal.currentTemporal.remove(Temporal.mapFakeTemporalToReal.get(retVal));
+                }
+            } else if (Temporal.argumentToTemporal.containsKey(value)) {
+                return Temporal.argumentToTemporal.get(value);
             } else {
                 finalCode.add("lw " + retVal + ", _" + value + "\n");
             }

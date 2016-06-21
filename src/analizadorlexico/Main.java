@@ -6,6 +6,7 @@
 package analizadorlexico;
 
 import analizadorlexico.FinalCode.FinalCode;
+import analizadorlexico.FinalCode.MemoryControl;
 import analizadorlexico.IntermediateCode.IntermediateCode;
 import analizadorlexico.IntermediateCode.Operation;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
@@ -52,6 +53,7 @@ public class Main {
         IntermediateCode intermediateCode = new IntermediateCode(p.FINALOBJECT, semantic);
         if (!SemanticAnalysis.hasError) {
             System.out.println("NO ERROR");
+            MemoryControl.initMessage();
             intermediateCode.generate();
             FileWriter writer1 = new FileWriter("./intermediateCode.BP");
             for (Operation str : intermediateCode.getCodeOperations()) {

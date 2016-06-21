@@ -31,7 +31,7 @@ begin
     a := 5;
     resFact:= fact(a);
     put(a);
-
+    get(a);
     put("test");
     if(a>c or b>c and a=0 or a<c) then
       c:=8;

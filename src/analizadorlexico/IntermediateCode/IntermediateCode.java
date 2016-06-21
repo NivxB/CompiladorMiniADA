@@ -37,6 +37,7 @@ import analizadorlexico.AST.Statement.ReturnStatement;
 import analizadorlexico.AST.Statement.SequenceStatement;
 import analizadorlexico.AST.Statement.Statement;
 import analizadorlexico.AST.Statement.WhileStatement;
+import analizadorlexico.FinalCode.MemoryControl;
 import analizadorlexico.SemanticAnalysis.SemanticAnalysis;
 import static analizadorlexico.SemanticAnalysis.SemanticAnalysis.hasError;
 import analizadorlexico.SymbolTable.ComplexNode;
@@ -88,8 +89,8 @@ public class IntermediateCode {
         codeOperations.add(newOp);
     }
 
-    private void generateGET(String toValue, String id) {
-        GetCall tmp = new GetCall(toValue, id);
+    private void generateGET(String toValue, String id, int tip) {
+        GetCall tmp = new GetCall(toValue, id,tip);
         codeOperations.add(tmp);
     }
 
@@ -219,9 +220,32 @@ public class IntermediateCode {
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
             if (tmp.getCall().getID().equals("get")) {
-                generateGET(tmp.getCall().getID(), generateExpression(tmp.getCall().getParams().getValues().get(0), null).toString());
+                if(tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression){
+                    PrimaryExpression prim=(PrimaryExpression)tmp.getCall().getParams().getValues().get(0);
+                    int tpo=0;
+                    if(prim.getValue() instanceof LiteralInt){
+                       tpo=0;
+                    }else if(prim.getValue() instanceof LiteralFloat){
+                        tpo=1;
+                    }
+                    
+                    String id = getPrimary(prim.getValue());
+                    generateGET(tmp.getCall().getID(), id,tpo);
+                    
+                }
             } else if (tmp.getCall().getID().equals("put")) {
-                generatePUT(tmp.getCall().getID(), generateExpression(tmp.getCall().getParams().getValues().get(0), null).toString());
+                if(tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression){
+                    PrimaryExpression prim=(PrimaryExpression)tmp.getCall().getParams().getValues().get(0);
+                    String id = getPrimary(prim.getValue());
+                    if(prim.getValue() instanceof LiteralString){
+                        MemoryControl.setString(id);
+                        String tmpmsg = '\"'+id+"\"";
+                        generatePUT(tmp.getCall().getID(), tmpmsg);
+                    }else{
+                        generatePUT(tmp.getCall().getID(), id);
+                    }
+                }
+                
             } else {
                 Temporal temp = generatePrimary(tmp.getCall(), Parent);
             }
@@ -409,7 +433,7 @@ public class IntermediateCode {
             return new Temporal(Integer.toString(tmp.getValue()));
         } else if (Prim instanceof LiteralString) {
             LiteralString tmp = (LiteralString) Prim;
-            /* ADD TO FUCKING TABLE*/
+            MemoryControl.setString(tmp.getValue());
             return new Temporal("\""+(tmp.getValue())+"\"");
         }
         return null;
@@ -438,6 +462,9 @@ public class IntermediateCode {
 
             LiteralInt tmp = (LiteralInt) Prim;
             return (Integer.toString(tmp.getValue()));
+        } else if (Prim instanceof LiteralString){
+            LiteralString tmp = (LiteralString)Prim;
+            return (tmp.getValue());
         }
         return null;
     }

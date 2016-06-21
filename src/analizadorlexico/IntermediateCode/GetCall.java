@@ -12,7 +12,9 @@ package analizadorlexico.IntermediateCode;
 public class GetCall extends Operation{
     String nombre;
     String variable;
-
+    int tipo;
+    //0 para int
+    //1 para float
     public String getNombre() {
         return nombre;
     }
@@ -24,14 +26,17 @@ public class GetCall extends Operation{
     public String getVariable() {
         return variable;
     }
-
+    public int gettipo(){
+        return tipo;
+    }
     public void setVariable(String variable) {
         this.variable = variable;
     }
 
-    public GetCall(String nombre, String variable) {
+    public GetCall(String nombre, String variable, int tip) {
         this.nombre = nombre;
         this.variable = variable;
+        this.tipo=tip;
     }
 
     @Override

@@ -68,9 +68,65 @@ PUT Encontrado
 class analizadorlexico.AST.Statement.FunctionCallStatement
 ------------------------
 ------------------------
+GET Encontrado
+------------------------
+------------------------
+class analizadorlexico.AST.Statement.FunctionCallStatement
+------------------------
+------------------------
 PUT Encontrado
 ------------------------
 ------------------------
+class analizadorlexico.AST.Statement.IfStatement
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: c
+Searching on: pruebaSuma
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
+class analizadorlexico.AST.Expression.ConditionExpression
+class analizadorlexico.AST.Expression.ConditionExpression
+class analizadorlexico.AST.Expression.ConditionExpression
+class analizadorlexico.AST.Expression.RelationExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: a
+Searching on: pruebaSuma
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: c
+Searching on: pruebaSuma
+INTEGER
+class analizadorlexico.AST.Expression.RelationExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: b
+Searching on: pruebaSuma
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: c
+Searching on: pruebaSuma
+INTEGER
+class analizadorlexico.AST.Expression.RelationExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: a
+Searching on: pruebaSuma
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Expression.RelationExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: a
+Searching on: pruebaSuma
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: c
+Searching on: pruebaSuma
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
 class analizadorlexico.AST.Statement.ForStatement
 class analizadorlexico.AST.Statement.AsignationStatement
 Searching: a

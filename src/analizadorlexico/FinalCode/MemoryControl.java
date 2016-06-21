@@ -16,12 +16,13 @@ import java.util.Stack;
  *
  * @author Kevin Barahona
  */
-public class Temporal {
-
+public class MemoryControl {
+    public static int CountMessage=0;
     public static LinkedHashMap<String, String> currentTemporal;
     public static LinkedHashMap<String, String> mapFakeTemporalToReal;
     public static Stack<String> freeTemporal;
     public static LinkedHashMap<String,String> argumentToTemporal;
+    public static LinkedHashMap<String, String> MessageMap;
     public static final String[] TEMPORAL_LIST = {
         "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"
     };
@@ -47,7 +48,10 @@ public class Temporal {
     }
 
     ;
-
+    public static void initMessage(){
+        MessageMap = new LinkedHashMap();
+        CountMessage=0;
+    }
     public static void initAll() {
         currentTemporal = new LinkedHashMap();
         mapFakeTemporalToReal = new LinkedHashMap();
@@ -98,17 +102,17 @@ public class Temporal {
     public LinkedHashMap<String, String> savedMapFakeTemporalToReal;
     public Stack<String> savedFreeTemporal;
 
-    public Temporal() {
-        this.currentSavedTemporal = Temporal.currentTemporal;
-        this.savedMapFakeTemporalToReal = Temporal.mapFakeTemporalToReal;
-        this.savedFreeTemporal = Temporal.freeTemporal;
+    public MemoryControl() {
+        this.currentSavedTemporal = MemoryControl.currentTemporal;
+        this.savedMapFakeTemporalToReal = MemoryControl.mapFakeTemporalToReal;
+        this.savedFreeTemporal = MemoryControl.freeTemporal;
     }
 
     public List<String> getAliveTemporal() {
         ArrayList<String> retVal = new ArrayList<>();
-        String[] tmp = new String[Temporal.freeTemporal.size()];
-        tmp = Temporal.freeTemporal.toArray(tmp);
-        if (tmp.length == Temporal.TEMPORAL_LIST.length) {
+        String[] tmp = new String[MemoryControl.freeTemporal.size()];
+        tmp = MemoryControl.freeTemporal.toArray(tmp);
+        if (tmp.length == MemoryControl.TEMPORAL_LIST.length) {
             return retVal;
         }
         List<String> aList = new LinkedList<>();
@@ -116,16 +120,20 @@ public class Temporal {
             aList.add(t);
         }
         List<String> bList = new LinkedList<>();
-        for (String t : Arrays.asList(Temporal.TEMPORAL_LIST)){
+        for (String t : Arrays.asList(MemoryControl.TEMPORAL_LIST)){
             aList.add(t);
         }
         bList.removeAll(aList);
         return bList;
     }
-
-    public static void restoreVal(Temporal t) {
-        Temporal.currentTemporal = t.currentSavedTemporal;
-        Temporal.mapFakeTemporalToReal = t.savedMapFakeTemporalToReal;
-        Temporal.freeTemporal = t.savedFreeTemporal;
+    
+    public static void restoreVal(MemoryControl t) {
+        MemoryControl.currentTemporal = t.currentSavedTemporal;
+        MemoryControl.mapFakeTemporalToReal = t.savedMapFakeTemporalToReal;
+        MemoryControl.freeTemporal = t.savedFreeTemporal;
+    }
+    public static void setString(String key){
+        MessageMap.put('\"'+key+'\"', "msg"+CountMessage);
+        CountMessage++;
     }
 }

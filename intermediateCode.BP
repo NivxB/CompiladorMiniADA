@@ -39,26 +39,42 @@ param $t11
 call factI , 1
 $t10=RET
 resFact=$t10
-$t12=a
-print $t12
-$t13="test"
-print $t13
-$t14=0
-a=$t14
-label3:
-$t15=10
-if $t14<$t15 GOTO label4
-goto label5
-label4:
-$t16=3
-b=$t16
-$t14=$t14+1
-goto label3
-label5:
-$t17=a>5
-if $t17 GOTO label7
+print a
+get a
+print "test"
+if a>c GOTO label7
+goto label8
+label8:
+if b>c GOTO label7
 goto label6
 label7:
-$t18=3
-b=$t18
+if a=0 GOTO label4
+goto label6
 label6:
+if a<c GOTO label4
+goto label5
+label4:
+$t12=8
+c=$t12
+goto label3
+label5:
+label3:
+$t13=0
+a=$t13
+label12:
+$t14=10
+if $t13<$t14 GOTO label13
+goto label14
+label13:
+$t15=3
+b=$t15
+$t13=$t13+1
+goto label12
+label14:
+$t16=a>5
+if $t16 GOTO label16
+goto label15
+label16:
+$t17=3
+b=$t17
+label15:

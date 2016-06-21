@@ -17,11 +17,12 @@ import java.util.Stack;
  * @author Kevin Barahona
  */
 public class MemoryControl {
-    public static int CountMessage=0;
+
+    public static int CountMessage = 0;
     public static LinkedHashMap<String, String> currentTemporal;
     public static LinkedHashMap<String, String> mapFakeTemporalToReal;
     public static Stack<String> freeTemporal;
-    public static LinkedHashMap<String,String> argumentToTemporal;
+    public static LinkedHashMap<String, String> argumentToTemporal;
     public static LinkedHashMap<String, String> MessageMap;
     public static final String[] TEMPORAL_LIST = {
         "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7", "$t8", "$t9"
@@ -48,10 +49,11 @@ public class MemoryControl {
     }
 
     ;
-    public static void initMessage(){
+    public static void initMessage() {
         MessageMap = new LinkedHashMap();
-        CountMessage=0;
+        CountMessage = 0;
     }
+
     public static void initAll() {
         currentTemporal = new LinkedHashMap();
         mapFakeTemporalToReal = new LinkedHashMap();
@@ -79,6 +81,9 @@ public class MemoryControl {
             if (mapFakeTemporalToReal.containsKey(intermediateTemp)) {
 
                 String retVal = mapFakeTemporalToReal.get(intermediateTemp);
+                if (freeTemporal.indexOf(retVal) >= 0) {
+                    freeTemporal.remove(retVal);
+                }
                 // Temporal.mapFakeTemporalToReal.remove(intermediateTemp);
                 return retVal;
             }
@@ -93,6 +98,9 @@ public class MemoryControl {
                 //mapFakeTemporalToReal.put(intermediateTemp, tmpRetVal);
                 currentTemporal.put(intermediateTemp, tmpRetVal);
                 return tmpRetVal;
+            }
+            if (freeTemporal.indexOf(retVal) >= 0) {
+                freeTemporal.remove(retVal);
             }
             return retVal;
         }
@@ -116,24 +124,25 @@ public class MemoryControl {
             return retVal;
         }
         List<String> aList = new LinkedList<>();
-        for (String t : Arrays.asList(tmp)){
+        for (String t : Arrays.asList(tmp)) {
             aList.add(t);
         }
         List<String> bList = new LinkedList<>();
-        for (String t : Arrays.asList(MemoryControl.TEMPORAL_LIST)){
+        for (String t : Arrays.asList(MemoryControl.TEMPORAL_LIST)) {
             aList.add(t);
         }
         bList.removeAll(aList);
         return bList;
     }
-    
+
     public static void restoreVal(MemoryControl t) {
         MemoryControl.currentTemporal = t.currentSavedTemporal;
         MemoryControl.mapFakeTemporalToReal = t.savedMapFakeTemporalToReal;
         MemoryControl.freeTemporal = t.savedFreeTemporal;
     }
-    public static void setString(String key){
-        MessageMap.put('\"'+key+'\"', "msg"+CountMessage);
+
+    public static void setString(String key) {
+        MessageMap.put('\"' + key + '\"', "msg" + CountMessage);
         CountMessage++;
     }
 }

@@ -1,46 +1,45 @@
-_factI1:
-if num=0 GOTO label1
-goto label2
-label1:
-$t0=1
-RET $t0
-goto label0
-label2:
-print "RECURSIVE CALL: "
-print num
-print "\n"
-$t1=num-1
-param $t1
-call factI , 1
-$t2=num*RET
-RET $t2
-label0:
-ENDFUNCTION:
-_dI0:
-$t3=0
-RET $t3
-ENDFUNCTION:
-_dI1:
-$t4=5
-f=$t4
-$t5=i+1
-i=$t5
-$t6=f
-i=$t6
-$t7=i+24
-f=$t7
-$t8=f+a
-RET $t8
-ENDFUNCTION:
-_test0:
-ENDFUNCTION:
 main:
-$t9=5
-a=$t9
-$t11=a
-param $t11
-call factI , 1
-$t10=RET
-resFact=$t10
-print "Resultado: "
-print resFact
+$t0=100
+min=$t0
+print "Cantidad de alumnos: "
+get n
+label0:
+if cont<n GOTO label2
+goto label1
+label2:
+print "Ingrese nota 1: "
+get a
+print "Ingrese nota 2: "
+get b
+$t1=a+b
+$t2=$t1/2
+c=$t2
+print "Promedio del alumno No."
+print cont
+print " es: "
+print c
+print " "
+$t3=cont+1
+cont=$t3
+if c>max GOTO label4
+goto label5
+label4:
+$t4=c
+max=$t4
+goto label3
+label5:
+label3:
+if c<min GOTO label7
+goto label8
+label7:
+$t5=c
+min=$t5
+goto label6
+label8:
+label6:
+goto label0
+label1:
+print "La nota mas alta es: "
+print max
+print "La nota mas baja es: "
+print min

@@ -80,10 +80,10 @@ public class IntermediateCode {
     private void generateThreeOperation(String toValue, String firstOperation, String secondOperation, String typeOperation) {
         // t1 = t2 + 5
         /*
-        t1 == toValue
-        t2 == firstOperation
-        5 == secondOperation
-        + = typeOperation
+         t1 == toValue
+         t2 == firstOperation
+         5 == secondOperation
+         + = typeOperation
          */
         ThreeOperation newOp = new ThreeOperation(toValue, firstOperation, secondOperation, "=", typeOperation);
         codeOperations.add(newOp);
@@ -279,10 +279,15 @@ public class IntermediateCode {
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
             Expression toCheckExp = tmp.getCon().getExp();
+            Label loopLabel = new Label();
             Label nextLabel = new Label();
             Label trueLabel = new Label();
+
+            generateLabelOperation(loopLabel.toString());
             if (toCheckExp instanceof ConditionExpression) {
                 generateConditionCode((ConditionExpression) toCheckExp, trueLabel, nextLabel);
+            } else if (toCheckExp instanceof RelationExpression) {
+                generateRelationCode((RelationExpression) toCheckExp, trueLabel, nextLabel);
             } else {
                 Temporal temporal = generateExpression(toCheckExp, Parent);
                 generateIfOperation(temporal.toString(), "", "", trueLabel.toString());
@@ -290,6 +295,7 @@ public class IntermediateCode {
             }
             generateLabelOperation(trueLabel.toString());
             generateStatement(tmp.getStat(), Parent);
+            generateGotoOperation(loopLabel.toString());
             generateLabelOperation(nextLabel.toString());
         } else if (thisStatement instanceof ReturnStatement) {
             ReturnStatement tmp = (ReturnStatement) thisStatement;

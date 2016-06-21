@@ -514,11 +514,11 @@ public class FinalCode {
                 if (tmp.gettipo() == 0) {
                     finalCode.add("li $v0, 5\n");
                     finalCode.add("syscall\n");
-                    finalCode.add("sw $v0, " + tmp.getVariable() + "\n");
+                    finalCode.add("sw $v0, _" + tmp.getVariable() + "\n");
                 } else {
                     finalCode.add("li $v0, 2\n");
                     finalCode.add("syscall\n");
-                    finalCode.add("sw $v0, " + tmp.getVariable() + "\n");
+                    finalCode.add("sw $v0, _" + tmp.getVariable() + "\n");
                 }
             }
             generateMainProcedure();
@@ -538,6 +538,7 @@ public class FinalCode {
             String retVal = MemoryControl.getTempValue(value);
             if (isInteger(value)) {
                 finalCode.add("li " + retVal + "," + value + "\n");
+                
                 if (MemoryControl.mapFakeTemporalToReal.containsKey(retVal)) {
                     MemoryControl.currentTemporal.remove(MemoryControl.mapFakeTemporalToReal.get(retVal));
                 }

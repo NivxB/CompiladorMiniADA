@@ -56,12 +56,12 @@ public class FinalCode {
             Node tmp = parentChilds.get(key);
             if (tmp instanceof SimpleNode) {
                 SimpleNode tmpSimple = (SimpleNode) tmp;
-                finalCode.add("_" + tmpSimple.getNombre() + " .word 0\n");
+                finalCode.add("_" + tmpSimple.getNombre() + ": .word 0\n");
             }
         }
         for (String key : MessagesKey.keySet()) {
-            String Value=MessagesKey.get(key);
-            finalCode.add("_"+Value+" .asciiz "+key+"\n");
+            String Value = MessagesKey.get(key);
+            finalCode.add("_" + Value + ": .asciiz " + key + "\n");
         }
         finalCode.add(".text\n");
         finalCode.add(".globl main\n");
@@ -76,6 +76,8 @@ public class FinalCode {
         }
 
         generateMainProcedure();
+        finalCode.add("li $v0,10" + "\n");
+        finalCode.add("syscall");
     }
 
     public void generateInnerFunctions(ComplexNode parent) {
@@ -243,9 +245,9 @@ public class FinalCode {
                     if (MemoryControl.argumentToTemporal.containsKey(val)) {
                         String argumentValue = MemoryControl.argumentToTemporal.get(val);
                         if (argumentValue.charAt(0) == '$') {
-                            finalCode.add("move " + argumentValue + ", " + toVal +"\n");
+                            finalCode.add("move " + argumentValue + ", " + toVal + "\n");
                         } else {
-                            finalCode.add("sw " + toVal + ", " + argumentValue +"\n");
+                            finalCode.add("sw " + toVal + ", " + argumentValue + "\n");
                         }
                     } else {
                         finalCode.add("sw " + toVal + ", _" + tmp.getFirstValue() + "\n");
@@ -294,75 +296,66 @@ public class FinalCode {
 
             } else if (operationCheck instanceof ReturnOperation) {
                 ReturnOperation tmp = (ReturnOperation) operationCheck;
-                String temporalString = getLoadTemporalValue(tmp.getRetVal());
+                String temporalString = getLoadArgumentValue(tmp.getRetVal());
                 finalCode.add("move $v0," + temporalString + "\n");
                 finalCode.add("b _" + exitLabel + "\n");
-            }else if(operationCheck instanceof PutCall){
-                PutCall tmp= (PutCall)(operationCheck);
-                if(MemoryControl.MessageMap.containsKey(tmp.getMensaje())){
-                    finalCode.add("li $v0, 4\n");
-                    finalCode.add("la $a0, "+MemoryControl.MessageMap.get(tmp.getMensaje())+"\n");
+            } else if (operationCheck instanceof PutCall) {
+                PutCall tmp = (PutCall) (operationCheck);
+                if (MemoryControl.MessageMap.containsKey(tmp.getMensaje())) {
+                    String val = MemoryControl.MessageMap.get(tmp.getMensaje());
+                    finalCode.add("li $v0, "+tmp.getType()+"\n");
+                    finalCode.add("la $a0, _" + val + "\n");
                     finalCode.add("syscall\n");
-                }else{
-                    int bandera=0;
-                    HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
-                    for (String key : parentChilds.keySet()) {
-                        Node tmp2 = parentChilds.get(key);
-                        if (tmp2 instanceof SimpleNode) {
-                            SimpleNode tmpSimple = (SimpleNode) tmp2;
-                            if(tmpSimple.getNombre().equals(tmp.getMensaje())){
-                                finalCode.add("li $v0, 4\n");
-                                finalCode.add("la $a0, "+tmp.getMensaje()+"\n");
-                                finalCode.add("syscall\n");
-                                bandera++;
-                                break;
-                            }
-                        }
+                } else {
+                    finalCode.add("li $v0, " + tmp.getType() + "\n");
+                    String tmpPutVal = getLoadArgumentValue(tmp.getMensaje());
+                    if (tmpPutVal.charAt(0) == '$' || tmpPutVal.charAt(0) == '-') {
+                        finalCode.add("move $a0," + tmpPutVal + "\n");
+                    } else {
+                        finalCode.add("lw $a0, _" + tmpPutVal + "\n");
                     }
-                    if(bandera==0){
-                        //Codigo para guardar en memoria
-                    }
+                    finalCode.add("syscall\n");
                 }
-            }else if(operationCheck instanceof GetCall){
-                GetCall tmp=(GetCall)operationCheck;
-                
-                if(tmp.gettipo()==0){
-                    int bandera=0;
+            } else if (operationCheck instanceof GetCall) {
+                GetCall tmp = (GetCall) operationCheck;
+
+                if (tmp.gettipo() == 0) {
+                    int bandera = 0;
                     HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
                     for (String key : parentChilds.keySet()) {
                         Node tmp2 = parentChilds.get(key);
                         if (tmp2 instanceof SimpleNode) {
                             SimpleNode tmpSimple = (SimpleNode) tmp2;
-                            if(tmpSimple.getNombre().equals(tmp.getVariable())){
+                            if (tmpSimple.getNombre().equals(tmp.getVariable())) {
                                 finalCode.add("li $v0, 1\n");
-                                finalCode.add("syscalls\n");
-                                finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
+                                finalCode.add("syscall\n");
+                                finalCode.add("sw $v0, _" + tmp.getVariable() + "\n");
                                 bandera++;
                                 break;
                             }
                         }
                     }
-                    if(bandera==0){
+                    if (bandera == 0) {
                         //Codigo para guardar en memoria
                     }
-                    
-                }else{
-                    int bandera=0;
+
+                } else {
+                    int bandera = 0;
                     HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
                     for (String key : parentChilds.keySet()) {
                         Node tmp2 = parentChilds.get(key);
                         if (tmp2 instanceof SimpleNode) {
                             SimpleNode tmpSimple = (SimpleNode) tmp2;
-                            if(tmpSimple.getNombre().equals(tmp.getVariable())){
+                            if (tmpSimple.getNombre().equals(tmp.getVariable())) {
                                 finalCode.add("li $v0, 2\n");
-                                finalCode.add("syscalls\n");
-                                finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
+                                finalCode.add("syscall\n");
+                                finalCode.add("sw $v0, _" + tmp.getVariable() + "\n");
                                 bandera++;
                                 break;
                             }
                         }
                     }
-                    if(bandera==0){
+                    if (bandera == 0) {
                         //Codigo para guardar en memoria
                     }
                 }
@@ -497,28 +490,35 @@ public class FinalCode {
                     finalCode.add("lw " + currentTemporal + ", -" + ((i + 1) * 4) + "($sp)" + "\n");
                     //newPosition+=4;
                 }
-                
-            }else if(operationCheck instanceof PutCall){
-                PutCall tmp= (PutCall)(operationCheck);
-                if(MemoryControl.MessageMap.containsKey(tmp.getMensaje())){
-                    finalCode.add("li $v0, 4\n");
-                    finalCode.add("la $a0, "+MemoryControl.MessageMap.get(tmp.getMensaje())+"\n");
+
+            } else if (operationCheck instanceof PutCall) {
+                PutCall tmp = (PutCall) (operationCheck);
+                if (MemoryControl.MessageMap.containsKey(tmp.getMensaje())) {
+                    String val = MemoryControl.MessageMap.get(tmp.getMensaje());
+                    finalCode.add("li $v0, " + tmp.getType() + "\n");
+                    finalCode.add("la $a0, _" + val + "\n");
                     finalCode.add("syscall\n");
-                }else{
-                    finalCode.add("li $v0, 4\n");
-                    finalCode.add("la $a0, "+tmp.getMensaje()+"\n");
+                } else {
+                    finalCode.add("li $v0, " + tmp.getType() + "\n");
+                    String tmpPutVal = getLoadTemporalValue(tmp.getMensaje());
+                    if (tmpPutVal.charAt(0) == '$' || tmpPutVal.charAt(0) == '-') {
+                        finalCode.add("move $a0," + tmpPutVal + "\n");
+                    } else {
+                        finalCode.add("lw $a0, _" + tmpPutVal + "\n");
+                    }
+
                     finalCode.add("syscall\n");
                 }
-            }else if(operationCheck instanceof GetCall){
-                GetCall tmp=(GetCall)operationCheck;
-                if(tmp.gettipo()==0){
-                    finalCode.add("li $v0, 1\n");
-                    finalCode.add("syscalls\n");
-                    finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
-                }else{
-                    finalCode.add("li $vo, 2\n");
-                    finalCode.add("syscalls\n");
-                    finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
+            } else if (operationCheck instanceof GetCall) {
+                GetCall tmp = (GetCall) operationCheck;
+                if (tmp.gettipo() == 0) {
+                    finalCode.add("li $v0, 5\n");
+                    finalCode.add("syscall\n");
+                    finalCode.add("sw $v0, " + tmp.getVariable() + "\n");
+                } else {
+                    finalCode.add("li $v0, 2\n");
+                    finalCode.add("syscall\n");
+                    finalCode.add("sw $v0, " + tmp.getVariable() + "\n");
                 }
             }
             generateMainProcedure();

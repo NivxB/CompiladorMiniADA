@@ -12,11 +12,23 @@ package analizadorlexico.IntermediateCode;
 public class PutCall extends Operation{
     String nombre;
     String mensaje;
+    int type;
 
-    public PutCall(String nombre, String mensaje) {
+    public PutCall(String nombre, String mensaje, int type) {
         this.nombre = nombre;
         this.mensaje = mensaje;
+        this.type = type;
     }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    
 
     public String getNombre() {
         return nombre;

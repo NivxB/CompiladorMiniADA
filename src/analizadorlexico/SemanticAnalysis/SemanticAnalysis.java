@@ -33,6 +33,7 @@ import analizadorlexico.AST.Statement.EmptyStatement;
 import analizadorlexico.AST.Statement.ForStatement;
 import analizadorlexico.AST.Statement.FunctionCallStatement;
 import analizadorlexico.AST.Statement.IfStatement;
+import analizadorlexico.AST.Statement.ReturnStatement;
 import analizadorlexico.AST.Statement.SequenceStatement;
 import analizadorlexico.AST.Statement.Statement;
 import analizadorlexico.AST.Statement.WhileStatement;
@@ -223,9 +224,9 @@ public final class SemanticAnalysis {
         if (thisStatement instanceof AsignationStatement) {
             AsignationStatement tmp = (AsignationStatement) thisStatement;
             Type firstType = Parent.searchTypeById(tmp.getID());
-            if (tmp.getExp() instanceof PrimaryExpression) {
+            /*if (tmp.getExp() instanceof PrimaryExpression) {
                 PrimaryExpression tmpprimary = (PrimaryExpression) tmp.getExp();
-                if (tmpprimary.getValue() instanceof FunctionCall) {
+               /* if (tmpprimary.getValue() instanceof FunctionCall) {
                     FunctionCall function = (FunctionCall) tmpprimary.getValue();
                     function.setID(function.getID() + firstType.getTYPE().charAt(0));
                     List<Type> rettypes = getReturnValues(((FunctionCall) tmpprimary.getValue()), Parent);
@@ -237,18 +238,23 @@ public final class SemanticAnalysis {
                         }
                     }
                 } else {
-                    Type secondType = getExpressionType(tmp.getExp(), Parent);
+                    Type secondType = getExpressionType(tmp.getExp(), Parent,);
                     if (!firstType.compare(secondType)) {
                         hasError = true;
                         System.err.println("Invalid Type operation on: ");
                     }
                 }
             } else {
-                Type secondType = getExpressionType(tmp.getExp(), Parent);
+                Type secondType = getExpressionType(tmp.getExp(), Parent,firstType);
                 if (!firstType.compare(secondType)) {
                     hasError = true;
                     System.err.println("Invalid Type operation on: ");
                 }
+            }*/
+            Type secondType = getExpressionType(tmp.getExp(), Parent, firstType);
+            if (!firstType.compare(secondType)) {
+                hasError = true;
+                System.err.println("Invalid Type operation on: ");
             }
 
         } else if (thisStatement instanceof CaseStatement) {
@@ -258,26 +264,26 @@ public final class SemanticAnalysis {
             checkStatement(tmp.getAsig(), Parent);
             checkStatement(tmp.getStat(), Parent);
             Type AsigType = Parent.searchTypeById(tmp.getAsig().getID());
-            Type ExpType = this.getExpressionType(tmp.getExp(), Parent);
+            Type ExpType = this.getExpressionType(tmp.getExp(), Parent, AsigType);
             if (!AsigType.compare(ExpType) || ExpType == null) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
             }
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement function = ((FunctionCallStatement) thisStatement);
-            if (function.getCall().getID().equals("put")) {
+            if (function.getCall().getID().equalsIgnoreCase("put")) {
                 System.out.println("------------------------");
                 System.out.println("------------------------");
                 System.out.println("PUT Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            } else if (function.getCall().getID().equals("get")) {
+            } else if (function.getCall().getID().equalsIgnoreCase("get")) {
                 System.out.println("------------------------");
                 System.out.println("------------------------");
                 System.out.println("GET Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent) instanceof ErrorType) {
+            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent, new ErrorType()) instanceof ErrorType) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
             }
@@ -285,7 +291,7 @@ public final class SemanticAnalysis {
             IfStatement tmp = (IfStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);
             if (tmp.getCon() != null) {
-                Type tmpType = getExpressionType(tmp.getCon().getExp(), Parent);
+                Type tmpType = getExpressionType(tmp.getCon().getExp(), Parent, new BooleanType());
                 if (tmpType == null || tmpType instanceof IntType) {
                     hasError = true;
                     System.err.println("Invalid Type operation on: ");
@@ -295,10 +301,17 @@ public final class SemanticAnalysis {
         } else if (thisStatement instanceof WhileStatement) {
             WhileStatement tmp = (WhileStatement) thisStatement;
             checkStatement(tmp.getStat(), Parent);
-            Type ExpType = this.getExpressionType(tmp.getCon().getExp(), Parent);
+            Type ExpType = this.getExpressionType(tmp.getCon().getExp(), Parent, new BooleanType());
             if (ExpType == null || ExpType instanceof IntType) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
+            }
+        } else if (thisStatement instanceof ReturnStatement) {
+            ReturnStatement tmp = (ReturnStatement) thisStatement;
+            Type ExpType = this.getExpressionType(tmp.getRetVal(), Parent, Parent.getRetType());
+            if (!Parent.getRetType().compare(ExpType)) {
+                hasError = true;
+                System.err.println("Invalid return type for function: " + Parent.getId());
             }
         }
 
@@ -348,12 +361,12 @@ public final class SemanticAnalysis {
         }
     }
 
-    private Type getExpressionType(Expression Exp, ComplexNode Parent) {
+    private Type getExpressionType(Expression Exp, ComplexNode Parent, Type toType) {
         System.out.println(Exp.getClass().toString());
         if (Exp instanceof AddExpression) {
             AddExpression tmp = (AddExpression) Exp;
-            Type firstType = getExpressionType(tmp.getExp1(), Parent);
-            Type secondType = getExpressionType(tmp.getExp2(), Parent);
+            Type firstType = getExpressionType(tmp.getExp1(), Parent, toType);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent, toType);
             //AND INT, FLOAT TYPE?
             if (firstType.compare(secondType)) {
                 return firstType;
@@ -365,8 +378,8 @@ public final class SemanticAnalysis {
             }
         } else if (Exp instanceof MultExpression) {
             MultExpression tmp = (MultExpression) Exp;
-            Type firstType = getExpressionType(tmp.getExp1(), Parent);
-            Type secondType = getExpressionType(tmp.getExp2(), Parent);
+            Type firstType = getExpressionType(tmp.getExp1(), Parent, toType);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent, toType);
             //ADD INT, FLOAT CHECK?
             if (firstType.compare(secondType)) {
                 return firstType;
@@ -378,8 +391,8 @@ public final class SemanticAnalysis {
             }
         } else if (Exp instanceof ConditionExpression) {
             ConditionExpression tmp = (ConditionExpression) Exp;
-            Type firstType = getExpressionType(tmp.getExp1(), Parent);
-            Type secondType = getExpressionType(tmp.getExp2(), Parent);
+            Type firstType = getExpressionType(tmp.getExp1(), Parent, toType);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent, toType);
             //ADD BOOLEAN CHECK?
             if (firstType.compare(secondType)) {
                 return new BooleanType();
@@ -391,8 +404,8 @@ public final class SemanticAnalysis {
             }
         } else if (Exp instanceof RelationExpression) {
             RelationExpression tmp = (RelationExpression) Exp;
-            Type firstType = getExpressionType(tmp.getExp1(), Parent);
-            Type secondType = getExpressionType(tmp.getExp2(), Parent);
+            Type firstType = getExpressionType(tmp.getExp1(), Parent, toType);
+            Type secondType = getExpressionType(tmp.getExp2(), Parent, toType);
             //ADD BOOLEAN CHECK?
             if (firstType.compare(secondType)) {
                 return new BooleanType();
@@ -403,17 +416,17 @@ public final class SemanticAnalysis {
                 return firstType;
             }
         } else if (Exp instanceof PrimaryExpression) {
-            return getPrimaryType(((PrimaryExpression) Exp).getValue(), Parent);
+            return getPrimaryType(((PrimaryExpression) Exp).getValue(), Parent, toType);
         }
         //CHANGE NULL TO ERRORTYPE
         return new ErrorType();
     }
 
-    private List<Type> getReturnValues(FunctionCall tmp, ComplexNode Parent) {
+    private List<Type> getReturnValues(FunctionCall tmp, ComplexNode Parent, Type toType) {
         List<Type> retval = new ArrayList();
         List<Type> tmpParams = new ArrayList();
         for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
-            tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent));
+            tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent, toType));
         }
         List<Node> nodes = Parent.searchFunctionNodesById(tmp.getID(), tmpParams);
         for (int i = 0; i < nodes.size(); i++) {
@@ -427,15 +440,17 @@ public final class SemanticAnalysis {
         }
     }
 
-    private Type getPrimaryType(Primary Prim, ComplexNode Parent) {
+    private Type getPrimaryType(Primary Prim, ComplexNode Parent, Type toType) {
         System.out.println(Prim.getClass().toString());
         if (Prim instanceof FunctionCall) {
             FunctionCall tmp = (FunctionCall) Prim;
             List<Type> tmpParams = new ArrayList();
             for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
-                tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent));
+                tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent, toType));
             }
-            return Parent.searchFunctionNodeTypeById(tmp.getID(), tmpParams);
+            tmp.setID(tmp.getID() + toType.getTYPE().charAt(0));
+            ComplexNode t = (ComplexNode) Parent.searchFunctionNodeById(tmp.getID(), tmpParams);
+            return t.getRetType();
         } else if (Prim instanceof ID) {
             //System.out.println("id");
             ID tmp = (ID) Prim;

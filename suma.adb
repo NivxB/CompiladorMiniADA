@@ -6,6 +6,9 @@ procedure pruebaSuma is
       if num = 0 then
         return 1;
       else
+        PUT("RECURSIVE CALL: ");
+        PUT(num);
+        PUT("\n");
         return num * fact(num - 1);
       end if;
 
@@ -30,17 +33,7 @@ begin
     --test := 0;
     a := 5;
     resFact:= fact(a);
-    put(a);
-    get(a);
-    put("test");
-    if(a>c or b>c and a=0 or a<c) then
-      c:=8;
-    end if;
-    for a:=0 to 10
-      b:= 3;
-    end for;
-    while a > 5 loop
-      b:=3;
-    end loop;
+    put("Resultado: ");
+    put(resFact);
     -- a:= 3;
 end pruebaSuma;

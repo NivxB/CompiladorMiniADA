@@ -90,12 +90,12 @@ public class IntermediateCode {
     }
 
     private void generateGET(String toValue, String id, int tip) {
-        GetCall tmp = new GetCall(toValue, id,tip);
+        GetCall tmp = new GetCall(toValue, id, tip);
         codeOperations.add(tmp);
     }
 
-    private void generatePUT(String toValue, String message) {
-        PutCall tmp = new PutCall(toValue, message);
+    private void generatePUT(String toValue, String message, int type) {
+        PutCall tmp = new PutCall(toValue, message, type);
         codeOperations.add(tmp);
     }
 
@@ -219,33 +219,34 @@ public class IntermediateCode {
 
         } else if (thisStatement instanceof FunctionCallStatement) {
             FunctionCallStatement tmp = (FunctionCallStatement) thisStatement;
-            if (tmp.getCall().getID().equals("get")) {
-                if(tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression){
-                    PrimaryExpression prim=(PrimaryExpression)tmp.getCall().getParams().getValues().get(0);
-                    int tpo=0;
-                    if(prim.getValue() instanceof LiteralInt){
-                       tpo=0;
-                    }else if(prim.getValue() instanceof LiteralFloat){
-                        tpo=1;
+            if (tmp.getCall().getID().equalsIgnoreCase("get")) {
+                if (tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression) {
+                    PrimaryExpression prim = (PrimaryExpression) tmp.getCall().getParams().getValues().get(0);
+                    int tpo = 0;
+                    if (prim.getValue() instanceof LiteralInt) {
+                        tpo = 0;
+                    } else if (prim.getValue() instanceof LiteralFloat) {
+                        tpo = 1;
                     }
-                    
+
                     String id = getPrimary(prim.getValue());
-                    generateGET(tmp.getCall().getID(), id,tpo);
-                    
+                    generateGET(tmp.getCall().getID(), id, tpo);
+
                 }
-            } else if (tmp.getCall().getID().equals("put")) {
-                if(tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression){
-                    PrimaryExpression prim=(PrimaryExpression)tmp.getCall().getParams().getValues().get(0);
+            } else if (tmp.getCall().getID().equalsIgnoreCase("put")) {
+                if (tmp.getCall().getParams().getValues().get(0) instanceof PrimaryExpression) {
+                    PrimaryExpression prim = (PrimaryExpression) tmp.getCall().getParams().getValues().get(0);
                     String id = getPrimary(prim.getValue());
-                    if(prim.getValue() instanceof LiteralString){
+                    if (prim.getValue() instanceof LiteralString) {
                         MemoryControl.setString(id);
-                        String tmpmsg = '\"'+id+"\"";
-                        generatePUT(tmp.getCall().getID(), tmpmsg);
-                    }else{
-                        generatePUT(tmp.getCall().getID(), id);
+                        String tmpmsg = '\"' + id + "\"";
+                        generatePUT(tmp.getCall().getID(), tmpmsg, 4);
+                    } else {
+                        /*SI SE HACE LA VAL DE TYPE*/
+                        generatePUT(tmp.getCall().getID(), id, 1);
                     }
                 }
-                
+
             } else {
                 Temporal temp = generatePrimary(tmp.getCall(), Parent);
             }
@@ -434,7 +435,7 @@ public class IntermediateCode {
         } else if (Prim instanceof LiteralString) {
             LiteralString tmp = (LiteralString) Prim;
             MemoryControl.setString(tmp.getValue());
-            return new Temporal("\""+(tmp.getValue())+"\"");
+            return new Temporal("\"" + (tmp.getValue()) + "\"");
         }
         return null;
     }
@@ -462,8 +463,8 @@ public class IntermediateCode {
 
             LiteralInt tmp = (LiteralInt) Prim;
             return (Integer.toString(tmp.getValue()));
-        } else if (Prim instanceof LiteralString){
-            LiteralString tmp = (LiteralString)Prim;
+        } else if (Prim instanceof LiteralString) {
+            LiteralString tmp = (LiteralString) Prim;
             return (tmp.getValue());
         }
         return null;

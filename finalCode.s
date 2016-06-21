@@ -1,9 +1,11 @@
 .data
-_c .word 0
-_b .word 0
-_a .word 0
-_resFact .word 0
-_msg0 .asciiz "test"
+_c: .word 0
+_b: .word 0
+_a: .word 0
+_resFact: .word 0
+_msg0: .asciiz "RECURSIVE CALL: "
+_msg1: .asciiz "\n"
+_msg2: .asciiz "Resultado: "
 .text
 .globl main
 _factI1:
@@ -22,10 +24,19 @@ move $v0,$t1
 b _returnCode_factI1
 b label0
 label2:
+li $v0, 4
+la $a0, _msg0
+syscall
+li $v0, 1
+move $a0,$s0
+syscall
+li $v0, 4
+la $a0, _msg1
+syscall
 li $t1,1
 sub $t2,$s0,$t1
 move $a0,$t2
-jal _fact1
+jal _factI1
 move $t1,$v0
 mul $t3,$s0,$t1
 move $v0,$t3
@@ -94,59 +105,11 @@ jal _factI1
 move $t1,$v0
 sw $t1, _resFact
 li $v0, 4
-la $a0, a
+la $a0, _msg2
 syscall
 li $v0, 1
-syscalls
-sw $v0, a
-li $v0, 4
-la $a0, msg0
+lw $t1, _resFact
+move $a0,$t1
 syscall
-lw $t0, _a
-lw $t1, _c
-bgt $t0,$t1,label7
-b label8
-label8:
-lw $t1, _b
-lw $t1, _c
-bgt $t1,$t1,label7
-b label6
-label7:
-lw $t0, _a
-li $t1,0
-beq $t0,$t1,label4
-b label6
-label6:
-lw $t0, _a
-lw $t1, _c
-blt $t0,$t1,label4
-b label5
-label4:
-li $t1,8
-sw $t1, _c
-b label3
-label5:
-label3:
-li $t1,0
-sw $t1, _a
-label12:
-li $t1,10
-blt $t1,$t1,label13
-b label14
-label13:
-li $t1,3
-sw $t1, _b
-li $t1,1
-add $t1,$t1,$t1
-b label12
-label14:
-lw $t0, _a
-li $t0,5
- $t1,$t0,$t0
-li $t0,1
-beq $t1,$t0,label16
-b label15
-label16:
-li $t1,3
-sw $t1, _b
-label15:
+li $v0,10
+syscall

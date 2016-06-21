@@ -6,9 +6,12 @@ $t0=1
 RET $t0
 goto label0
 label2:
+print "RECURSIVE CALL: "
+print num
+print "\n"
 $t1=num-1
 param $t1
-call fact , 1
+call factI , 1
 $t2=num*RET
 RET $t2
 label0:
@@ -39,42 +42,5 @@ param $t11
 call factI , 1
 $t10=RET
 resFact=$t10
-print a
-get a
-print "test"
-if a>c GOTO label7
-goto label8
-label8:
-if b>c GOTO label7
-goto label6
-label7:
-if a=0 GOTO label4
-goto label6
-label6:
-if a<c GOTO label4
-goto label5
-label4:
-$t12=8
-c=$t12
-goto label3
-label5:
-label3:
-$t13=0
-a=$t13
-label12:
-$t14=10
-if $t13<$t14 GOTO label13
-goto label14
-label13:
-$t15=3
-b=$t15
-$t13=$t13+1
-goto label12
-label14:
-$t16=a>5
-if $t16 GOTO label16
-goto label15
-label16:
-$t17=3
-b=$t17
-label15:
+print "Resultado: "
+print resFact

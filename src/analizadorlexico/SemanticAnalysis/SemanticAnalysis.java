@@ -283,7 +283,7 @@ public final class SemanticAnalysis {
                 System.out.println("GET Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent, new IntType()) instanceof ErrorType) {
+            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent, new VoidType()) instanceof ErrorType) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
             }
@@ -448,6 +448,7 @@ public final class SemanticAnalysis {
             for (int i = 0; i < tmp.getParams().getValues().size(); i++) {
                 tmpParams.add(getExpressionType(tmp.getParams().getValues().get(i), Parent, toType));
             }
+            
             tmp.setID(tmp.getID() + toType.getTYPE().charAt(0));
             ComplexNode t = (ComplexNode) Parent.searchFunctionNodeById(tmp.getID(), tmpParams);
             return t.getRetType();

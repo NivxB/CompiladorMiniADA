@@ -88,11 +88,7 @@ terminal PROCEDURE, IS, BEGIN, END, NEW_LINE, WITH, OPEN_PARENTHESIS;
 terminal CLOSE_PARENTHESIS;
 terminal END_INSTRUCTION, LITERAL_CHAR;
 terminal IF,ELSE,ELSEIF,THEN,FOR,IN,OUT,LOOP,WHILE,ASIGNATION;
-<<<<<<< Updated upstream
 terminal DECLARATION, EXIT , WHEN, COMMA;
-=======
-terminal DECLARATION,  , WHEN, COMMA;
->>>>>>> Stashed changes
 terminal CONSTANT,FUNCTION,PACKAGE,BODY,RETURN,NULL,CASE,CASEASIG;
 terminal REVERSE,OTHERS,TO;
 
@@ -303,11 +299,11 @@ primary  ::= LITERAL_BOOLEAN:e
 asignation   ::= ID:id ASIGNATION expression:e
             {: RESULT = new AsignationStatement(id,e); :};
                 //parser.expected_token(":=");:};
-list_primary ::= primary:p COMMA list_primary:lp
+list_primary ::= expression:p COMMA list_primary:lp
             {: RESULT = new ListPrimary(p,lp); :}
-            |primary:p error list_primary:lp
+            |expression:p error list_primary:lp
             {: RESULT = new ListPrimary(p,lp); :}
-            | primary:p
+            | expression:p
             {: RESULT = new ListPrimary(p); :};
 parameters ::= list_primary:lp
           {: RESULT = lp; :}

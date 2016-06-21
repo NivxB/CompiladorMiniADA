@@ -1,75 +1,117 @@
-_powI2:
-$t0=base
-retVal=$t0
-$t1=1
-i=$t1
+_validarPositivoI1:
 label0:
-$t2=exp
-if $t1<$t2 GOTO label1
-goto label2
-label1:
-$t3=retVal*base
-retVal=$t3
-$t1=$t1+1
-goto label0
+if x<0 GOTO label2
+goto label1
 label2:
-$t4=retVal
-RET $t4
+print "Ingrese un numero positivo: "
+get x
+goto label0
+label1:
+$t0=x
+RET $t0
 ENDFUNCTION:
-_yasI2:
+_printPiramideV1:
+$t2=num
+param $t2
+call validarPositivoI , 1
+$t1=RET
+num=$t1
+$t3=num-1
+$t4=2*$t3
+num=$t4
 $t5=0
 i=$t5
 label3:
-$t6=n
+$t6=num/2
 if $t5<$t6 GOTO label4
 goto label5
 label4:
-$t8=2*i
-$t9=$t8+1
-param $t9
-$t10=x
-param $t10
-call powI , 2
-$t7=RET
-num=$t7
-$t12=2*i
-$t13=$t12+1
-param $t13
-call factI , 1
-$t11=RET
-den=$t11
-$t14=num/den
-$t15=result+$t14
-result=$t15
+$t7=0
+j=$t7
+label6:
+$t8=num-i
+if $t7<$t8 GOTO label7
+goto label8
+label7:
+print " "
+$t7=$t7+1
+goto label6
+label8:
+$t9=0
+j=$t9
+label9:
+$t10=i*2
+if $t9<$t10 GOTO label10
+goto label11
+label10:
+print " "
+$t9=$t9+1
+goto label9
+label11:
+print "\n"
 $t5=$t5+1
 goto label3
 label5:
-ENDFUNCTION:
-_factI1:
-$t16=1
-retVal=$t16
-$t17=2
-i=$t17
-label6:
-$t18=n
-if $t17<$t18 GOTO label7
-goto label8
-label7:
-$t19=retVal*i
-retVal=$t19
+$t11=0
+i=$t11
+label12:
+$t12=num/2
+if $t11<$t12 GOTO label13
+goto label14
+label13:
+$t13=num/2
+j=$t13
+label15:
+$t14=num-i
+if $t13<$t14 GOTO label16
+goto label17
+label16:
+print " "
+$t13=$t13+1
+goto label15
+label17:
+$t15=0
+j=$t15
+label18:
+$t16=i*2
+if $t15<$t16 GOTO label19
+goto label20
+label19:
+print "*"
+$t15=$t15+1
+goto label18
+label20:
+$t17=1
+j=$t17
+label21:
+$t18=i*2
+$t19=num-$t18
+if $t17<$t19 GOTO label22
+goto label23
+label22:
+print " "
 $t17=$t17+1
-goto label6
-label8:
-$t20=retVal
-RET $t20
+goto label21
+label23:
+$t20=0
+j=$t20
+label24:
+$t21=i*2
+if $t20<$t21 GOTO label25
+goto label26
+label25:
+print "*"
+$t20=$t20+1
+goto label24
+label26:
+print "\n"
+$t11=$t11+1
+goto label12
+label14:
 ENDFUNCTION:
 main:
-print "Seno yas "
-$t22=2
+print "Ingrese un numero positivo: "
+get x
+$t22=x
 param $t22
-$t23=2
-param $t23
-call yasI , 2
-$t21=RET
-val=$t21
-print val
+call printPiramideV , 1

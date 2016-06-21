@@ -35,7 +35,7 @@ public class Main {
         // TODO code application logic here
         Lexer lexer = null;
         try {
-            lexer = new Lexer(new FileReader("./SenoYas.adb"));
+            lexer = new Lexer(new FileReader("./piramide.adb"));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

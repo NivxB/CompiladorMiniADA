@@ -1,13 +1,63 @@
+class analizadorlexico.AST.Declaration.FunctionDeclaration
+Es un FunctionDeclaration
+Entro Para agregar la funcion a la lista
+
+Checking Declarations On: powI
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.EmptyDeclaration
+Finish Declarations On: powI
+
+class analizadorlexico.AST.Declaration.FunctionDeclaration
+Es un FunctionDeclaration
+Entro Para agregar la funcion a la lista
+
+Checking Declarations On: yasI
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.EmptyDeclaration
+Finish Declarations On: yasI
+
+class analizadorlexico.AST.Declaration.FunctionDeclaration
+Es un FunctionDeclaration
+Entro Para agregar la funcion a la lista
+
+Checking Declarations On: factI
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.SimpleDeclaration
+class analizadorlexico.AST.Declaration.EmptyDeclaration
+Finish Declarations On: factI
+
 class analizadorlexico.AST.Declaration.SimpleDeclaration
 class analizadorlexico.AST.Declaration.EmptyDeclaration
 
 
-Staring CheckStatement On: calificacion
+Staring CheckStatement On: Seno
+class analizadorlexico.AST.Statement.FunctionCallStatement
+------------------------
+------------------------
+PUT Encontrado
+------------------------
+------------------------
 class analizadorlexico.AST.Statement.AsignationStatement
-Searching: min
-Searching on: calificacion
+Searching: val
+Searching on: Seno
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.FunctionCall
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.LiteralInt
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+Searching: yasI
+Searching on: Seno
+Comparing parameters on: yasI
+yasI params 2
+compareParams 2
+INTEGER
+INTEGER
+Returning function with 2
 INTEGER
 class analizadorlexico.AST.Statement.FunctionCallStatement
 ------------------------
@@ -15,175 +65,235 @@ class analizadorlexico.AST.Statement.FunctionCallStatement
 PUT Encontrado
 ------------------------
 ------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-GET Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.WhileStatement
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-GET Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-GET Encontrado
-------------------------
-------------------------
+class analizadorlexico.AST.Statement.EmptyStatement
+Ending CheckStatement On:  Seno
+
+Searching: powI
+Searching on: Seno
+Comparing parameters on: powI
+powI params 2
+compareParams 2
+INTEGER
+INTEGER
+Returning function with 2
+
+Entering Function: powI
+
+Staring CheckStatement On: powI
 class analizadorlexico.AST.Statement.AsignationStatement
-Searching: c
-Searching on: calificacion
+Searching: retVal
+Searching on: powI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: base
+Searching on: powI
+INTEGER
+class analizadorlexico.AST.Statement.ForStatement
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: i
+Searching on: powI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: retVal
+Searching on: powI
 class analizadorlexico.AST.Expression.MultExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: retVal
+Searching on: powI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: base
+Searching on: powI
+INTEGER
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
+Searching: i
+Searching on: powI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: exp
+Searching on: powI
+INTEGER
+class analizadorlexico.AST.Statement.ReturnStatement
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: retVal
+Searching on: powI
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
+Ending CheckStatement On:  powI
+
+Exit Function powI
+
+Searching: yasI
+Searching on: Seno
+Comparing parameters on: yasI
+yasI params 2
+compareParams 2
+INTEGER
+INTEGER
+Returning function with 2
+
+Entering Function: yasI
+
+Staring CheckStatement On: yasI
+class analizadorlexico.AST.Statement.ForStatement
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: i
+Searching on: yasI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: num
+Searching on: yasI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.FunctionCall
 class analizadorlexico.AST.Expression.AddExpression
+class analizadorlexico.AST.Expression.MultExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.ID
-Searching: a
-Searching on: calificacion
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: b
-Searching on: calificacion
+Searching: i
+Searching on: yasI
 INTEGER
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.LiteralInt
 INTEGER
-INTEGER
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.AsignationStatement
-Searching: cont
-Searching on: calificacion
-class analizadorlexico.AST.Expression.AddExpression
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.ID
-Searching: cont
-Searching on: calificacion
+Searching: x
+Searching on: yasI
+Searching: powI
+Searching on: yasI
+Searching: powI
+Searching on: Seno
+Comparing parameters on: powI
+powI params 2
+compareParams 2
+INTEGER
+INTEGER
+Returning function with 2
+INTEGER
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: den
+Searching on: yasI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.FunctionCall
+class analizadorlexico.AST.Expression.AddExpression
+class analizadorlexico.AST.Expression.MultExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: i
+Searching on: yasI
+INTEGER
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.LiteralInt
 INTEGER
+Searching: factI
+Searching on: yasI
+Searching: factI
+Searching on: Seno
+Comparing parameters on: factI
+factI params 1
+compareParams 1
 INTEGER
-class analizadorlexico.AST.Statement.IfStatement
+Returning function with 1
+INTEGER
 class analizadorlexico.AST.Statement.AsignationStatement
-Searching: max
-Searching on: calificacion
+Searching: result
+Searching on: yasI
+class analizadorlexico.AST.Expression.AddExpression
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.ID
-Searching: c
-Searching on: calificacion
+Searching: result
+Searching on: yasI
+class analizadorlexico.AST.Expression.MultExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: num
+Searching on: yasI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: den
+Searching on: yasI
+INTEGER
+INTEGER
 INTEGER
 class analizadorlexico.AST.Statement.EmptyStatement
-class analizadorlexico.AST.Expression.RelationExpression
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: c
-Searching on: calificacion
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: max
-Searching on: calificacion
-INTEGER
-class analizadorlexico.AST.Statement.EmptyStatement
-class analizadorlexico.AST.Statement.IfStatement
-class analizadorlexico.AST.Statement.AsignationStatement
-Searching: min
-Searching on: calificacion
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: c
-Searching on: calificacion
-INTEGER
-class analizadorlexico.AST.Statement.EmptyStatement
-class analizadorlexico.AST.Expression.RelationExpression
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: c
-Searching on: calificacion
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: min
-Searching on: calificacion
-INTEGER
-class analizadorlexico.AST.Statement.EmptyStatement
-class analizadorlexico.AST.Statement.EmptyStatement
-class analizadorlexico.AST.Expression.RelationExpression
-class analizadorlexico.AST.Expression.PrimaryExpression
-class analizadorlexico.AST.Primary.ID
-Searching: cont
-Searching on: calificacion
+Searching: i
+Searching on: yasI
 class analizadorlexico.AST.Expression.PrimaryExpression
 class analizadorlexico.AST.Primary.ID
 Searching: n
-Searching on: calificacion
+Searching on: yasI
 INTEGER
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
-class analizadorlexico.AST.Statement.FunctionCallStatement
-------------------------
-------------------------
-PUT Encontrado
-------------------------
-------------------------
 class analizadorlexico.AST.Statement.EmptyStatement
-Ending CheckStatement On:  calificacion
+Ending CheckStatement On:  yasI
+
+Exit Function yasI
+
+Searching: factI
+Searching on: Seno
+Comparing parameters on: factI
+factI params 1
+compareParams 1
+INTEGER
+Returning function with 1
+
+Entering Function: factI
+
+Staring CheckStatement On: factI
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: retVal
+Searching on: factI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Statement.ForStatement
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: i
+Searching on: factI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.LiteralInt
+INTEGER
+class analizadorlexico.AST.Statement.AsignationStatement
+Searching: retVal
+Searching on: factI
+class analizadorlexico.AST.Expression.MultExpression
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: retVal
+Searching on: factI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: i
+Searching on: factI
+INTEGER
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
+Searching: i
+Searching on: factI
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: n
+Searching on: factI
+INTEGER
+class analizadorlexico.AST.Statement.ReturnStatement
+class analizadorlexico.AST.Expression.PrimaryExpression
+class analizadorlexico.AST.Primary.ID
+Searching: retVal
+Searching on: factI
+INTEGER
+class analizadorlexico.AST.Statement.EmptyStatement
+Ending CheckStatement On:  factI
+
+Exit Function factI
 
 NO ERROR

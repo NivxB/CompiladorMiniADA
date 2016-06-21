@@ -1,45 +1,75 @@
-main:
-$t0=100
-min=$t0
-print "Cantidad de alumnos: "
-get n
+_powI2:
+$t0=base
+retVal=$t0
+$t1=1
+i=$t1
 label0:
-if cont<n GOTO label2
-goto label1
+$t2=exp
+if $t1<$t2 GOTO label1
+goto label2
+label1:
+$t3=retVal*base
+retVal=$t3
+$t1=$t1+1
+goto label0
 label2:
-print "Ingrese nota 1: "
-get a
-print "Ingrese nota 2: "
-get b
-$t1=a+b
-$t2=$t1/2
-c=$t2
-print "Promedio del alumno No."
-print cont
-print " es: "
-print c
-print " "
-$t3=cont+1
-cont=$t3
-if c>max GOTO label4
+$t4=retVal
+RET $t4
+ENDFUNCTION:
+_yasI2:
+$t5=0
+i=$t5
+label3:
+$t6=n
+if $t5<$t6 GOTO label4
 goto label5
 label4:
-$t4=c
-max=$t4
+$t8=2*i
+$t9=$t8+1
+param $t9
+$t10=x
+param $t10
+call powI , 2
+$t7=RET
+num=$t7
+$t12=2*i
+$t13=$t12+1
+param $t13
+call factI , 1
+$t11=RET
+den=$t11
+$t14=num/den
+$t15=result+$t14
+result=$t15
+$t5=$t5+1
 goto label3
 label5:
-label3:
-if c<min GOTO label7
+ENDFUNCTION:
+_factI1:
+$t16=1
+retVal=$t16
+$t17=2
+i=$t17
+label6:
+$t18=n
+if $t17<$t18 GOTO label7
 goto label8
 label7:
-$t5=c
-min=$t5
+$t19=retVal*i
+retVal=$t19
+$t17=$t17+1
 goto label6
 label8:
-label6:
-goto label0
-label1:
-print "La nota mas alta es: "
-print max
-print "La nota mas baja es: "
-print min
+$t20=retVal
+RET $t20
+ENDFUNCTION:
+main:
+print "Seno yas "
+$t22=2
+param $t22
+$t23=2
+param $t23
+call yasI , 2
+$t21=RET
+val=$t21
+print val

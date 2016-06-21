@@ -6,3 +6,7 @@
 /src/analizadorlexico/sym.java
 /nbproject/private/
 /build/
+/AST.json
+/finalCode.s
+/intermediateCode.BP
+/output.txt

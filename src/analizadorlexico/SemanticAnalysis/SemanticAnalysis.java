@@ -283,7 +283,7 @@ public final class SemanticAnalysis {
                 System.out.println("GET Encontrado");
                 System.out.println("------------------------");
                 System.out.println("------------------------");
-            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent, new ErrorType()) instanceof ErrorType) {
+            } else if (getPrimaryType(((FunctionCallStatement) thisStatement).getCall(), Parent, new IntType()) instanceof ErrorType) {
                 hasError = true;
                 System.err.println("Invalid Type operation on: ");
             }

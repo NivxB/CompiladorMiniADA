@@ -297,6 +297,75 @@ public class FinalCode {
                 String temporalString = getLoadTemporalValue(tmp.getRetVal());
                 finalCode.add("move $v0," + temporalString + "\n");
                 finalCode.add("b _" + exitLabel + "\n");
+            }else if(operationCheck instanceof PutCall){
+                PutCall tmp= (PutCall)(operationCheck);
+                if(MemoryControl.MessageMap.containsKey(tmp.getMensaje())){
+                    finalCode.add("li $v0, 4\n");
+                    finalCode.add("la $a0, "+MemoryControl.MessageMap.get(tmp.getMensaje())+"\n");
+                    finalCode.add("syscall\n");
+                }else{
+                    int bandera=0;
+                    HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
+                    for (String key : parentChilds.keySet()) {
+                        Node tmp2 = parentChilds.get(key);
+                        if (tmp2 instanceof SimpleNode) {
+                            SimpleNode tmpSimple = (SimpleNode) tmp2;
+                            if(tmpSimple.getNombre().equals(tmp.getMensaje())){
+                                finalCode.add("li $v0, 4\n");
+                                finalCode.add("la $a0, "+tmp.getMensaje()+"\n");
+                                finalCode.add("syscall\n");
+                                bandera++;
+                                break;
+                            }
+                        }
+                    }
+                    if(bandera==0){
+                        //Codigo para guardar en memoria
+                    }
+                }
+            }else if(operationCheck instanceof GetCall){
+                GetCall tmp=(GetCall)operationCheck;
+                
+                if(tmp.gettipo()==0){
+                    int bandera=0;
+                    HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
+                    for (String key : parentChilds.keySet()) {
+                        Node tmp2 = parentChilds.get(key);
+                        if (tmp2 instanceof SimpleNode) {
+                            SimpleNode tmpSimple = (SimpleNode) tmp2;
+                            if(tmpSimple.getNombre().equals(tmp.getVariable())){
+                                finalCode.add("li $v0, 1\n");
+                                finalCode.add("syscalls\n");
+                                finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
+                                bandera++;
+                                break;
+                            }
+                        }
+                    }
+                    if(bandera==0){
+                        //Codigo para guardar en memoria
+                    }
+                    
+                }else{
+                    int bandera=0;
+                    HashMap<String, Node> parentChilds = semanticAnalysis.getRoot().getHijos();
+                    for (String key : parentChilds.keySet()) {
+                        Node tmp2 = parentChilds.get(key);
+                        if (tmp2 instanceof SimpleNode) {
+                            SimpleNode tmpSimple = (SimpleNode) tmp2;
+                            if(tmpSimple.getNombre().equals(tmp.getVariable())){
+                                finalCode.add("li $v0, 2\n");
+                                finalCode.add("syscalls\n");
+                                finalCode.add("sw $v0, "+tmp.getVariable()+"\n");
+                                bandera++;
+                                break;
+                            }
+                        }
+                    }
+                    if(bandera==0){
+                        //Codigo para guardar en memoria
+                    }
+                }
             }
             generateFunctionCode(parent, exitLabel);
         }

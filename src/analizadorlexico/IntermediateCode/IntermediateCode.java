@@ -198,21 +198,30 @@ public class IntermediateCode {
             //TODO:
         } else if (thisStatement instanceof ForStatement) {
             ForStatement tmp = (ForStatement) thisStatement;
-            Temporal asigTemporal = generateExpression(tmp.getAsig().getExp(), Parent);
+            Temporal asigTemporal = null;
+            asigTemporal = generateExpression(tmp.getAsig().getExp(), Parent);
             generateTwoOperation(tmp.getAsig().getID(), asigTemporal.toString());
             Label checkExpression = new Label();
             Label trueLabel = new Label();
             Label nextLabel = new Label();
 
             generateLabelOperation(checkExpression.toString());
-            Temporal expressionTemporal = generateExpression(tmp.getExp(), Parent);
+            Temporal expressionTemporal = null;
+            if (tmp.getExp() instanceof PrimaryExpression) {
+                PrimaryExpression tmpPrim = (PrimaryExpression) tmp.getExp();
+                expressionTemporal = new Temporal(getPrimary(tmpPrim.getValue()));
+            } else {
+                expressionTemporal = generateExpression(tmp.getExp(), Parent);
+            }
 
-            generateIfOperation(asigTemporal.toString(), expressionTemporal.toString(), "<", trueLabel.toString());
+            generateIfOperation(tmp.getAsig().getID(), expressionTemporal.toString(), "<=", trueLabel.toString());
             generateGotoOperation(nextLabel.toString());
 
             generateLabelOperation(trueLabel.toString());
             generateStatement(tmp.getStat(), Parent);
-            generateThreeOperation(asigTemporal.toString(), asigTemporal.toString(), "1", "+");
+            Temporal threeTemp = new Temporal();
+            generateThreeOperation(threeTemp.toString(), tmp.getAsig().getID(), "1", "+");
+            generateTwoOperation(tmp.getAsig().getID(), threeTemp.toString());
             generateGotoOperation(checkExpression.toString());
 
             generateLabelOperation(nextLabel.toString());

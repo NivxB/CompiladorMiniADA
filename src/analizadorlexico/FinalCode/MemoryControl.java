@@ -7,6 +7,7 @@ package analizadorlexico.FinalCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,6 +89,7 @@ public class MemoryControl {
                 return retVal;
             }
             String tmpRetVal = getFreeTemporal();
+            mapFakeTemporalToReal.values().removeAll(Collections.singleton(tmpRetVal));
             mapFakeTemporalToReal.put(intermediateTemp, tmpRetVal);
             return tmpRetVal;
         } else {
@@ -96,7 +98,11 @@ public class MemoryControl {
             if (retVal.equalsIgnoreCase("EMPTY")) {
                 String tmpRetVal = getFreeTemporal();
                 //mapFakeTemporalToReal.put(intermediateTemp, tmpRetVal);
+                currentTemporal.values().removeAll(Collections.singleton(tmpRetVal));
                 currentTemporal.put(intermediateTemp, tmpRetVal);
+                if (freeTemporal.indexOf(tmpRetVal) >= 0) {
+                    freeTemporal.remove(tmpRetVal);
+                }
                 return tmpRetVal;
             }
             if (freeTemporal.indexOf(retVal) >= 0) {

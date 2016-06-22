@@ -31,9 +31,45 @@ procedure pruebaSuma is
     end test;
 begin
     --test := 0;
+    put("Con FOR");
     a := 5;
-    resFact:= fact(a);
-    put("Resultado: ");
-    put(resFact);
+    for b:=0 to 5
+      resFact:= fact(b);
+      put("Resultado: ");
+      put(resFact);
+      put("\n");
+      put("\n");
+    end for;
+    
+    put("Con While");
+    put("\n");
+    b:=0;
+    while b <= 5 loop
+      resFact:= fact(b);
+      put("Resultado: ");
+      put(resFact);
+      put("\n");
+      put("\n");
+      b := b + 1;
+    end loop;
+
+
+    put("Escriba num iteraciones");
+    get(a);
+    if a > 5 then
+      for b:=0 to a
+        resFact:= fact(b);
+        put("Resultado: ");
+        put(resFact);
+        put("\n");
+        put("\n");
+      end for;
+    elsif a = 5 then
+      resFact:= fact(10);
+      put("Resultado: ");
+      put(resFact);
+    else
+      put("ELSE");
+    end if;
     -- a:= 3;
 end pruebaSuma;

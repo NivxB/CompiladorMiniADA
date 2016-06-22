@@ -6,6 +6,8 @@
 package analizadorlexico.FinalCode;
 
 import analizadorlexico.AST.InitProcedure;
+import static analizadorlexico.FinalCode.MemoryControl.currentTemporal;
+import static analizadorlexico.FinalCode.MemoryControl.mapFakeTemporalToReal;
 import analizadorlexico.IntermediateCode.CallOperation;
 import analizadorlexico.IntermediateCode.GetCall;
 import analizadorlexico.IntermediateCode.GotoOperation;
@@ -24,6 +26,7 @@ import analizadorlexico.SymbolTable.ListComplexNode;
 import analizadorlexico.SymbolTable.Node;
 import analizadorlexico.SymbolTable.SimpleNode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -232,7 +235,7 @@ public class FinalCode {
                 } else if (tmp.getSecondOperator().equalsIgnoreCase("/")) {
                     oper = "div";
                 }
-                //Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), toValue);
+
                 finalCode.add(oper + " " + toValue + "," + firstVal + "," + secondVal + "\n");
                 if (firstVal.charAt(0) == '$' && !MemoryControl.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                     MemoryControl.freeTemporal.push(firstVal);
@@ -271,6 +274,7 @@ public class FinalCode {
                 } else {
                     //???
                     String tmpTemporal = getLoadArgumentValue(tmp.getSecondValue());
+                    mapFakeTemporalToReal.values().removeAll(Collections.singleton(tmpTemporal));
                     MemoryControl.mapFakeTemporalToReal.put(tmp.getFirstValue(), tmpTemporal);
                 }
             } else if (operationCheck instanceof ParamOperation) {
@@ -283,6 +287,7 @@ public class FinalCode {
                     finalCode.add("move " + A + "," + temporalString + "\n");
                 }
             } else if (operationCheck instanceof CallOperation) {
+
                 CallOperation tmp = (CallOperation) operationCheck;
                 MemoryControl beforeT = new MemoryControl();
                 List<String> aliveTemporal = beforeT.getAliveTemporal();
@@ -305,7 +310,7 @@ public class FinalCode {
                     finalCode.add("lw " + currentTemporal + ", -" + ((i + 1) * 4) + "($sp)" + "\n");
                     //newPosition+=4;
                 }
-
+                MemoryControl.A_POS = 0;
             } else if (operationCheck instanceof ReturnOperation) {
                 ReturnOperation tmp = (ReturnOperation) operationCheck;
                 String temporalString = getLoadArgumentValue(tmp.getRetVal());
@@ -442,7 +447,6 @@ public class FinalCode {
                 } else if (tmp.getSecondOperator().equalsIgnoreCase("/")) {
                     oper = "div";
                 }
-                //Temporal.mapFakeTemporalToReal.put(tmp.getFirstValue(), toValue);
                 finalCode.add(oper + " " + toValue + "," + firstVal + "," + secondVal + "\n");
                 if (firstVal.charAt(0) == '$' && !MemoryControl.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                     MemoryControl.freeTemporal.push(firstVal);
@@ -468,6 +472,7 @@ public class FinalCode {
                 } else {
                     //???
                     String tmpTemporal = getLoadTemporalValue(tmp.getSecondValue());
+                    mapFakeTemporalToReal.values().removeAll(Collections.singleton(tmpTemporal));
                     MemoryControl.mapFakeTemporalToReal.put(tmp.getFirstValue(), tmpTemporal);
                 }
             } else if (operationCheck instanceof ParamOperation) {
@@ -502,7 +507,7 @@ public class FinalCode {
                     finalCode.add("lw " + currentTemporal + ", -" + ((i + 1) * 4) + "($sp)" + "\n");
                     //newPosition+=4;
                 }
-
+                MemoryControl.A_POS = 0;
             } else if (operationCheck instanceof PutCall) {
                 PutCall tmp = (PutCall) (operationCheck);
                 if (MemoryControl.MessageMap.containsKey(tmp.getMensaje())) {
@@ -550,12 +555,14 @@ public class FinalCode {
             String retVal = MemoryControl.getTempValue(value);
             if (isInteger(value)) {
                 finalCode.add("li " + retVal + "," + value + "\n");
-                
+
                 if (MemoryControl.mapFakeTemporalToReal.containsKey(retVal)) {
                     MemoryControl.currentTemporal.remove(MemoryControl.mapFakeTemporalToReal.get(retVal));
                 }
             } else {
                 finalCode.add("lw " + retVal + ", _" + value + "\n");
+
+                // MemoryControl.currentTemporal.put(value, retVal);
             }
             return retVal;
         }
@@ -580,7 +587,7 @@ public class FinalCode {
             } else if (MemoryControl.argumentToTemporal.containsKey(value)) {
                 String val = MemoryControl.argumentToTemporal.get(value);
                 if (MemoryControl.currentTemporal.containsKey(val)) {
-                    return MemoryControl.currentTemporal.get(val);
+                    return MemoryControl.getTempValue(val);
                 } else if (val.charAt(0) == '$') {
                     return val;
                 } else {
@@ -590,6 +597,8 @@ public class FinalCode {
                 }
             } else {
                 finalCode.add("lw " + retVal + ", _" + value + "\n");
+                currentTemporal.values().removeAll(Collections.singleton(retVal));
+                MemoryControl.currentTemporal.put(value, retVal);
             }
             return retVal;
         }

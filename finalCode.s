@@ -1,190 +1,250 @@
 .data
-_x: .word 0
-_msg9: .asciiz "Ingrese un numero positivo: "
-_msg6: .asciiz " "
-_msg8: .asciiz "\n"
-_msg7: .asciiz "*"
+_c: .word 0
+_b: .word 0
+_a: .word 0
+_resFact: .word 0
+_msg0: .asciiz "RECURSIVE CALL: "
+_msg14: .asciiz "\n"
+_msg2: .asciiz "Con FOR"
+_msg15: .asciiz "Resultado: "
+_msg6: .asciiz "Con While"
+_msg11: .asciiz "Escriba num iteraciones"
+_msg16: .asciiz "ELSE"
 .text
 .globl main
-_validarPositivoI1:
+_factI1:
 sw $fp,-4($sp)
 sw $ra,-8($sp)
 sw $s0,-12($sp)
 move $fp,$sp
 sub $sp,$sp,12
 move $s0,$a0
-label0:
 li $t1,0
-blt $s0,$t1,label2
-b label1
+beq $s0,$t1,label1
+b label2
+label1:
+li $t1,1
+move $v0,$t1
+b _returnCode_factI1
+b label0
 label2:
 li $v0, 4
-la $a0, _msg9
+la $a0, _msg0
 syscall
 li $v0, 1
+move $a0,$s0
 syscall
-sw $v0, _x
-b label0
-label1:
-move $v0,$s0
-_returnCode_validarPositivoI1:
+li $v0, 4
+la $a0, _msg14
+syscall
+li $t1,1
+sub $t2,$s0,$t1
+move $a0,$t2
+jal _factI1
+move $t1,$v0
+mul $t3,$s0,$t1
+move $v0,$t3
+b _returnCode_factI1
+label0:
+_returnCode_factI1:
 move $sp,$fp
 lw $s0,-12($fp)
 lw $ra,-8($sp)
 lw $fp,-4($sp)
 jr $ra
-_printPiramideV1:
+_dI0:
+sw $fp,-4($sp)
+sw $ra,-8($sp)
+move $fp,$sp
+sub $sp,$sp,8
+li $t0,0
+move $v0,$t0
+_returnCode_dI0:
+move $sp,$fp
+lw $ra,-8($sp)
+lw $fp,-4($sp)
+jr $ra
+_dI1:
 sw $fp,-4($sp)
 sw $ra,-8($sp)
 sw $s0,-12($sp)
 move $fp,$sp
-sub $sp,$sp,20
+sub $sp,$sp,16
 move $s0,$a0
-move $a0,$s0
-jal _validarPositivoI1
-move $t1,$v0
+li $t0,5
+sw $t0, -16($fp)
+li $t1,1
+add $t2,$s0,$t1
+move $s0, $t2
+lw $t1,-16($fp)
 move $s0, $t1
-li $t1,1
-sub $t2,$s0,$t1
-li $t1,2
-mul $t3,$t1,$t2
-move $s0, $t3
-li $t3,0
-sw $t3, -20($fp)
-label3:
-li $t1,2
-div $t3,$s0,$t1
-blt $t3,$t3,label4
-b label5
-label4:
-li $t3,0
+li $t1,24
+add $t3,$s0,$t1
 sw $t3, -16($fp)
-label6:
-lw $t1,-20($fp)
-sub $t2,$s0,$t1
-blt $t3,$t2,label7
-b label8
-label7:
-li $v0, 4
-la $a0, _msg6
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label6
-label8:
-li $t3,0
-sw $t3, -16($fp)
-label9:
-li $t1,2
-mul $t2,$t1,$t1
-blt $t3,$t2,label10
-b label11
-label10:
-li $v0, 4
-la $a0, _msg6
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label9
-label11:
-li $v0, 4
-la $a0, _msg8
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label3
-label5:
-li $t3,0
-sw $t3, -20($fp)
-label12:
-li $t1,2
-div $t3,$s0,$t1
-blt $t3,$t3,label13
-b label14
-label13:
-li $t1,2
-div $t3,$s0,$t1
-sw $t3, -16($fp)
-label15:
-sub $t1,$s0,$t1
-blt $t3,$t1,label16
-b label17
-label16:
-li $v0, 4
-la $a0, _msg6
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label15
-label17:
-li $t3,0
-sw $t3, -16($fp)
-label18:
-li $t1,2
-mul $t2,$t1,$t1
-blt $t3,$t2,label19
-b label20
-label19:
-li $v0, 4
-la $a0, _msg7
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label18
-label20:
-li $t1,1
-sw $t1, -16($fp)
-label21:
-li $t1,2
-mul $t2,$t1,$t1
-sub $t1,$s0,$t2
-blt $t1,$t1,label22
-b label23
-label22:
-li $v0, 4
-la $a0, _msg6
-syscall
-li $t1,1
-add $t1,$t1,$t1
-b label21
-label23:
-li $t3,0
-sw $t3, -16($fp)
-label24:
-li $t1,2
-mul $t2,$t1,$t1
-blt $t3,$t2,label25
-b label26
-label25:
-li $v0, 4
-la $a0, _msg7
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label24
-label26:
-li $v0, 4
-la $a0, _msg8
-syscall
-li $t1,1
-add $t3,$t3,$t1
-b label12
-label14:
-_returnCode_printPiramideV1:
+lw $t3,-16($fp)
+lw $t1, _a
+add $t4,$t3,$t1
+move $v0,$t4
+_returnCode_dI1:
 move $sp,$fp
 lw $s0,-12($fp)
+lw $ra,-8($sp)
+lw $fp,-4($sp)
+jr $ra
+_testV0:
+sw $fp,-4($sp)
+sw $ra,-8($sp)
+move $fp,$sp
+sub $sp,$sp,8
+_returnCode_testV0:
+move $sp,$fp
 lw $ra,-8($sp)
 lw $fp,-4($sp)
 jr $ra
 main:
 li $v0, 4
-la $a0, _msg9
+la $a0, _msg2
+syscall
+li $t0,5
+sw $t0, _a
+li $t0,0
+sw $t0, _b
+label3:
+lw $t0, _b
+li $t1,5
+ble $t0,$t1,label4
+b label5
+label4:
+lw $t0, _b
+move $a0,$t0
+jal _factI1
+move $t1,$v0
+sw $t1, _resFact
+li $v0, 4
+la $a0, _msg15
+syscall
+li $v0, 1
+lw $t1, _resFact
+move $a0,$t1
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+lw $t0, _b
+li $t2,1
+add $t3,$t0,$t2
+sw $t3, _b
+b label3
+label5:
+li $v0, 4
+la $a0, _msg6
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+li $t3,0
+sw $t3, _b
+label6:
+lw $t0, _b
+li $t3,5
+ble $t0,$t3,label8
+b label7
+label8:
+lw $t0, _b
+move $a0,$t0
+jal _factI1
+move $t3,$v0
+sw $t3, _resFact
+li $v0, 4
+la $a0, _msg15
+syscall
+li $v0, 1
+lw $t1, _resFact
+move $a0,$t1
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+lw $t0, _b
+li $t2,1
+add $t3,$t0,$t2
+sw $t3, _b
+b label6
+label7:
+li $v0, 4
+la $a0, _msg11
 syscall
 li $v0, 5
 syscall
-sw $v0, _x
-lw $t1, _x
-move $a1,$t1
-jal _printPiramideV1
+sw $v0, _a
+lw $t3, _a
+li $t2,5
+bgt $t3,$t2,label10
+b label11
+label10:
+li $t2,0
+sw $t2, _b
+label12:
+lw $t0, _b
+lw $t3, _a
+ble $t0,$t3,label13
+b label14
+label13:
+lw $t0, _b
+move $a0,$t0
+jal _factI1
+move $t3,$v0
+sw $t3, _resFact
+li $v0, 4
+la $a0, _msg15
+syscall
+li $v0, 1
+lw $t1, _resFact
+move $a0,$t1
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+li $v0, 4
+la $a0, _msg14
+syscall
+lw $t0, _b
+li $t3,1
+add $t2,$t0,$t3
+sw $t2, _b
+b label12
+label14:
+b label9
+label11:
+lw $t2, _a
+li $t3,5
+beq $t2,$t3,label16
+b label17
+label16:
+li $t3,10
+move $a0,$t3
+jal _factI1
+move $t2,$v0
+sw $t2, _resFact
+li $v0, 4
+la $a0, _msg15
+syscall
+li $v0, 1
+lw $t1, _resFact
+move $a0,$t1
+syscall
+b label15
+label17:
+li $v0, 4
+la $a0, _msg16
+syscall
+label15:
+label9:
 li $v0,10
 syscall

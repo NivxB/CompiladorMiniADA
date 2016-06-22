@@ -189,7 +189,13 @@ public class FinalCode {
                         compare = "beq";
                     }
                     String firstVal = getLoadArgumentValue(tmp.getFirstValue());
+                    if (MemoryControl.freeTemporal.indexOf(firstVal) >= 0) {
+                        MemoryControl.freeTemporal.remove(firstVal);
+                    }
                     String nextTemp = getLoadArgumentValue(tmp.getSecondValue());
+                    if (MemoryControl.freeTemporal.indexOf(nextTemp) >= 0) {
+                        MemoryControl.freeTemporal.remove(nextTemp);
+                    }
                     finalCode.add(compare + " " + firstVal + "," + nextTemp + "," + tmp.getGotoLabel() + "\n");
                     if (firstVal.charAt(0) == '$' && !MemoryControl.freeTemporal.contains(firstVal) && firstVal.matches("\\$t\\d+")) {
                         MemoryControl.freeTemporal.push(firstVal);
@@ -208,7 +214,13 @@ public class FinalCode {
             } else if (operationCheck instanceof ThreeOperation) {
                 ThreeOperation tmp = (ThreeOperation) operationCheck;
                 String firstVal = getLoadArgumentValue(tmp.getSecondValue());
+                if (MemoryControl.freeTemporal.indexOf(firstVal) >= 0) {
+                    MemoryControl.freeTemporal.remove(firstVal);
+                }
                 String secondVal = getLoadArgumentValue(tmp.getThirdValue());
+                if (MemoryControl.freeTemporal.indexOf(secondVal) >= 0) {
+                    MemoryControl.freeTemporal.remove(secondVal);
+                }
                 String toValue = getLoadArgumentValue(tmp.getFirstValue());
                 String oper = "";
                 if (tmp.getSecondOperator().equalsIgnoreCase("+")) {
@@ -303,7 +315,7 @@ public class FinalCode {
                 PutCall tmp = (PutCall) (operationCheck);
                 if (MemoryControl.MessageMap.containsKey(tmp.getMensaje())) {
                     String val = MemoryControl.MessageMap.get(tmp.getMensaje());
-                    finalCode.add("li $v0, "+tmp.getType()+"\n");
+                    finalCode.add("li $v0, " + tmp.getType() + "\n");
                     finalCode.add("la $a0, _" + val + "\n");
                     finalCode.add("syscall\n");
                 } else {

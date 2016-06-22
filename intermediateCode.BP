@@ -1,46 +1,117 @@
-_factI1:
-if num=0 GOTO label1
-goto label2
-label1:
-$t0=1
-RET $t0
-goto label0
-label2:
-print "RECURSIVE CALL: "
-print num
-print "\n"
-$t1=num-1
-param $t1
-call factI , 1
-$t2=num*RET
-RET $t2
+_validarPositivoI1:
 label0:
+if x<0 GOTO label2
+goto label1
+label2:
+print "Ingrese un numero positivo: "
+get x
+goto label0
+label1:
+$t0=x
+RET $t0
 ENDFUNCTION:
-_dI0:
-$t3=0
-RET $t3
-ENDFUNCTION:
-_dI1:
-$t4=5
-f=$t4
-$t5=i+1
+_printPiramideV1:
+$t2=num
+param $t2
+call validarPositivoI , 1
+$t1=RET
+num=$t1
+$t3=num-1
+$t4=2*$t3
+num=$t4
+$t5=0
 i=$t5
-$t6=f
-i=$t6
-$t7=i+24
-f=$t7
-$t8=f+a
-RET $t8
-ENDFUNCTION:
-_test0:
+label3:
+$t6=num/2
+if $t5<$t6 GOTO label4
+goto label5
+label4:
+$t7=0
+j=$t7
+label6:
+$t8=num-i
+if $t7<$t8 GOTO label7
+goto label8
+label7:
+print " "
+$t7=$t7+1
+goto label6
+label8:
+$t9=0
+j=$t9
+label9:
+$t10=i*2
+if $t9<$t10 GOTO label10
+goto label11
+label10:
+print " "
+$t9=$t9+1
+goto label9
+label11:
+print "\n"
+$t5=$t5+1
+goto label3
+label5:
+$t11=0
+i=$t11
+label12:
+$t12=num/2
+if $t11<$t12 GOTO label13
+goto label14
+label13:
+$t13=num/2
+j=$t13
+label15:
+$t14=num-i
+if $t13<$t14 GOTO label16
+goto label17
+label16:
+print " "
+$t13=$t13+1
+goto label15
+label17:
+$t15=0
+j=$t15
+label18:
+$t16=i*2
+if $t15<$t16 GOTO label19
+goto label20
+label19:
+print "*"
+$t15=$t15+1
+goto label18
+label20:
+$t17=1
+j=$t17
+label21:
+$t18=i*2
+$t19=num-$t18
+if $t17<$t19 GOTO label22
+goto label23
+label22:
+print " "
+$t17=$t17+1
+goto label21
+label23:
+$t20=0
+j=$t20
+label24:
+$t21=i*2
+if $t20<$t21 GOTO label25
+goto label26
+label25:
+print "*"
+$t20=$t20+1
+goto label24
+label26:
+print "\n"
+$t11=$t11+1
+goto label12
+label14:
 ENDFUNCTION:
 main:
-$t9=5
-a=$t9
-$t11=a
-param $t11
-call factI , 1
-$t10=RET
-resFact=$t10
-print "Resultado: "
-print resFact
+print "Ingrese un numero positivo: "
+get x
+$t22=x
+param $t22
+call printPiramideV , 1
